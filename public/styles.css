@@ -1,3 +1,4 @@
+/* nav bar */
 nav {
     padding-left: 20px;
     padding-right: 20px;
@@ -21,22 +22,26 @@ nav li{
     padding-left: 20px;
 }
 
+/* nav button{
+    width: 100px;
+} */
+
+/* images */
 .scaled-down-logo {
     max-width: 125px;
 }
 
-.centre-img {
+.centre-item {
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-body {
-    background-color: auto;
-    padding-top: 85px; 
-    
+.full-picture{
+    max-width: 100%;
 }
 
+/* footer */
 footer {
     background-color: auto;  
 }
@@ -55,14 +60,30 @@ footer {
     background-color: #0072AD;
 }
 
+/* general */
+body {
+    background-color: auto;
+    padding-top: 85px; 
+    
+}
+
 .padding{
     padding: 20px;
 }
 
-.full-picture{
-    max-width: 100%;
+.marking{ /*remove*/
+    border: thin solid red;
 }
 
+.centre-text{
+    text-align: center;
+}
+
+.container{
+    padding-bottom: 100px;
+}
+
+/* cards page */
 .filter-button-padding{
     padding-bottom: 20px;
 } 
@@ -71,18 +92,9 @@ footer {
     border-radius: 30px;
 }
 
-.marking{ /*remove*/
-    border: thin solid red;
-}
-
 .full-length-button{
     width: 100%;
 }
-
-.centre-text{
-    text-align: center;
-}
-
 
 .card{
     padding: 5%;
@@ -90,20 +102,18 @@ footer {
 }
 
 .card:hover {
-    transform: scale(1.05); /* (150% zoom - Note: if the zoom is too large, it will go outside of the viewport) */
+    transform: scale(1.05); 
 }
 
-.container{
-    padding-bottom: 100px;
+.card-pic-padding{
+    padding-bottom: 5%;
 }
 
+
+
+/* card info page */
 .card-info-row{
     display: flex;
-}
-
-.card-pic{
-    width: 320px;
-    height: 447px;
 }
 
 .card-info-pic {
@@ -111,11 +121,21 @@ footer {
 
 }
 
-.card-info-details {
-    flex: 2; /* Take up 2/3 of the available space */
+.card-pic{
+    width: 320px;
+    height: 447px;
 }
 
-/* phone view*/
+.card-info-details {
+    flex: 2; /* Take up 2/3 of the available space */
+    display: grid; 
+    grid-template-columns: repeat(2, 1fr); /* Two columns */
+}
+
+
+
+/* tablet view */
+/* card info page */
 @media (max-width: 1023px) {
     .card-info-row {
         flex-direction: wrap; 
@@ -125,27 +145,18 @@ footer {
 
     .card-info-pic {
         flex: 1; 
-        width: 100%;
     }
 
     .card-info-details {
-        flex: 1; /* Reset flex value to prevent resizing */
-        width: 100%; /* Ensure details take full width on small screens */
+        flex: 1;
+        grid-template-columns: repeat(1, 1fr); /* One column for tablet mode */
     }
 
-    .card-pic{
-        min-width: 100%;
-        min-height: 100%;
-
-    }
-}
-
-.card-pic-padding{
-    padding-bottom: 5%;
 }
 
 
 /* phone view */
+/* card info page */
 @media (max-width: 767px) {
     .card-info-row {
         flex-direction: column; 
@@ -155,21 +166,12 @@ footer {
 
     .card-info-pic {
         flex: none; 
-        width: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
     }
 
     .card-info-details {
         flex: none; /* Reset flex value to prevent resizing */
-        width: 100%; /* Ensure details take full width on small screens */
     }
 
-    .card-pic{
-        min-width: 320px;
-        min-height: 447px;
-    }
 }
 
 
