@@ -5,20 +5,46 @@ const PORT = 3000;
 
 app.set('view engine', 'ejs'); // gets the .ejs files from views folder directly
 
-// middleware to render static images and css 
+// middleware to render static images 
 app.use(express.static(path.join(__dirname,'./images' ))); // may have to take away the folder links within the html files 
+// middleware to render static css (?)
+app.use(express.static(path.join(__dirname,'./public' ))); 
 
 // homepage route 
 app.get('/',  (req, res) =>  {
-    res.sendFile(path.join(__dirname,'./views/index.ejs')); // change the href refs in the html to /
+    
+    res.render('index');
 });
 
-// homepage route 
+// sign up route 
 app.get('/signup',  (req, res) =>  {
-    res.sendFile(path.join(__dirname,'./views/signup.ejs')); // change the href refs in the html to /signup
+
+    res.render('signup');
 });
 
+// log in route 
+app.get('/login',  (req, res) =>  {
 
+    res.render('login');
+});
+
+// cards route 
+app.get('/cards',  (req, res) =>  {
+
+    res.render('cards');
+});
+
+// cardinfo route 
+app.get('/cardinfo',  (req, res) =>  {
+
+    res.render('cardinfo');
+});
+
+// filter route 
+app.get('/filter',  (req, res) =>  {
+
+    res.render('filter');
+});
 
 
 app.listen(PORT, (err) => { 
