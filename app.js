@@ -2,13 +2,16 @@ const express = require('express');
 const app = express();
 const path = require('path');
 const PORT = 3000;
+const connection = require("./connection.js");
 
-app.set('view engine', 'ejs'); // gets the .ejs files from views folder directly
+// gets the .ejs files from views folder directly
+app.set('view engine', 'ejs'); 
 
 // middleware to render static images 
 app.use(express.static(path.join(__dirname,'./images' ))); // may have to take away the folder links within the html files 
 // middleware to render static css (?)
 app.use(express.static(path.join(__dirname,'./public' ))); 
+
 
 // homepage route 
 app.get('/',  (req, res) =>  {
