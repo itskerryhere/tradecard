@@ -1,97 +1,103 @@
 <!-- header -->
 <%- include('header') %>
 
-<body>
-    <!-- navbar -->
-    <%- include('navbar') %>
+    <body>
+        <!-- navbar -->
+        <%- include('navbar') %>
 
-    <!-- main section -->
-    <main class="container">
+            <!-- main section -->
+            <main class="container">
 
-        <!-- page title header -->
-        <div class="centre-text">
-            <h1>Cards</h1>
-        </div>
-
-        <!-- page content -->
-        <div class="grid centre-item">
-            <!-- search bar -->
-            <div>
-                <form role="search">
-                    <input name="search" type="search" placeholder="Search cards" />
-                    <input type="submit" value="Search" />
-                </form>
-            </div>
-
-            <!-- filter button -->
-            <div class="filter-button-padding">
-                <a href="/filter"><button class="rounded-button">Filter</button></a>
-            </div>
-        </div>
-
-        <div class="grid">
-            <!-- Filter tab -->
-            <div>
-                <h3>Filter</h3>
-                <details class="dropdown">
-                    <summary>
-                        Type
-                    </summary>
-                    <ul>
-                        <li><label><input type="checkbox" name="fire" />Fire</label></li>
-                        <li><label><input type="checkbox" name="water" />Water</label></li>
-                        <li><label><input type="checkbox" name="grass" />Grass</label></li>
-                        <li><label><input type="checkbox" name="fairy" />Fairy</label></li>
-                    </ul>
-                </details>
-                <details class="dropdown">
-                    <summary>
-                        Weakness
-                    </summary>
-                    <ul>
-                        <li><label><input type="checkbox" name="fire" />Fire</label></li>
-                        <li><label><input type="checkbox" name="water" />Water</label></li>
-                        <li><label><input type="checkbox" name="grass" />Grass</label></li>
-                        <li><label><input type="checkbox" name="fairy" />Fairy</label></li>
-                    </ul>
-                </details>
-                <label>
-                    HP
-                    <input type="range" value="40" />
-                  </label>
-                  <fieldset>
-                    <label>
-                    Normal
-                      <input name="terms" type="checkbox" role="switch" />
-                    Holo
-                    </label>
-                </fieldset>
-            </div>
-
-            <!-- display cards -->
-            <article class="card">
-                <div>
-                    <a href="/cardinfo"><img src="furret.webp" class="card-pic-padding"></a>
-                </div>
-                <div>
-                    <h5>Name of pokemon</h5>
-                </div>
-                <div>
-                    <p>about pokemon</p>
+                <!-- page title header -->
+                <div class="centre-text">
+                    <h1>Cards</h1>
                 </div>
 
-            </article>
+                <!-- page content -->
+                <div class="grid centre-item">
+                    <!-- search bar -->
+                    <div>
+                        <form role="search">
+                            <input name="search" type="search" placeholder="Search cards" />
+                            <input type="submit" value="Search" />
+                        </form>
+                    </div>
 
-            <article class="card">I’m a card!</article>
-            <article class="card">I’m a card!</article>
-            <article class="card">I’m a card!</article>
-        </div>
+                    <!-- filter button -->
+                    <div class="filter-button-padding">
+                        <a href="/filter"><button class="rounded-button">Filter</button></a>
+                    </div>
+                </div>
 
-    </main>
+                <div class="grid filter-card-grid marking">
+                    <!-- Left - Filter tab -->
+                    <div class="marking">
+                        <h3>Filter</h3>
+                        <details class="dropdown">
+                            <summary>
+                                Type
+                            </summary>
+                            <ul>
+                                <li><label><input type="checkbox" name="fire" />Fire</label></li>
+                                <li><label><input type="checkbox" name="water" />Water</label></li>
+                                <li><label><input type="checkbox" name="grass" />Grass</label></li>
+                                <li><label><input type="checkbox" name="fairy" />Fairy</label></li>
+                            </ul>
+                        </details>
+                        <details class="dropdown">
+                            <summary>
+                                Weakness
+                            </summary>
+                            <ul>
+                                <li><label><input type="checkbox" name="fire" />Fire</label></li>
+                                <li><label><input type="checkbox" name="water" />Water</label></li>
+                                <li><label><input type="checkbox" name="grass" />Grass</label></li>
+                                <li><label><input type="checkbox" name="fairy" />Fairy</label></li>
+                            </ul>
+                        </details>
+                        <label>
+                            HP
+                            <input type="range" value="40" />
+                        </label>
+                        <fieldset>
+                            <label>
+                                Normal
+                                <input name="terms" type="checkbox" role="switch" />
+                                Holo
+                            </label>
+                        </fieldset>
+                    </div>
 
-</body>
+                    <!-- Right - Display cards-->
+                    <div class="cards-grid marking">
+                        <% cardlist.forEach((card)=> { %>
+                            <article class="card">
+                                <div>
+                                    <a href="/cardinfo?cardid=<%=card.card_id%>"><img src="<%=card.card_img_url%>" class="card-pic-padding"></a>
+                                </div>
+                                <div>
+                                    <h5>
+                                        <%=card.pokemon_name%>
+                                    </h5>
+                                </div>
+                                <div>
+                                    <p>
+                                        <%=card.rarity_name%>
+                                    </p>
+                                </div>
+                            </article>
+                            <% }); %>
 
-<!-- footer -->
-<%- include('footer') %>
+                    </div>
+               
 
-</html>
+                </div>
+
+            </main>
+
+    </body>
+
+    <!-- footer -->
+    <%- include('footer') %>
+
+        </html>

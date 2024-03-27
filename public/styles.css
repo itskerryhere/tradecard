@@ -101,9 +101,20 @@ body {
     width: 100%;
 }
 
+.filter-card-grid{
+    display: grid;
+    grid-template-columns: 1fr 4fr; /* Divide the grid into two columns, 1/5 and 4/5 */
+    grid-gap: 10px; /* Adjust as needed */
+}
+
+
+
 .card {
-    padding: 5%;
+    padding: 10px;
     transition: transform .2s;
+    flex: 1 0 auto; /* flex-grow: 1, flex-shrink: 0, flex-basis: auto */
+    max-width: calc(25% - 1%); /* Calculate the max-width considering margin */
+    margin: 0.5%;
 }
 
 .card:hover {
@@ -112,6 +123,13 @@ body {
 
 .card-pic-padding {
     padding-bottom: 5%;
+    max-width: 100%;
+}
+
+.cards-grid{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
 }
 
 
@@ -143,8 +161,19 @@ body {
 
 
 /* tablet view */
-/* card info page */
+
 @media (max-width: 1023px) {
+
+    /* cards page  */
+    .filter-card-grid{
+        grid-template-columns: 1fr 2fr; /* could be 1,3 */
+    }
+
+    .card {
+        max-width: calc(50% - 1%); /* Calculate the max-width considering margin, could be 33% */
+    }
+
+    /* card info page */
     .card-info-row {
         flex-direction: wrap;
         padding-left: 20px;
@@ -161,12 +190,25 @@ body {
         /* One column for tablet mode */
     }
 
+
+
 }
 
 
 /* phone view */
-/* card info page */
+
 @media (max-width: 767px) {
+
+    /* cards page  */
+    .filter-card-grid{
+        display: flex;
+        flex-direction: column;
+    }
+
+    .card {
+        max-width: calc(50% - 1%); /* Calculate the max-width considering margin */
+    }
+    /* card info page */
     .card-info-row {
         flex-direction: column;
         padding-left: 20px;

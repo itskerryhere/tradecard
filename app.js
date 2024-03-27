@@ -36,13 +36,37 @@ app.get('/login',  (req, res) =>  {
 // cards route 
 app.get('/cards',  (req, res) =>  {
 
-    res.render('cards', {title: 'Cards'});
+    const getcards = `SELECT card_id, pokemon_name, card_img_url, rarity_name FROM card JOIN rarity ON card.rarity_id = rarity.rarity_id;`;
+
+    connection.query(getcards, (err, result) => {
+        if (err) throw err;
+        res.render('cards', {title: 'Cards', cardlist: result});
+    });
+
+   
 });
 
 // cardinfo route 
 app.get('/cardinfo',  (req, res) =>  {
+    const cardid = req.query.cardid;
 
-    res.render('cardinfo');
+    const readsql = ` SELECT * FROM card WHERE card_id = ? `;
+
+    connection.query(readsql, [cardid], (err, result) => {
+        if (err) throw err;
+
+        
+        // making referencing in .ejs easier
+        const cardResult = {
+            pokemon_name: result[0]['pokemon_name'],
+            img: result[0]['card_img_url'],
+        };
+
+        //res.render("series", { show: showData });
+        res.render('cardinfo', {cardinfo : cardResult});
+    });
+
+    
 });
 
 // filter route 

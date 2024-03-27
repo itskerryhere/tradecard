@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Furret</title>
+    <title><%=cardinfo.pokemon_name%></title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css" />
     <link rel="stylesheet" href="styles.css">
     <link rel="icon" href="pikachu_favicon.png" type="image/png">
@@ -19,18 +19,18 @@
 
         <!-- page title header -->
         <div class="centre-text">
-            <u><h1>Furret</h1></u>
+            <u><h1><%=cardinfo.pokemon_name%></h1></u>
             <h4>something</h4>
         </div>
 
         <!-- page content -->
         <div class="grid card-info-row">
             <div class="card-info-pic centre-item">
-                <img src="furret.webp" alt="picture of furret" class="card-pic">
+                <img src="<%=cardinfo.img%>" alt="picture of pokemon" class="card-pic">
             </div>
             <div class="card-info-details grid marking">
                 <div>
-                    furret info
+                    first row of info
                 </div>
                 <div> 
                     second row of info

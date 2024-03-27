@@ -4,7 +4,7 @@ const db = mysql.createConnection({
     host: 'localhost',
     user: 'root',
     password: 'root',
-    database: 'tradecard',
+    database: 'tradecard_practice',
     port: '8889' 
 });
 
@@ -12,7 +12,7 @@ db.connect( (err)=> {
     if(err) {
         return console.log(err.message);
     }else{
-        return console.log(`Connection to local MySQL tradecard.`); // can use const for tradecard?
+        return console.log(`Connection to local MySQL tradecard_practice.`); // can use const for tradecard?
     };
 
 });
