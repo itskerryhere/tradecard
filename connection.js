@@ -9,8 +9,12 @@ const db = mysql.createConnection({
 });
 
 db.connect( (err)=> {
-    if(err) throw err;
-    console.log(`Server connecting to database tradecard`); // can use const for tradecard?
+    if(err) {
+        return console.log(err.message);
+    }else{
+        return console.log(`Connection to local MySQL tradecard.`); // can use const for tradecard?
+    };
+
 });
 
 module.exports = db;
