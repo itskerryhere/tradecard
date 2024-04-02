@@ -115,6 +115,7 @@ body {
     flex: 1 0 auto; /* flex-grow: 1, flex-shrink: 0, flex-basis: auto */
     max-width: calc(25% - 1%); /* Calculate the max-width considering margin */
     margin: 0.5%;
+    padding-bottom: 0px;
 }
 
 .card:hover {
@@ -153,11 +154,22 @@ body {
 .card-info-details {
     flex: 2;
     /* Take up 2/3 of the available space */
+   
+}
+
+.card-info-details-bottom {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     /* Two columns */
+
+
 }
 
+
+.symbol-img {
+    max-width: 20px;
+    padding-bottom: 4px;
+}
 
 
 /* tablet view */
@@ -186,6 +198,10 @@ body {
 
     .card-info-details {
         flex: 1;
+       
+    }
+
+    .card-info-details-bottom {
         grid-template-columns: repeat(1, 1fr);
         /* One column for tablet mode */
     }

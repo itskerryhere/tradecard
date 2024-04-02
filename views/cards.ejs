@@ -76,14 +76,14 @@
                                     <a href="/cardinfo?cardid=<%=card.card_id%>"><img src="<%=card.card_img_url%>" class="card-pic-padding"></a>
                                 </div>
                                 <div>
-                                    <h5>
-                                        <%=card.pokemon_name%>
-                                    </h5>
-                                </div>
-                                <div>
-                                    <p>
-                                        <%=card.rarity_name%>
-                                    </p>
+                                    <hgroup>
+                                        <h5>
+                                            <%=card.pokemon_name%>
+                                        </h5>
+                                        <div>
+                                            <%=card.rarity_name%> <img src="<%=card.rarity_symbol_url%>" class="symbol-img">
+                                        </div>
+                                    </hgroup>
                                 </div>
                             </article>
                             <% }); %>

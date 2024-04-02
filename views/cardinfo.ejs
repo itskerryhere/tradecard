@@ -18,24 +18,70 @@
     <main class="container">
 
         <!-- page title header -->
-        <div class="centre-text">
-            <u><h1><%=cardinfo.pokemon_name%></h1></u>
-            <h4>something</h4>
-        </div>
+        <hgroup class="centre-text marking">
+            <h1><%=cardinfo[0].pokemon_name%></h1>
+            <p><%=cardinfo[0].category_name%></p>
+        </hgroup>
 
         <!-- page content -->
         <div class="grid card-info-row">
             <div class="card-info-pic centre-item">
-                <img src="<%=cardinfo.img%>" alt="picture of pokemon" class="card-pic">
+                <img src="<%=cardinfo[0].card_img_url%>" alt="picture of pokemon" class="card-pic">
             </div>
-            <div class="card-info-details grid marking">
-                <div>
-                    first row of info
-                </div>
-                <div> 
-                    second row of info
+            <div class="card-info-details marking">
+                <div class="marking">
+                    <!-- iterate through attack info -->
+                        <div>
+                            <% cardinfo.forEach((card) => { %>
+                                <h4><%= card.attack_name %> - <%= card.attack_damage %></h4>
+                                <p><%= card.attack_description %></p>
+                            <% }); %>
+                        </div>
+                   
                 </div>
                 
+                <div class="card-info-details-bottom marking">
+                    <div>
+                        <p>
+                            HP: <b><%=cardinfo[0].card_hp%></b>
+                        </p>
+                        <p>
+                            Pokedex Number: <b><%=cardinfo[0].pokedex_num%></b>
+                        </p>
+                        <p>
+                            Rarity: <b><%=cardinfo[0].rarity_name%></b> <img src="<%=cardinfo[0].rarity_symbol_url%>" alt="<%=cardinfo[0].rarity_name%>" class="symbol-img">
+                        </p>
+                        <p>
+                            Type: <b><%=cardinfo[0].type_name%></b> <img src="<%=cardinfo[0].type_symbol_url%>" alt="<%=cardinfo[0].type_name%>" class="symbol-img">
+                        </p>
+                        <p>
+                            Weakness: <b> x<%=cardinfo[0].weakness_value%></b>
+                        </p>
+                    </div>
+                    <div>
+                        <p>
+                            Stage: <b><%=cardinfo[0].stage_name%></b>
+                        </p>
+
+                        <% if (cardinfo[0].stage_id != 1) { %>
+                        <p> 
+                            Evolves from: <b><%=cardinfo[0].evolves_from%></b>
+                        </p>
+                        <% } %>
+
+                        <p>
+                            Holo : <b><%= (cardinfo[0].holo === 1) ? "True" : "False"; %></b>
+                        </p>
+                        
+                        <p>
+                            Expansion: <b><%=cardinfo[0].expansion_name%></b>
+                        </p>
+                        <p>
+                            Series: <b><%=cardinfo[0].series_name%></b>
+                        </p>
+                    </div>
+
+                </div>
             </div>
         </div>
     </main>

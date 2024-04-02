@@ -36,7 +36,7 @@ app.get('/login',  (req, res) =>  {
 // cards route 
 app.get('/cards',  (req, res) =>  {
 
-    const getcards = `SELECT card_id, pokemon_name, card_img_url, rarity_name FROM card JOIN rarity ON card.rarity_id = rarity.rarity_id;`;
+    const getcards = `SELECT card_id, pokemon_name, card_img_url, rarity_name, rarity_symbol_url FROM card JOIN rarity ON card.rarity_id = rarity.rarity_id;`;
 
     connection.query(getcards, (err, result) => {
         if (err) throw err;
@@ -50,20 +50,26 @@ app.get('/cards',  (req, res) =>  {
 app.get('/cardinfo',  (req, res) =>  {
     const cardid = req.query.cardid;
 
-    const readsql = ` SELECT * FROM card WHERE card_id = ? `;
+    const readsql = `SELECT * FROM card 
+    JOIN category ON category_id = category.category_id
+    JOIN type ON card.type_id = type.type_id
+    JOIN weakness ON card.weakness_id = weakness.weakness_id
+    JOIN stage ON card.stage_id = stage.stage_id
+    JOIN rarity ON card.rarity_id = rarity.rarity_id
+    JOIN expansion ON card.expansion_id = expansion.expansion_id
+    JOIN series ON expansion.series_id = series.series_id
+    WHERE card.card_id = ?`;
+
+    //     JOIN card_attack ON card.card_id = card_attack.card_id
+    //JOIN attack ON card_attack.attack_id = attack.attack_id
+   // JOIN attack_type ON attack.attack_id = attack_type.attack_id
+  //  JOIN type AS attack_type_table ON attack_type_table.type_id = attack_type.type_id
 
     connection.query(readsql, [cardid], (err, result) => {
         if (err) throw err;
 
-        
-        // making referencing in .ejs easier
-        const cardResult = {
-            pokemon_name: result[0]['pokemon_name'],
-            img: result[0]['card_img_url'],
-        };
 
-        //res.render("series", { show: showData });
-        res.render('cardinfo', {cardinfo : cardResult});
+        res.render('cardinfo', {cardinfo : result});
     });
 
     
