@@ -28,7 +28,8 @@
 
             <!-- right section -->
             <article>
-                <form>
+                <!-- red text, if email already exist -->
+                <form method="post" action="/signup">
                     <fieldset>
                         <div class="grid">
                             <div>
@@ -44,9 +45,13 @@
                                 </label>
                             </div>
                         </div>
+                        <!-- <label>
+                            Date of Birth
+                            <input type="date" name="dateofbirth" placeholder="Date of Birth" />
+                        </label> -->
                         <label>
                             Email address
-                            <input name="email" placeholder="Email address" autocomplete="email" />
+                            <input type="text" name="email" placeholder="Email address" autocomplete="email" />
                         </label>
                         <label>
                             Password
@@ -54,11 +59,10 @@
                         </label>
                     </fieldset>
 
-                    <input type="submit" value="Sign Up" />
+                    <input type="submit" value="Sign Up"/>
                 </form>
 
-                <a href="/login"><button class="outline full-length-button">Already have an account? Log
-                        in</button></a>
+                <a href="/login"><button class="outline full-length-button">Already have an account? Log in</button></a>
 
             </article>
         </div>
