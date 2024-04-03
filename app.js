@@ -24,6 +24,9 @@ app.get('/',  (req, res) =>  {
 // sign up route 
 app.get('/signup',  (req, res) =>  {
 
+    
+
+
     res.render('signup', {title: 'Sign Up'});
 });
 
@@ -36,44 +39,91 @@ app.get('/login',  (req, res) =>  {
 // cards route 
 app.get('/cards',  (req, res) =>  {
 
-    const getcards = `SELECT card_id, pokemon_name, card_img_url, rarity_name, rarity_symbol_url FROM card JOIN rarity ON card.rarity_id = rarity.rarity_id;`;
+    // catch search keyword
+    const searchKeyword = req.query.search;
 
-    connection.query(getcards, (err, result) => {
+    // base query with no search or filter
+    let getCards = `SELECT * FROM card INNER JOIN rarity ON card.rarity_id = rarity.rarity_id
+    INNER JOIN type ON card.type_id = type.type_id `;
+    // add more search queries
+
+    // If a search keyword is provided, add search filtering to the query
+    if (searchKeyword) {
+        getCards += `WHERE pokemon_name LIKE '%${searchKeyword}%' 
+        OR rarity_name LIKE '%${searchKeyword}%'
+        OR type_name LIKE '%${searchKeyword}%'`;
+        // add more search queries
+    }
+
+    // filter
+    let getTypes = "SELECT * FROM type";
+
+    // sort
+    // const sort = req.query.sort;
+
+    // if (sort) {
+    //     getCards += `ORDER BY ${sort}`;
+    // }
+
+
+    // Perform the database query to get card details
+    connection.query(getCards, getTypes,  (err, cardResult) => {
+ 
         if (err) throw err;
-        res.render('cards', {title: 'Cards', cardlist: result});
+
+        // Perform the database query to get types
+        connection.query(getTypes, (err, typeResult) => {
+            if (err) throw err;
+
+            // Render the 'cards' view with the query results
+            res.render('cards', { title: 'Cards', cardlist: cardResult, typelist: typeResult });
+        });       
     });
 
    
 });
 
+
+
 // cardinfo route 
 app.get('/cardinfo',  (req, res) =>  {
-    const cardid = req.query.cardid;
+//app.get('/cards/:cardid',  (req, res) =>  {
 
-    const readsql = `SELECT * FROM card 
-    JOIN category ON category_id = category.category_id
-    JOIN type ON card.type_id = type.type_id
-    JOIN weakness ON card.weakness_id = weakness.weakness_id
-    JOIN stage ON card.stage_id = stage.stage_id
-    JOIN rarity ON card.rarity_id = rarity.rarity_id
-    JOIN expansion ON card.expansion_id = expansion.expansion_id
-    JOIN series ON expansion.series_id = series.series_id
-    WHERE card.card_id = ?`;
+    let cardid = req.query.cardid;
+    //const cardid = req.params.cardid;
 
-    //     JOIN card_attack ON card.card_id = card_attack.card_id
-    //JOIN attack ON card_attack.attack_id = attack.attack_id
-   // JOIN attack_type ON attack.attack_id = attack_type.attack_id
-  //  JOIN type AS attack_type_table ON attack_type_table.type_id = attack_type.type_id
+    let readsql = `SELECT * FROM card 
+    INNER JOIN category ON category_id = category.category_id
+    INNER JOIN type ON card.type_id = type.type_id
+    INNER JOIN stage ON card.stage_id = stage.stage_id
+    INNER JOIN rarity ON card.rarity_id = rarity.rarity_id
+    INNER JOIN expansion ON card.expansion_id = expansion.expansion_id
+    INNER JOIN series ON expansion.series_id = series.series_id
+    WHERE card.card_id = ?;
 
-    connection.query(readsql, [cardid], (err, result) => {
+    SELECT * FROM attack 
+    INNER JOIN card_attack ON attack.attack_id = card_attack.attack_id
+    WHERE card_id = ?;
+    
+    SELECT * FROM type 
+    INNER JOIN weakness ON type.type_id = weakness.type_id
+    INNER JOIN card ON weakness.weakness_id = card.weakness_id
+    WHERE card_id = ?;`;
+
+
+    connection.query(readsql, [cardid, cardid, cardid], (err, result) => {
         if (err) throw err;
 
+        let cardResult = result[0];
+        let attackResult=  result[1];
+        let weaknessResult = result[2];
 
-        res.render('cardinfo', {cardinfo : result});
+        res.render('cardinfo', {cardinfo : cardResult, attackinfo : attackResult, weaknessinfo: weaknessResult});
     });
 
     
 });
+
 
 // filter route 
 app.get('/filter',  (req, res) =>  {

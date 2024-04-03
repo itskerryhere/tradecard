@@ -5,7 +5,8 @@ const db = mysql.createConnection({
     user: 'root',
     password: 'root',
     database: 'tradecard_practice',
-    port: '8889' 
+    port: '8889',
+    multipleStatements: true
 });
 
 db.connect( (err)=> {

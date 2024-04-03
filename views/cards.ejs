@@ -29,7 +29,7 @@
                     </div>
                 </div>
 
-                <div class="grid filter-card-grid marking">
+                <div class="grid filter-card-grid">
                     <!-- Left - Filter tab -->
                     <div class="marking">
                         <h3>Filter</h3>
@@ -38,10 +38,9 @@
                                 Type
                             </summary>
                             <ul>
-                                <li><label><input type="checkbox" name="fire" />Fire</label></li>
-                                <li><label><input type="checkbox" name="water" />Water</label></li>
-                                <li><label><input type="checkbox" name="grass" />Grass</label></li>
-                                <li><label><input type="checkbox" name="fairy" />Fairy</label></li>
+                                <% typelist.forEach((type)=> { %>
+                                    <li><label><input type="checkbox" name="<%=type.type_name%>" /><%=type.type_name%></label></li>
+                                <% }); %>
                             </ul>
                         </details>
                         <details class="dropdown">
@@ -73,16 +72,17 @@
                         <% cardlist.forEach((card)=> { %>
                             <article class="card">
                                 <div>
-                                    <a href="/cardinfo?cardid=<%=card.card_id%>"><img src="<%=card.card_img_url%>" class="card-pic-padding"></a>
+                                    <a href="/cardinfo?cardid=<%=card.card_id%>"><img src="<%=card.card_img_url%>" class="card-pic-padding"></a> 
+                                    <!-- <a href="/cards/<%=card.card_id%>"><img src="<%=card.card_img_url%>" class="card-pic-padding"></a> -->
                                 </div>
                                 <div>
                                     <hgroup>
                                         <h5>
                                             <%=card.pokemon_name%>
                                         </h5>
-                                        <div>
+                                        <p>
                                             <%=card.rarity_name%> <img src="<%=card.rarity_symbol_url%>" class="symbol-img">
-                                        </div>
+                                        </p>
                                     </hgroup>
                                 </div>
                             </article>

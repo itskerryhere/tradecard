@@ -31,13 +31,13 @@
             <div class="card-info-details marking">
                 <div class="marking">
                     <!-- iterate through attack info -->
-                        <div>
-                            <% cardinfo.forEach((card) => { %>
-                                <h4><%= card.attack_name %> - <%= card.attack_damage %></h4>
-                                <p><%= card.attack_description %></p>
+                        <hgroup>
+                            <% attackinfo.forEach((attack) => { %>
+                                <h5><%= attack.attack_name %> - <%= attack.attack_damage %></h4>
+                                <p><%= attack.attack_description %></p>
+                                <br>
                             <% }); %>
-                        </div>
-                   
+                            </hgroup>
                 </div>
                 
                 <div class="card-info-details-bottom marking">
@@ -55,7 +55,7 @@
                             Type: <b><%=cardinfo[0].type_name%></b> <img src="<%=cardinfo[0].type_symbol_url%>" alt="<%=cardinfo[0].type_name%>" class="symbol-img">
                         </p>
                         <p>
-                            Weakness: <b> x<%=cardinfo[0].weakness_value%></b>
+                            Weakness: <b><%=weaknessinfo[0].type_name%> x<%=weaknessinfo[0].weakness_value%> <img src="<%=weaknessinfo[0].type_symbol_url%>" alt="<%=weaknessinfo[0].type_name%>" class="symbol-img"></b>
                         </p>
                     </div>
                     <div>
