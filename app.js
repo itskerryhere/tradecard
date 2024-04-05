@@ -35,47 +35,135 @@ app.get('/',  (req, res) =>  {
 app.get('/signup',  (req, res) =>  {
 
 
-
-    res.render('signup', {title: 'Sign Up' });
+    res.render('signup', {title: 'Sign Up', errorMessage: ''});
 });
 
 app.post('/signup', (req, res) => {
 
     let firstname = req.body.firstname;
     let lastname = req.body.lastname;
-    let email = req.body.email; // make sure email doesn't exist before inserting 
+    let email = req.body.email; 
     let password = req.body.password;
 
     // check if email already exists in the database
     let checkEmailExist = 'SELECT * FROM user WHERE email = ?';
 
-    connection.query(checkEmailExist, [email], (err, userResult) => {
+    connection.query(checkEmailExist, [email], async (err, userResult) => {
         if (err) throw err;
 
         // if duplicate email
         if (userResult.length > 0) {
-            
-            res.redirect('signup');
+
+            res.render('signup', { title: 'Sign Up', errorMessage: 'Email already exists' });
         
         // if new email
         } else {
+            // salt password 
+            let hashPassword = `SELECT @salt := SUBSTRING(SHA1(RAND()), 1, 6);
+            SELECT @saltedHash := SHA1(CONCAT(@salt, ?));
+            SELECT @storedSaltedHash := CONCAT(@salt, @saltedHash);`
 
-            let insertUser = `INSERT INTO user (first_name, last_name, email, password) 
-            VALUES (?,?,?,?)`;
-            
-            connection.query(insertUser, [firstname, lastname, email, password], (err, result) => {
+            await connection.promise().query(hashPassword, [password]);
+
+            // insert data with hashed password
+            let insertUser = `INSERT INTO user (first_name, last_name, email, password) VALUES (?, ?, ?, @storedSaltedHash);`;
+
+            connection.query(insertUser, [firstname, lastname, email], (err, result) => {
                 if (err) throw err;
-
-                // get new user id
+        
+                // Get the new user id
                 let newuserid = result.insertId;
-
-            res.redirect(`/welcome?userid=${newuserid}`);
-            });    
+        
+                res.redirect(`/welcome?userid=${newuserid}`);
+            });   
         }
 
     });                        
    
 });
+
+
+
+
+
+
+// log in route 
+app.get('/login',  (req, res) =>  {
+
+    res.render('login', {title: 'Login', errorMessage: ''});
+});
+
+app.post('/login', async (req, res) =>  {
+
+    // get input data 
+    let email = req.body.email;
+    let password = req.body.password;
+
+
+    // see if any user in database matches email and password 
+    let checkUser = `SELECT * FROM user WHERE email = ? `;
+
+    connection.query(checkUser, [email], async (err, result) => {
+       if (err) throw err;
+
+       let getNumOfUsers = result.length; // should be 1 always, as no duplicate email 
+
+       // if user exist
+       if (getNumOfUsers > 0) {
+    //        let sessionObj = req.session;
+    //        sessionObj.sess_valid = true;
+    //        sessionObj.email = result[0].email;
+    //        sessionObj.password = result[0].password;
+
+            // unhash password 
+            let getSaltInUse = `SELECT SUBSTRING(password, 1, 6) AS salt FROM user WHERE email = ?;`;
+            let saltInUse = await connection.promise().query(getSaltInUse, [email]);
+            saltInUse = saltInUse[0][0].salt; // accessing the Buffer values, aut oconverts from numerical to values
+
+           
+            let getStoredSaltedHashInUse = `SELECT SUBSTRING(password, 7, 40) AS storedSaltedHash FROM user WHERE email = ?;`;
+            let storedSaltedHashInUse = await connection.promise().query(getStoredSaltedHashInUse, [email]);
+            storedSaltedHashInUse = storedSaltedHashInUse[0][0].storedSaltedHash;
+            
+
+            let getSaltedHash = `SELECT SHA1(CONCAT(?, ?)) AS saltedHash;`
+            let saltedHash = await connection.promise().query(getSaltedHash, [saltInUse, password]);
+            // saltedHash = JSON.stringify(saltedHash[0]); // to test 
+            saltedHash = saltedHash[0][0].saltedHash;
+
+            
+            let getSaltedInputPassword = `SELECT @saltedPassword := CONCAT(?, ?) AS saltedPassword;`;
+            let saltedInputPassword = await connection.promise().query(getSaltedInputPassword, [saltInUse, saltedHash]);
+            saltedInputPassword = saltedInputPassword[0][0].saltedPassword;
+
+
+            let attemptLogin = `SELECT user_id FROM user WHERE email = ? AND password = ?;`;
+            let result = await connection.promise().query(attemptLogin, [email, saltedInputPassword]);
+            
+
+            // if correct password
+            if (result[0].length > 0) {
+                let userid = JSON.stringify(result[0][0].user_id);
+                res.redirect(`/welcome?userid=${userid}`); 
+            
+            // if incorrect password 
+            } else {
+                res.render('login', { title: 'Login', errorMessage: 'Incorrect password, try again' })
+            }
+
+        // if user does not exists
+       } else {
+            
+           res.render('login', {title: 'Login', errorMessage: 'Invalid email, try again'});
+       }
+       
+   });
+
+});
+
+
+
+
 
 // welcome route
 app.get('/welcome', (req, res) => {
@@ -93,51 +181,6 @@ app.get('/welcome', (req, res) => {
         res.render('welcome', { title: 'Welcome',  userinfo: userResult });
     });
 });
-
-
-
-
-
-// log in route 
-app.get('/login',  (req, res) =>  {
-
-    res.render('login', {title: 'Login'});
-});
-
-app.post('/login',  (req, res) =>  {
-
-   // get input data 
-   let email = req.body.email;
-   let password = req.body.password;
-
-   // see if any user in database matches email and password 
-   let checkUser = `SELECT * FROM user WHERE email = ? AND password = ?`;
-
-   connection.query(checkUser, [email, password], (err, result) => {
-       if (err) throw err;
-
-       let getNumOfUsers = result.length;
-
-       if (getNumOfUsers > 0) {
-    //        let sessionObj = req.session;
-    //        sessionObj.sess_valid = true;
-    //        sessionObj.email = result[0].email;
-    //        sessionObj.password = result[0].password;
-
-        // get user id
-        let userid = result[0].user_id;
-
-           res.redirect(`/welcome?userid=${userid}`);
-       } else {
-
-        // try again
-           res.render('login', {title: 'Login'});
-       }
-       
-   });
-
-});
-
 
 
 

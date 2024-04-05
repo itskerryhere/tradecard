@@ -28,23 +28,29 @@
 
             <!-- right section -->
             <article>
+                <!-- if error message -->
+                <% if (errorMessage) { %>
+                <div class="errorMessage">
+                    <p><%= errorMessage %></p>
+                </div>  
+                <% } %>
+                <!-- form -->
                 <form method="post" action="/login">
                     <fieldset>
                         <label>
                             Email address
-                            <input name="email" placeholder="Email address" autocomplete="email" />
+                            <input name="email" placeholder="Email address" autocomplete="email" required/>
                         </label>
                         <label>
                             Password
-                            <input type="password" name="password" placeholder="Password" autocomplete="new-password" />
+                            <input type="password" name="password" placeholder="Password" autocomplete="new-password" required/>
                         </label>
                     </fieldset>
 
                     <input type="submit" value="Log in" />
                 </form>
 
-                <a href="/signup"><button class="outline full-length-button">Don't have an account? Sign
-                        up</button></a>
+                <a href="/signup"><button class="outline full-length-button">Don't have an account? Sign up</button></a>
 
             </article>
         </div>

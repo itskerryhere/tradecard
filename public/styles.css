@@ -88,6 +88,10 @@ body {
     padding-bottom: 100px;
 }
 
+.errorMessage p {
+    color: red;
+}
+
 /* cards page */
 .filter-button-padding {
     padding-bottom: 20px;
@@ -106,7 +110,6 @@ body {
     grid-template-columns: 1fr 4fr; /* Divide the grid into two columns, 1/5 and 4/5 */
     grid-gap: 10px; /* Adjust as needed */
 }
-
 
 
 .card {

@@ -28,20 +28,26 @@
 
             <!-- right section -->
             <article>
-                <!-- red text, if email already exist -->
+                <!-- error message -->
+                <% if (errorMessage) { %>
+                <div class="errorMessage">
+                        <p><%= errorMessage %></p>
+                </div>  
+                <% } %>
+                <!-- form -->
                 <form method="post" action="/signup">
                     <fieldset>
                         <div class="grid">
                             <div>
                                 <label>
                                     First Name
-                                    <input type="text" name="firstname" placeholder="First Name" aria-label="Text" />
+                                    <input type="text" name="firstname" placeholder="First Name" aria-label="Text" required/>
                                 </label>
                             </div>
                             <div>
                                 <label>
                                     Last Name
-                                    <input type="text" name="lastname" placeholder="Last Name" aria-label="Text" />
+                                    <input type="text" name="lastname" placeholder="Last Name" aria-label="Text" required/>
                                 </label>
                             </div>
                         </div>
@@ -51,11 +57,11 @@
                         </label> -->
                         <label>
                             Email address
-                            <input type="text" name="email" placeholder="Email address" autocomplete="email" />
+                            <input type="text" name="email" placeholder="Email address" autocomplete="email" required/>
                         </label>
                         <label>
                             Password
-                            <input type="password" name="password" placeholder="Password" autocomplete="new-password" />
+                            <input type="password" name="password" placeholder="Password" autocomplete="new-password" required/>
                         </label>
                     </fieldset>
 
