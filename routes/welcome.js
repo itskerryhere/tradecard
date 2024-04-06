@@ -1,23 +1,23 @@
-const express = require('express');
-const router = express.Router();
-const connection = require("../connection.js");
+// const express = require('express');
+// const router = express.Router();
+// const connection = require("../connection.js");
 
 
-// welcome route
-router.get('/welcome', (req, res) => {
+// // welcome route
+// router.get('/welcome/:userid?', (req, res) => {
 
-    // get userid
-    let userid = req.query.userid;
+//     // get userid
+//     let userid = req.params.userid;
 
-    // fetch the new user data after successful insertion
-    let getUser = `SELECT * FROM user WHERE user_id = ?`;
+//     // fetch the new user data after successful insertion
+//     let getUser = `SELECT * FROM user WHERE user_id = ?`;
 
-    connection.query(getUser, [userid], (err, userResult) => {
-        if (err) throw err;
+//     connection.query(getUser, [userid], (err, userResult) => {
+//         if (err) throw err;
 
-        // pass the fetched user data to the accounts route
-        res.render('welcome', { title: 'Welcome',  userinfo: userResult });
-    });
-});
+//         // pass the fetched user data to the accounts route
+//         res.render('welcome', { title: 'Welcome',  userinfo: userResult });
+//     });
+// });
 
-module.exports = router;
+// module.exports = router;

@@ -59,8 +59,8 @@ router.post('/login', async (req, res) =>  {
 
             // if correct password
             if (result[0].length > 0) {
-                let userid = JSON.stringify(result[0][0].user_id);
-                res.redirect(`/welcome?userid=${userid}`); 
+                let userid = JSON.stringify(result[0][0].user_id); 
+                res.redirect(`/account/${userid}`)
             
             // if incorrect password 
             } else {

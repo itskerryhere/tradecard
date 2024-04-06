@@ -27,7 +27,7 @@ app.use(sessions({
 const indexRoute = require('./routes/index')
 const signupRoute = require('./routes/signup');
 const loginRoute = require('./routes/login');
-const welcomeRoute = require('./routes/welcome');
+// const welcomeRoute = require('./routes/welcome');
 const cardsRoute = require('./routes/cards');
 const cardinfoRoute = require('./routes/cardinfo');
 const accountRoute = require('./routes/account');
@@ -36,7 +36,7 @@ const accountRoute = require('./routes/account');
 app.use(indexRoute);
 app.use(signupRoute);
 app.use(loginRoute);
-app.use(welcomeRoute);
+// app.use(welcomeRoute);
 app.use(cardsRoute);
 app.use(cardinfoRoute);
 app.use(accountRoute);

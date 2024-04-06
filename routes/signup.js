@@ -47,7 +47,7 @@ router.post('/signup', (req, res) => {
                 // Get the new user id
                 let newuserid = result.insertId;
         
-                res.redirect(`/welcome?userid=${newuserid}`);
+                res.redirect(`/account/${newuserid}`);
             });   
         }
 

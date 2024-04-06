@@ -4,10 +4,10 @@ const connection = require("../connection.js");
 
 
 // cardinfo route 
-router.get('/cardinfo', (req, res) => {
+router.get('/cards/:cardid?', (req, res) => {
     //app.get('/cards/:cardid',  (req, res) =>  {
 
-    let cardid = req.query.cardid;
+    let cardid = req.params.cardid;
     //const cardid = req.params.cardid;
 
     let readsql = `SELECT * FROM card 

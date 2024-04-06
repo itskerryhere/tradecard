@@ -105,18 +105,22 @@ body {
     width: 100%;
 }
 
-.filter-card-grid{
+.filter-card-grid {
     display: grid;
-    grid-template-columns: 1fr 4fr; /* Divide the grid into two columns, 1/5 and 4/5 */
-    grid-gap: 10px; /* Adjust as needed */
+    grid-template-columns: 1fr 4fr;
+    /* Divide the grid into two columns, 1/5 and 4/5 */
+    grid-gap: 10px;
+    /* Adjust as needed */
 }
 
 
 .card {
     padding: 10px;
     transition: transform .2s;
-    flex: 1 0 auto; /* flex-grow: 1, flex-shrink: 0, flex-basis: auto */
-    max-width: calc(25% - 1%); /* Calculate the max-width considering margin */
+    flex: 1 0 auto;
+    /* flex-grow: 1, flex-shrink: 0, flex-basis: auto */
+    max-width: calc(25% - 1%);
+    /* Calculate the max-width considering margin */
     margin: 0.5%;
     padding-bottom: 0px;
 }
@@ -130,7 +134,7 @@ body {
     max-width: 100%;
 }
 
-.cards-grid{
+.cards-grid {
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-start;
@@ -157,7 +161,7 @@ body {
 .card-info-details {
     flex: 2;
     /* Take up 2/3 of the available space */
-   
+
 }
 
 .card-info-details-bottom {
@@ -177,15 +181,35 @@ body {
 
 /* welcome page */
 .welcome {
-    grid-gap: 10px; 
+    grid-gap: 10px;
     display: flex;
     justify-content: space-evenly;
-    
+
 }
 
 .welcome button {
     min-width: 200px;
 }
+
+/* account page */
+.account-options {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.account-options article {
+    width: 220px;
+    height: 250px;
+    text-align: center;
+ 
+}
+
+.account-options img {
+    width: 150px;
+    padding-bottom: 20px;
+    padding-top: 10px;
+}
+
 
 
 /* tablet view */
@@ -193,12 +217,14 @@ body {
 @media (max-width: 1023px) {
 
     /* cards page  */
-    .filter-card-grid{
-        grid-template-columns: 1fr 2fr; /* could be 1,3 */
+    .filter-card-grid {
+        grid-template-columns: 1fr 2fr;
+        /* could be 1,3 */
     }
 
     .card {
-        max-width: calc(50% - 1%); /* Calculate the max-width considering margin, could be 33% */
+        max-width: calc(50% - 1%);
+        /* Calculate the max-width considering margin, could be 33% */
     }
 
     /* card info page */
@@ -214,12 +240,22 @@ body {
 
     .card-info-details {
         flex: 1;
-       
+
     }
 
     .card-info-details-bottom {
         grid-template-columns: repeat(1, 1fr);
         /* One column for tablet mode */
+    }
+
+
+
+    /* account page */
+    .account-options {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr); /* 2 columns with equal width */
+        justify-content: space-evenly;
+        justify-items: center;
     }
 
 }
@@ -230,14 +266,16 @@ body {
 @media (max-width: 767px) {
 
     /* cards page  */
-    .filter-card-grid{
+    .filter-card-grid {
         display: flex;
         flex-direction: column;
     }
 
     .card {
-        max-width: calc(50% - 1%); /* Calculate the max-width considering margin */
+        max-width: calc(50% - 1%);
+        /* Calculate the max-width considering margin */
     }
+
     /* card info page */
     .card-info-row {
         flex-direction: column;
