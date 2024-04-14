@@ -1,0 +1,82 @@
+<!-- header -->
+<%- include('header') %>
+
+    <body>
+        <!-- navbar -->
+        <%- include('navbar') %>
+
+            <!-- main section -->
+            <main class="container">
+
+                <!-- page title header -->
+                <hgroup class="centre-text">
+                    <h1><%=userinfo[0].first_name%> <%=userinfo[0].last_name%>'s Account</h1>
+                    <p>View and update your account details</p>
+                </hgroup>
+
+
+                <div class="edit-account-details">
+                    <article>
+                        <% if (message) { %>
+                            <div>
+                                 <p><%= message %></p>
+                            </div>  
+                        <% } %>
+                        <details role="button" class="outline">
+                            <summary>Edit Personal Details</summary>
+                            <form action="/account/settings" method="POST" name="formId" value="editDetails">
+                                <fieldset>
+                                    <div class="firstlastname grid">
+                                        <div>
+                                            <label>
+                                                First Name
+                                                <input type="text" name="firstname" value="<%=userinfo[0].first_name%>" aria-label="Text"/>
+                                            </label>
+                                        </div>
+                                        <div>
+                                            <label>
+                                                Last Name
+                                                <input type="text" name="lastname" value="<%=userinfo[0].last_name%>" aria-label="Text"/>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <label>
+                                        Email address
+                                        <input type="text" name="email" value="<%=userinfo[0].email%>" autocomplete="email"/>
+                                    </label>
+                                </fieldset>
+                              
+                                <input type="submit" value="Confirm Change Details"/>
+                              </form>
+                        </details>
+                        <details role="button" class="outline">
+                            <summary>Change Password</summary>
+                            <form action="/account/settings" method="POST" name="formId" value="changePassword">
+                                <fieldset>
+                                    <label>
+                                        Old Password
+                                        <input type="password" name="oldpassword" placeholder="Old Password" autocomplete="new-password" required/>
+                                    </label>
+                                    <label>
+                                        New Password
+                                        <input type="password" name="newpassword" placeholder="New Password" autocomplete="new-password" required/>
+                                    </label>
+                                </fieldset>
+                              
+                                <input type="submit" value="Confirm Change Password"/>
+                              </form>
+
+                        </details>
+                        <details role="button" class="outline">
+                            <summary>Delete Account</summary>
+                            <h3>ARE YOU SURE?</h3>
+                        </details>
+                    </article>
+            
+                </div>
+
+            </main>
+    </body>
+
+<!-- footer -->
+<%- include('footer') %>

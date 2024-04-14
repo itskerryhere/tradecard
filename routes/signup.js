@@ -21,13 +21,15 @@ router.get('/signup',  (req, res) =>  {
 
 router.post('/signup', (req, res) => {
 
+    const sessionobj = req.session;  
+
     let firstname = req.body.firstname;
     let lastname = req.body.lastname;
     let email = req.body.email; 
     let password = req.body.password;
 
     // check if email already exists in the database
-    let checkEmailExist = 'SELECT * FROM user WHERE email = ?';
+    const checkEmailExist = `SELECT * FROM user WHERE email = ?`;
 
     connection.query(checkEmailExist, [email], async (err, userResult) => {
         if (err) throw err;
@@ -40,19 +42,17 @@ router.post('/signup', (req, res) => {
         // if new email
         } else {
             // salt password 
-            let hashPassword = `SELECT @salt := SUBSTRING(SHA1(RAND()), 1, 6);
+            const hashPassword = `SELECT @salt := SUBSTRING(SHA1(RAND()), 1, 6);
             SELECT @saltedHash := SHA1(CONCAT(@salt, ?));
             SELECT @storedSaltedHash := CONCAT(@salt, @saltedHash);`
 
             await connection.promise().query(hashPassword, [password]);
 
             // insert data with hashed password
-            let insertUser = `INSERT INTO user (first_name, last_name, email, password) VALUES (?, ?, ?, @storedSaltedHash);`;
+            const insertUser = `INSERT INTO user (first_name, last_name, email, password) VALUES (?, ?, ?, @storedSaltedHash);`;
 
             connection.query(insertUser, [firstname, lastname, email], (err, result) => {
                 if (err) throw err;
-
-                const sessionobj = req.session;  
         
                 // Get the new user id
                 let newuserid = result.insertId;

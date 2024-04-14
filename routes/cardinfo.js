@@ -12,7 +12,7 @@ router.get('/cards/:cardid?', (req, res) => {
     let cardid = req.params.cardid;
     //const cardid = req.params.cardid;
 
-    let readsql = `SELECT * FROM card 
+    const readsql = `SELECT * FROM card 
         INNER JOIN category ON category_id = category.category_id
         INNER JOIN type ON card.type_id = type.type_id
         INNER JOIN stage ON card.stage_id = stage.stage_id
@@ -38,7 +38,7 @@ router.get('/cards/:cardid?', (req, res) => {
         let attackResult = result[1];
         let weaknessResult = result[2];
 
-        res.render('cardinfo', { cardinfo: cardResult, attackinfo: attackResult, weaknessinfo: weaknessResult, sessionobj});
+        res.render('cardinfo', {cardinfo: cardResult, attackinfo: attackResult, weaknessinfo: weaknessResult, sessionobj});
     });
 
 
