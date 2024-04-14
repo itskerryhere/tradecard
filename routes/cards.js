@@ -5,6 +5,8 @@ const connection = require("../connection.js");
 // cards route 
 router.get('/cards',  (req, res) =>  {
 
+    const sessionobj = req.session;
+
     // catch search keyword
     const searchKeyword = req.query.search;
 
@@ -42,7 +44,7 @@ router.get('/cards',  (req, res) =>  {
             if (err) throw err;
 
             // Render the 'cards' view with the query results
-            res.render('cards', { title: 'Cards', cardlist: cardResult, typelist: typeResult });
+            res.render('cards', { title: 'Cards', cardlist: cardResult, typelist: typeResult, sessionobj });
         });       
     });
 

@@ -3,6 +3,7 @@ const app = express();
 const path = require('path');
 const PORT = 4000;
 const connection = require("./connection.js");
+const cookieParser = require('cookie-parser');
 const sessions = require('express-session');
 
 // gets the .ejs files from views folder directly
@@ -15,11 +16,12 @@ app.use(express.static(path.join(__dirname,'./public' )));
 // middleware to allow POST requests
 app.use(express.urlencoded({ extended: true }));
 // middleware for sessions
-const halfDay = 1000 * 60 * 60 * 12;
+app.use(cookieParser());
+const oneHour = 1000 * 60 * 60 * 1;
 app.use(sessions({
     secret: "secretkey",
     saveUninitialized: true,
-    cookie: {maxAge : halfDay},
+    cookie: {maxAge : oneHour},
     resave: false
 }));
 
@@ -45,7 +47,9 @@ app.use(accountRoute);
 // filter route 
 app.get('/filter',  (req, res) =>  {
 
-    res.render('filter', {title: 'Filter'});
+    const sessionobj = req.session;
+
+    res.render('filter', {title: 'Filter', sessionobj});
 });
 
 

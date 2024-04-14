@@ -5,8 +5,10 @@ const router = express.Router();
 // homepage route 
 router.get('/',  (req, res) =>  {
 
-    
-    res.render('index', {title: 'Home'});
+    const sessionobj = req.session;
+
+
+    res.render('index', {title: 'Home', sessionobj});
 });
 
 module.exports = router;

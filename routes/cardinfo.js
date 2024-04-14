@@ -6,6 +6,8 @@ const connection = require("../connection.js");
 // cardinfo route 
 router.get('/cards/:cardid?', (req, res) => {
     //app.get('/cards/:cardid',  (req, res) =>  {
+    
+    const sessionobj = req.session;
 
     let cardid = req.params.cardid;
     //const cardid = req.params.cardid;
@@ -36,7 +38,7 @@ router.get('/cards/:cardid?', (req, res) => {
         let attackResult = result[1];
         let weaknessResult = result[2];
 
-        res.render('cardinfo', { cardinfo: cardResult, attackinfo: attackResult, weaknessinfo: weaknessResult });
+        res.render('cardinfo', { cardinfo: cardResult, attackinfo: attackResult, weaknessinfo: weaknessResult, sessionobj});
     });
 
 

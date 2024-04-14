@@ -7,8 +7,16 @@ const connection = require("../connection.js");
 // sign up route 
 router.get('/signup',  (req, res) =>  {
 
+    const sessionobj = req.session;
 
-    res.render('signup', {title: 'Sign Up', errorMessage: ''});
+    // ensuring sign up page cannot be accessed again via url if already logged in
+    if (!sessionobj.authen) {
+        res.render('signup', {title: 'Sign Up', errorMessage: '', sessionobj});
+    } else {
+        res.redirect('account');
+    }
+
+    
 });
 
 router.post('/signup', (req, res) => {
@@ -43,11 +51,14 @@ router.post('/signup', (req, res) => {
 
             connection.query(insertUser, [firstname, lastname, email], (err, result) => {
                 if (err) throw err;
+
+                const sessionobj = req.session;  
         
                 // Get the new user id
                 let newuserid = result.insertId;
+                sessionobj.authen = newuserid; // creating session with user id
         
-                res.redirect(`/account/${newuserid}`);
+                res.redirect('/account');
             });   
         }
 

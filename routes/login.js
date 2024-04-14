@@ -6,10 +6,19 @@ const connection = require("../connection.js");
 // log in route 
 router.get('/login',  (req, res) =>  {
 
-    res.render('login', {title: 'Login', errorMessage: ''});
+    const sessionobj = req.session;
+    
+    // ensuring login page cannot be accessed again via url if already logged in
+    if (!sessionobj.authen) {
+        res.render('login', {title: 'Login', errorMessage: '', sessionobj});
+    } else {
+        res.redirect('account');
+    };
+
+   
 });
 
-router.post('/login', async (req, res) =>  {
+router.post('/login', async (req, res) =>  { 
 
     // get input data 
     let email = req.body.email;
@@ -59,12 +68,16 @@ router.post('/login', async (req, res) =>  {
 
             // if correct password
             if (result[0].length > 0) {
+                const sessionobj = req.session; 
+                 
                 let userid = JSON.stringify(result[0][0].user_id); 
-                res.redirect(`/account/${userid}`)
+                sessionobj.authen = userid; // creating session with user id
+
+                res.redirect('/account');
             
             // if incorrect password 
             } else {
-                res.render('login', { title: 'Login', errorMessage: 'Incorrect password, try again' })
+                res.render('login', { title: 'Login', errorMessage: 'Incorrect password, try again' });
             }
 
         // if user does not exists

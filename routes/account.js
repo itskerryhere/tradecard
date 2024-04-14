@@ -3,20 +3,28 @@ const router = express.Router();
 const connection = require("../connection.js");
 
 // account route 
-router.get('/account/:userid?', (req, res) => {
+router.get('/account/', (req, res) => {
 
-    // get userid
-    let userid = req.params.userid;
+    const sessionobj = req.session;
 
-    // fetch the new user data after successful insertion
-    let getUser = `SELECT * FROM user WHERE user_id = ?`;
+    if (sessionobj.authen) {
+        // get userid
+        let userid = sessionobj.authen;
 
-    connection.query(getUser, [userid], (err, userResult) => {
-        if (err) throw err;
+        // fetch the new user data after successful insertion
+        let getUser = `SELECT * FROM user WHERE user_id = ?`;
 
-        // pass the fetched user data to the accounts route
-        res.render('account', { title: 'Account',  userinfo: userResult });
-    });
+        connection.query(getUser, [userid], (err, userResult) => {
+            if (err) throw err;
+
+            // pass the fetched user data to the accounts route
+            res.render('account', { title: 'Account', userinfo: userResult, sessionobj });
+        });
+
+    } else {
+        res.redirect('login');
+    }
+
 });
 
 module.exports = router;

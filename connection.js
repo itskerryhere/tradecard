@@ -1,6 +1,7 @@
 // connecting database
 const mysql  = require("mysql2");
-const db = mysql.createConnection({
+const db = mysql.createPool({
+    connectionLimit: 10, // this property specifices the maximum number of connections to create in the pool, i.e 10 SQLs in a query queue
     host: 'localhost',
     user: 'root',
     password: 'root',
@@ -9,7 +10,7 @@ const db = mysql.createConnection({
     multipleStatements: true
 });
 
-db.connect( (err)=> {
+db.getConnection((err) => {
     if(err) {
         return console.log(err.message);
     }else{
