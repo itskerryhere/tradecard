@@ -92,10 +92,10 @@ router.get('/logout', (req, res) => {
     
     req.session.destroy();
 
-    // 2 sec delay
+    // 1 sec delay
     setTimeout( () => {
         res.redirect('/');
-    }, 2000);
+    }, 1000);
     
 
 });

@@ -53,31 +53,31 @@ router.get('/account/settings', (req, res) => {
 
 router.post('/account/settings', async (req, res) => {
 
-    // const formId = req.body.formId;
     const sessionobj = req.session;  
+    const formId = req.body.accountForm;
 
-    // if (formId === 'editDetails') {
+    if (formId === 'editDetails') {
        
-        // let firstname = req.body.firstname;
-        // let lastname = req.body.lastname;
-        // let email = req.body.email; 
-        // let userid = sessionobj.authen;
+        let firstname = req.body.firstname;
+        let lastname = req.body.lastname;
+        let email = req.body.email; 
+        let userid = sessionobj.authen;
 
-        // // execute the update query
-        // const editDetails = `UPDATE user SET first_name = ?, last_name = ?, email = ? WHERE user_id = ?;`;
-        // await connection.promise().query(editDetails, [firstname, lastname, email, userid]);
+        // execute the update query
+        const editDetails = `UPDATE user SET first_name = ?, last_name = ?, email = ? WHERE user_id = ?;`;
+        await connection.promise().query(editDetails, [firstname, lastname, email, userid]);
 
 
-        // // get the updated user details from the database
-        // const getUser = `SELECT * FROM user WHERE user_id = ?;`;
+        // get the updated user details from the database
+        const getUser = `SELECT * FROM user WHERE user_id = ?;`;
 
-        // connection.query(getUser, [userid], (err, result) => {
-        //     if (err) throw err;
+        connection.query(getUser, [userid], (err, result) => {
+            if (err) throw err;
 
-        //     res.render('accountsettings', {title: 'Account Settings', userinfo: result, message: 'Details changed successfully', sessionobj });
-        // });
+            res.render('accountsettings', {title: 'Account Settings', userinfo: result, message: 'Details changed successfully', sessionobj });
+        });
 
-    // } else if (formId === 'changePassword') {
+    } else if (formId === 'changePassword') {
         
         let oldpassword = req.body.oldpassword;
         let newpassword = req.body.newpassword;
@@ -147,12 +147,37 @@ router.post('/account/settings', async (req, res) => {
             });
             
         }
-
-        
-
        
-    // }
-    
+    } else if (formId === 'deleteAccount') {
+
+        const sessionobj = req.session;
+        const deleteAccount = `DELETE FROM user WHERE user_id = ?`;
+        let userid = sessionobj.authen;
+
+        connection.query(deleteAccount, [userid], (err, result) => {
+            if (err) throw err;
+
+            // delete session
+            req.session.destroy();
+
+            // 1 sec delay
+            setTimeout( () => {
+                res.redirect('/');
+            }, 1000);
+
+        });
+
+    } else {
+        
+        // get new details
+        const getUser = `SELECT * FROM user WHERE user_id = ?;`;
+
+        connection.query(getUser, [userid], (err, result) => {
+            if (err) throw err;
+
+            res.render('accountsettings', {title: 'Unsuccessful', userinfo: result, message: 'Old Password Incorrect', sessionobj });
+        });
+    }
 
 });
 

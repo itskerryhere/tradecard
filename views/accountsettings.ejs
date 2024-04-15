@@ -24,7 +24,8 @@
                         <% } %>
                         <details role="button" class="outline">
                             <summary>Edit Personal Details</summary>
-                            <form action="/account/settings" method="POST" name="formId" value="editDetails">
+                            <form action="/account/settings" method="POST">
+                                <input type="hidden" name="accountForm" value="editDetails">
                                 <fieldset>
                                     <div class="firstlastname grid">
                                         <div>
@@ -41,7 +42,7 @@
                                         </div>
                                     </div>
                                     <label>
-                                        Email address
+                                        Email Address
                                         <input type="text" name="email" value="<%=userinfo[0].email%>" autocomplete="email"/>
                                     </label>
                                 </fieldset>
@@ -51,7 +52,8 @@
                         </details>
                         <details role="button" class="outline">
                             <summary>Change Password</summary>
-                            <form action="/account/settings" method="POST" name="formId" value="changePassword">
+                            <form action="/account/settings" method="POST">
+                                <input type="hidden" name="accountForm" value="changePassword">
                                 <fieldset>
                                     <label>
                                         Old Password
@@ -67,9 +69,13 @@
                               </form>
 
                         </details>
-                        <details role="button" class="outline">
+                        <details role="button" class="delete-tab outline">
                             <summary>Delete Account</summary>
                             <h3>ARE YOU SURE?</h3>
+                            <form action="/account/settings" method="POST" name="account-method" value="DELETE">
+                                <input type="hidden" name="accountForm" value="deleteAccount">
+                                <button type="submit">DELETE</button>
+                            </form> 
                         </details>
                     </article>
             

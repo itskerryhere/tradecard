@@ -18,29 +18,31 @@
     <main class="container">
 
         <!-- page title header -->
-        <hgroup class="centre-text marking">
+        <hgroup class="centre-text">
             <h1><%=cardinfo[0].pokemon_name%></h1>
             <p><%=cardinfo[0].category_name%></p>
         </hgroup>
 
         <!-- page content -->
+        <article>
         <div class="grid card-info-row">
-            <div class="card-info-pic marking">
+            <div class="card-info-pic">
                 <img src="<%=cardinfo[0].card_img_url%>" alt="picture of pokemon" class="card-pic">
             </div>
-            <div class="card-info-details marking">
-                <div class="marking">
+            <hr>
+            <div class="card-info-details">
+                <div class="">
                     <!-- iterate through attack info -->
-                        <hgroup>
-                            <% attackinfo.forEach((attack) => { %>
-                                <h5><%= attack.attack_name %> - <%= attack.attack_damage %></h4>
-                                <p><%= attack.attack_description %></p>
-                                <br>
-                            <% }); %>
-                            </hgroup>
+                    <hgroup>
+                        <% attackinfo.forEach((attack) => { %>
+                            <h5><%= attack.attack_name %> - <%= attack.attack_damage %></h4>
+                            <p><%= attack.attack_description %></p>
+                            <br>
+                        <% }); %>
+                    </hgroup>
                 </div>
                 <hr>
-                <div class="card-info-details-bottom marking">
+                <div class="card-info-details-bottom">
                     <div>
                         <p>
                             HP: <b><%=cardinfo[0].card_hp%></b>
@@ -83,12 +85,13 @@
                     
                 </div>
                 <hr>
-                <div class="card-info-add-buttons marking">
+                <div class="card-info-add-buttons">
                     <a href="#"><button class="primary">Add to Collection</button></a>
                     <a href="#"><button class="outline">Add to Wishlist</button></a>
                 </div>
             </div>
         </div>
+        </article>
     </main>
 
 

@@ -88,10 +88,6 @@ body {
     color: red;
 }
 
-.message p {
-    color: rgb(89, 177, 52);
-}
-
 /* cards page */
 .filter-button-padding {
     padding-bottom: 20px;
@@ -110,7 +106,11 @@ body {
     grid-template-columns: 1fr 4fr;
     /* Divide the grid into two columns, 1/5 and 4/5 */
     grid-gap: 10px;
-    /* Adjust as needed */
+}
+
+.filter-tab {
+    margin-top: 3px;
+    margin-bottom: 3px;
 }
 
 
@@ -223,6 +223,15 @@ body {
 /* account settings page */
 .edit-account-details label {
     text-align: start;
+}
+
+.delete-tab button {
+    background-color: rgb(180, 35, 35);
+    border-color: rgb(180, 35, 35);
+}
+
+.delete-tab {
+    border-color: rgb(180, 35, 35);
 }
 
 
