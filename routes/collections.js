@@ -7,6 +7,7 @@ const connection = require("../connection.js");
 router.get('/mycollections', (req, res) => {
 
     const sessionobj = req.session;
+    
     const message = req.session.message; 
     req.session.message = null; 
 
@@ -28,7 +29,7 @@ router.get('/mycollections', (req, res) => {
         });
 
     } else {
-        res.redirect('/login');
+        res.redirect(`/login`);
     }
 });
 
@@ -48,8 +49,8 @@ router.post('/mycollections', (req, res) => {
         // if collection name exist - error message
         if (result.length > 0) {
 
+            // redirect with message
             req.session.message = 'Collection Name Already Exists';
-
             res.redirect(`/mycollections`);
 
 
@@ -59,8 +60,8 @@ router.post('/mycollections', (req, res) => {
             const createCollection = `INSERT INTO collection (collection_name, user_id) VALUES (? ,?);`;
             await connection.promise().query(createCollection, [collectionname, userid]);
 
+            // redirect with message
             req.session.message = 'Collection Added';
-
             res.redirect(`/mycollections`);
 
         }

@@ -9,11 +9,14 @@ router.get('/signup',  (req, res) =>  {
 
     const sessionobj = req.session;
 
+    const message = req.session.message;
+    req.session.message = null;
+
     // ensuring sign up page cannot be accessed again via url if already logged in
     if (!sessionobj.authen) {
-        res.render('signup', {title: 'Sign Up', errorMessage: '', sessionobj});
+        res.render('signup', {title: 'Sign Up', errorMessage: message, sessionobj});
     } else {
-        res.redirect('account');
+        res.redirect(`/account`);
     }
 
     
@@ -37,7 +40,9 @@ router.post('/signup', (req, res) => {
         // if duplicate email
         if (userResult.length > 0) {
 
-            res.render('signup', { title: 'Sign Up', errorMessage: 'Email already exists' });
+            // redirect with message
+            req.session.message = 'Email already exists';
+            res.redirect(`/signup`);
         
         // if new email
         } else {
@@ -58,7 +63,7 @@ router.post('/signup', (req, res) => {
                 let newuserid = result.insertId;
                 sessionobj.authen = newuserid; // creating session with user id
         
-                res.redirect('/account');
+                res.redirect(`/account`);
             });   
         }
 

@@ -8,9 +8,7 @@ router.get('/mycollections/:collectionid?', (req, res) => {
     const sessionobj = req.session;
     let collectionid = req.params.collectionid;
 
-    // Retrieve the message from the session
     const message = req.session.message;
-    // Clear the message from the session to prevent it from being displayed multiple times
     req.session.message = null;
 
     if (sessionobj.authen) {
@@ -26,7 +24,7 @@ router.get('/mycollections/:collectionid?', (req, res) => {
         });
 
     } else {
-        res.redirect('/login');
+        res.redirect(`/login`);
     }
 
 });
@@ -76,9 +74,9 @@ router.post('/mycollections/:collectionid?', async (req, res) => {
     
         await connection.promise().query(deleteCollection, [collectionid]);
 
+        // redirect with message
         req.session.message = 'Collection Deleted';
-
-        res.redirect('/mycollections');
+        res.redirect(`/mycollections`);
 
     }
 

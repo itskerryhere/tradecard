@@ -7,12 +7,15 @@ const connection = require("../connection.js");
 router.get('/login',  (req, res) =>  {
 
     const sessionobj = req.session;
+
+    const message = req.session.message;
+    req.session.message = null;
     
     // ensuring login page cannot be accessed again via url if already logged in
     if (!sessionobj.authen) {
-        res.render('login', {title: 'Login', errorMessage: '', sessionobj});
+        res.render('login', {title: 'Login', errorMessage: message, sessionobj});
     } else {
-        res.redirect('account');
+        res.redirect(`/account`);
     };
 
    
@@ -71,17 +74,23 @@ router.post('/login', async (req, res) =>  {
                 let userid = JSON.stringify(result[0][0].user_id); 
                 sessionobj.authen = userid; // creating session with user id
 
-                res.redirect('/account');
+                res.redirect(`/account`);
             
             // if incorrect password 
             } else {
-                res.render('login', { title: 'Login', errorMessage: 'Incorrect password, try again', sessionobj });
+
+                // redirect with message
+                req.session.message = 'Incorrect password, try again';
+                res.redirect(`/login`);
+
             }
 
         // if user does not exists
        } else {
             
-           res.render('login', {title: 'Login', errorMessage: 'Invalid email, try again', sessionobj});
+            // redirect with message
+            req.session.message = 'Invalid email, try again';
+            res.redirect(`/login`);
        }
        
    });
@@ -94,7 +103,7 @@ router.get('/logout', (req, res) => {
 
     // 1 sec delay
     setTimeout( () => {
-        res.redirect('/');
+        res.redirect(`/`);
     }, 1000);
     
 

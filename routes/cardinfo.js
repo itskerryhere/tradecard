@@ -2,8 +2,17 @@ const express = require('express');
 const router = express.Router();
 const connection = require("../connection.js");
 
-// method functions
-const getcardinfo = `SELECT * FROM card 
+
+// cardinfo route 
+router.get('/cards/:cardid?', (req, res) => {
+    
+    const sessionobj = req.session;
+    let cardid = req.params.cardid;
+
+    const message = req.session.message;
+    req.session.message = null;
+
+    const getcardinfo = `SELECT * FROM card 
         INNER JOIN category ON category_id = category.category_id
         INNER JOIN type ON card.type_id = type.type_id
         INNER JOIN stage ON card.stage_id = stage.stage_id
@@ -21,15 +30,6 @@ const getcardinfo = `SELECT * FROM card
         INNER JOIN card ON weakness.weakness_id = card.weakness_id
         WHERE card_id = ?;`;
 
-
-// cardinfo route 
-router.get('/cards/:cardid?', (req, res) => {
-    
-    const sessionobj = req.session;
-
-    let cardid = req.params.cardid;
-
-
     connection.query(getcardinfo, [cardid, cardid, cardid], (err, result) => {
         if (err) throw err;
 
@@ -37,7 +37,7 @@ router.get('/cards/:cardid?', (req, res) => {
         let attackResult = result[1];
         let weaknessResult = result[2];
 
-        res.render('cardinfo', {cardinfo: cardResult, attackinfo: attackResult, weaknessinfo: weaknessResult, message: '', sessionobj});
+        res.render('cardinfo', {cardinfo: cardResult, attackinfo: attackResult, weaknessinfo: weaknessResult, message: message, sessionobj});
     });
 
 
@@ -63,15 +63,10 @@ router.post('/cards/:cardid?', async (req, res) => {
             // if card exist in wishlist - error message
             if (result.length > 0) {
 
-                connection.query(getcardinfo, [cardid, cardid, cardid], (err, result) => {
-                    if (err) throw err;
-            
-                    let cardResult = result[0];
-                    let attackResult = result[1];
-                    let weaknessResult = result[2];
-            
-                    res.render('cardinfo', {cardinfo: cardResult, attackinfo: attackResult, weaknessinfo: weaknessResult, message: 'Card already in wishlist', sessionobj});
-                }); // add error message
+                // redirect with message
+                req.session.message = 'Card already in wishlist';
+                res.redirect(`/cards/${cardid}`);
+
 
             // else if card doesn't exist in wishlist - add card to wishlist
             } else {
@@ -79,23 +74,17 @@ router.post('/cards/:cardid?', async (req, res) => {
 
                 await connection.promise().query(addtowishlist, [cardid, userid]);
 
-                // get card details 
-                connection.query(getcardinfo, [cardid, cardid, cardid], (err, result) => {
-                    if (err) throw err;
+                // redirect with message
+                req.session.message = 'Card added to wishlist';
+                res.redirect(`/cards/${cardid}`);
 
-                    let cardResult = result[0];
-                    let attackResult = result[1];
-                    let weaknessResult = result[2];
-
-                    res.render('cardinfo', {cardinfo: cardResult, attackinfo: attackResult, weaknessinfo: weaknessResult, message: 'Card added to wishlist',sessionobj});
-                });
             }
 
         });
 
     } else {
 
-        res.redirect('login'); // doesn't work
+        res.redirect(`/login`); 
     }
 
 });

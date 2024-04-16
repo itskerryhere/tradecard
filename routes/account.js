@@ -22,14 +22,18 @@ router.get('/account', (req, res) => {
         });
 
     } else {
-        res.redirect('login');
+        res.redirect(`/login`);
     }
 
 });
 
+// account settings route
 router.get('/account/settings', (req, res) => {
 
     const sessionobj = req.session;
+
+    const message = req.session.message;
+    req.session.message = null;
 
     if (sessionobj.authen) {
         // get userid
@@ -42,20 +46,22 @@ router.get('/account/settings', (req, res) => {
             if (err) throw err;
 
             // pass the fetched user data to the accounts route
-            res.render('accountsettings', {title: 'Account Settings', userinfo: userResult, message: '', sessionobj });
+            res.render('accountsettings', {title: 'Account Settings', userinfo: userResult, message: message, sessionobj });
         });
 
     } else {
-        res.redirect('login');
+        res.redirect(`/login`);
     }
 
 });
 
+// edit account details, change password and delete account post
 router.post('/account/settings', async (req, res) => {
 
     const sessionobj = req.session;  
     const formId = req.body.accountForm;
 
+    // edit details form
     if (formId === 'editDetails') {
        
         let firstname = req.body.firstname;
@@ -67,16 +73,12 @@ router.post('/account/settings', async (req, res) => {
         const editDetails = `UPDATE user SET first_name = ?, last_name = ?, email = ? WHERE user_id = ?;`;
         await connection.promise().query(editDetails, [firstname, lastname, email, userid]);
 
+        // redirect with new message
+        req.session.message = 'Details changed successfully';
+        res.redirect(`/account/settings`);
 
-        // get the updated user details from the database
-        const getUser = `SELECT * FROM user WHERE user_id = ?;`;
 
-        connection.query(getUser, [userid], (err, result) => {
-            if (err) throw err;
-
-            res.render('accountsettings', {title: 'Account Settings', userinfo: result, message: 'Details changed successfully', sessionobj });
-        });
-
+    // change password form
     } else if (formId === 'changePassword') {
         
         let oldpassword = req.body.oldpassword;
@@ -124,27 +126,18 @@ router.post('/account/settings', async (req, res) => {
             const changePassword = `UPDATE user SET password = @storedSaltedHash WHERE user_id = ?;`;
             await connection.promise().query(changePassword, [userid]);
 
-            // get new details
-            const getUser = `SELECT * FROM user WHERE user_id = ?;`;
-
-            connection.query(getUser, [userid], (err, result) => {
-                if (err) throw err;
-
-                res.render('accountsettings', {title: 'Successful', userinfo: result, message: 'Password Changed Successfully', sessionobj });
-            });
+            // redirect with message
+            req.session.message = 'Password Changed Successfully';
+            res.redirect(`/account/settings`);
 
 
         // if old password wrong.. error
         } else {
 
-            // get new details
-            const getUser = `SELECT * FROM user WHERE user_id = ?;`;
+            // redirect with message
+            req.session.message = 'Old Password Incorrect';
+            res.redirect(`/account/settings`);
 
-            connection.query(getUser, [userid], (err, result) => {
-                if (err) throw err;
-
-                res.render('accountsettings', {title: 'Unsuccessful', userinfo: result, message: 'Old Password Incorrect', sessionobj });
-            });
             
         }
        
@@ -162,22 +155,12 @@ router.post('/account/settings', async (req, res) => {
 
             // 1 sec delay
             setTimeout( () => {
-                res.redirect('/');
+                res.redirect(`/`);
             }, 1000);
 
         });
 
-    } else {
-
-        // get user details
-        const getUser = `SELECT * FROM user WHERE user_id = ?;`;
-
-        connection.query(getUser, [userid], (err, result) => {
-            if (err) throw err;
-
-            res.render('accountsettings', {title: 'Unsuccessful', userinfo: result, message: 'Old Password Incorrect', sessionobj });
-        });
-    }
+    } 
 
 });
 
