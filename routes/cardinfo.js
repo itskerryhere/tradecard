@@ -49,7 +49,6 @@ router.post('/cards/:cardid?', async (req, res) => {
     const sessionobj = req.session;
     let cardid = req.params.cardid;
 
-
     // check if user is logged in before allowing collection and wishlist functions 
     if (sessionobj.authen) {
         // get userid

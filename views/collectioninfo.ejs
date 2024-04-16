@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Collection | <%=collectioninfo.collection_name%> </title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css" />
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="icon" href="/pikachu_favicon.png" type="image/png">
+</head>
+<body>
+    <!-- navbar -->
+    <%- include('navbar') %> 
+
+    <!-- main section -->
+    <main class="container">
+
+        <!-- page title header -->
+        <hgroup class="centre-text">
+            <h1><%=collectioninfo.collection_name%></h1>
+            <p>View and update this collection</p>
+        </hgroup>
+
+        <!-- collection info in collection -->
+        <% if (message) { %>
+            <div>
+                 <p><%= message %></p>
+            </div>  
+        <% } %>
+        <div class="collectioninfo-button-tab grid">
+            <div>
+            <details role="button" class="outline">
+                <summary>Collection Details</summary>
+                <small>Created on: <%=collectioninfo.creation_date%></small>
+                <br>
+                <small>Total likes: <%=collectioninfo.like_count%></small>
+            </details>
+            </div>
+            <div>
+                <details role="button" class="outline">
+                    <summary>Edit Collection</summary>
+                    <form action="/mycollections/<%=collectioninfo.collection_id%>" method="POST">
+                        <input type="hidden" name="collectionSettings" value="editCollectionName">
+                        <fieldset>
+                            <div>
+                                <label>
+                                    Collection Name
+                                    <input type="text" name="collectionName" value="<%=collectioninfo.collection_name%>" aria-label="Text"/>
+                                </label>
+                            </div>
+                        </fieldset>
+                      
+                        <input type="submit" value="Confirm Change Details"/>
+                      </form>
+                </details>
+                </div>
+            <div>
+            <details role="button" class="delete-tab outline">
+                <summary>Delete Collection</summary>
+                <h3>ARE YOU SURE?</h3>
+                <form action="/mycollections/<%=collectioninfo.collection_id%>" method="POST">
+                    <input type="hidden" name="collectionSettings" value="deleteCollection">
+                    <button type="submit">DELETE</button>
+                </form>
+            </details>
+        </div>
+
+        </div>
+        <hr>
+
+        <!-- cards in collection -->
+        <div>
+
+        </div>
+
+            
+        
+
+        
+
+
+    </main>
+
+</body>
+
+<!-- footer -->
+<%- include('footer') %>

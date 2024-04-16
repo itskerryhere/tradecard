@@ -88,9 +88,6 @@ body {
     color: red;
 }
 
-.delete-button {
-
-}
 
 /* cards page */
 .filter-button-padding {
@@ -151,7 +148,7 @@ body {
 
 
 
-/* card info page */
+/* card info page  */
 .card-info-row {
     display: flex;
 }
@@ -239,10 +236,20 @@ body {
     border-color: rgb(180, 35, 35);
 }
 
-/* wishlist page */
-.wishlist-delete button {
+/* wishlist and my collections page */
+.wishlist-collections-delete button {
     background-color: rgb(180, 35, 35);
     border-color: rgb(180, 35, 35);
+}
+
+/* my collections page */
+.create-new-collections label {
+    text-align: start;
+}
+
+/* collectioninfo page */
+.collectioninfo-button-tab {
+    grid-row-gap: 0px;
 }
 
 

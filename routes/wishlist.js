@@ -41,7 +41,6 @@ router.post('/wishlist', async (req, res) => {
     let userid = sessionobj.authen;
     let cardid = req.body.deleteCardWishlist;
 
-
     await connection.promise().query(deleteCardWishlist, [userid, cardid]);
     
     // reload page
@@ -54,10 +53,6 @@ router.post('/wishlist', async (req, res) => {
         // pass the fetched user data to the accounts route
         res.render('wishlist', { title: 'My Wishlist', userinfo: userResult, wishlistinfo: wishlistResult, sessionobj });
     });
-
-    
-
-
 
 });
 

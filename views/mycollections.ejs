@@ -1,0 +1,77 @@
+<!-- header -->
+<%- include('header') %>
+
+<body>
+    <!-- navbar -->
+    <%- include('navbar') %>
+
+    <!-- main section -->
+    <main class="container">
+
+        <!-- page title header -->
+        <hgroup class="centre-text">
+            <h1>My Collections</h1>
+            <p>View and update collections</p>
+        </hgroup>
+
+        <div class="create-new-collections">
+            <% if (message) { %>
+                <div>
+                     <p><%= message %></p>
+                </div>  
+            <% } %>
+            <details role="button" class="outline">
+                <summary>Create New Collection</summary>
+                <form action="/mycollections" method="POST">
+                    <fieldset>
+                        <label>
+                            Collection Name
+                            <input type="text" name="collectionName" placeholder="Name of collection" aria-label="Text"/>
+                        </label>
+                    </fieldset>
+                    <!-- optional buttons -->
+                    <fieldset>
+                        <legend>Specify Collection</legend>
+                        <input type="radio" id="hindi" name="second-language" checked />
+                        <label htmlFor="hindi">None</label>
+
+                        <input type="radio" id="swahili" name="second-language" />
+                        <label htmlFor="swahili">Type</label>
+
+                        <input type="radio" id="navi" name="second-language" />
+                        <label htmlFor="navi">Rarity</label>
+
+                        <input type="radio" id="navi" name="second-language" />
+                        <label htmlFor="navi">Stage</label>
+
+                        <input type="radio" id="navi" name="second-language" />
+                        <label htmlFor="navi">Series</label>
+
+                        <input type="radio" id="navi" name="second-language" />
+                        <label htmlFor="navi">Expansions</label>
+                    </fieldset>
+                    <input type="submit" value="Create Collection"/>
+                  </form>
+            </details>
+        </div>
+        <hr>
+        
+        <!-- display owned collections -->
+        <div class="cards-grid">
+            <% mycollections.forEach((collection)=> { %>
+            <article class="card">
+                <a href="/mycollections/<%=collection.collection_id%>"> <%=collection.collection_name%> </a>
+                <%=collection.creation_date%>
+
+
+            </article> 
+            <% }); %>
+        </div>
+        <!-- click into each collection -->
+        <!-- delete each individual collections -->
+
+    </main>
+</body>
+
+<!-- footer -->
+<%- include('footer') %>
