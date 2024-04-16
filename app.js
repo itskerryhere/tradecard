@@ -33,6 +33,7 @@ const loginRoute = require('./routes/login');
 const cardsRoute = require('./routes/cards');
 const cardinfoRoute = require('./routes/cardinfo');
 const accountRoute = require('./routes/account');
+const wishlistRoute = require('./routes/wishlist');
 
 
 app.use(indexRoute);
@@ -42,6 +43,7 @@ app.use(loginRoute);
 app.use(cardsRoute);
 app.use(cardinfoRoute);
 app.use(accountRoute);
+app.use(wishlistRoute);
 
 
 // filter route 

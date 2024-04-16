@@ -88,6 +88,10 @@ body {
     color: red;
 }
 
+.delete-button {
+
+}
+
 /* cards page */
 .filter-button-padding {
     padding-bottom: 20px;
@@ -133,6 +137,7 @@ body {
     padding-bottom: 5%;
     max-width: 100%;
 }
+
 
 .cards-grid {
     display: flex;
@@ -231,6 +236,12 @@ body {
 }
 
 .delete-tab {
+    border-color: rgb(180, 35, 35);
+}
+
+/* wishlist page */
+.wishlist-delete button {
+    background-color: rgb(180, 35, 35);
     border-color: rgb(180, 35, 35);
 }
 

@@ -2,17 +2,8 @@ const express = require('express');
 const router = express.Router();
 const connection = require("../connection.js");
 
-
-// cardinfo route 
-router.get('/cards/:cardid?', (req, res) => {
-    //app.get('/cards/:cardid',  (req, res) =>  {
-    
-    const sessionobj = req.session;
-
-    let cardid = req.params.cardid;
-    //const cardid = req.params.cardid;
-
-    const readsql = `SELECT * FROM card 
+// method functions
+const getcardinfo = `SELECT * FROM card 
         INNER JOIN category ON category_id = category.category_id
         INNER JOIN type ON card.type_id = type.type_id
         INNER JOIN stage ON card.stage_id = stage.stage_id
@@ -31,18 +22,87 @@ router.get('/cards/:cardid?', (req, res) => {
         WHERE card_id = ?;`;
 
 
-    connection.query(readsql, [cardid, cardid, cardid], (err, result) => {
+// cardinfo route 
+router.get('/cards/:cardid?', (req, res) => {
+    
+    const sessionobj = req.session;
+
+    let cardid = req.params.cardid;
+
+
+    connection.query(getcardinfo, [cardid, cardid, cardid], (err, result) => {
         if (err) throw err;
 
         let cardResult = result[0];
         let attackResult = result[1];
         let weaknessResult = result[2];
 
-        res.render('cardinfo', {cardinfo: cardResult, attackinfo: attackResult, weaknessinfo: weaknessResult, sessionobj});
+        res.render('cardinfo', {cardinfo: cardResult, attackinfo: attackResult, weaknessinfo: weaknessResult, message: '', sessionobj});
     });
 
 
 });
+
+// route for add card to collection and wishlist
+router.post('/cards/:cardid?', async (req, res) => {
+
+    const sessionobj = req.session;
+    let cardid = req.params.cardid;
+
+
+    // check if user is logged in before allowing collection and wishlist functions 
+    if (sessionobj.authen) {
+        // get userid
+        let userid = sessionobj.authen;
+
+        // check for if card already exists in that wishlist before adding 
+        const checkDuplicateCard = `SELECT * FROM wishlist WHERE user_id = ? AND card_id = ?;`;
+
+        connection.query(checkDuplicateCard, [userid, cardid], async (err, result) => {
+            if (err) throw err;
+            
+            // if card exist in wishlist - error message
+            if (result.length > 0) {
+
+                connection.query(getcardinfo, [cardid, cardid, cardid], (err, result) => {
+                    if (err) throw err;
+            
+                    let cardResult = result[0];
+                    let attackResult = result[1];
+                    let weaknessResult = result[2];
+            
+                    res.render('cardinfo', {cardinfo: cardResult, attackinfo: attackResult, weaknessinfo: weaknessResult, message: 'Card already in wishlist', sessionobj});
+                }); // add error message
+
+            // else if card doesn't exist in wishlist - add card to wishlist
+            } else {
+                const addtowishlist = `INSERT INTO wishlist (card_id, user_id) VALUES (?, ?);`;
+
+                await connection.promise().query(addtowishlist, [cardid, userid]);
+
+                // get card details 
+                connection.query(getcardinfo, [cardid, cardid, cardid], (err, result) => {
+                    if (err) throw err;
+
+                    let cardResult = result[0];
+                    let attackResult = result[1];
+                    let weaknessResult = result[2];
+
+                    res.render('cardinfo', {cardinfo: cardResult, attackinfo: attackResult, weaknessinfo: weaknessResult, message: 'Card added to wishlist',sessionobj});
+                });
+            }
+
+        });
+
+    } else {
+
+        res.redirect('login'); // doesn't work
+    }
+
+});
+
+
+
 
 
 module.exports = router;

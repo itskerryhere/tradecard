@@ -25,6 +25,11 @@
 
         <!-- page content -->
         <article>
+            <% if (message) { %>
+                <div>
+                     <p><%= message %></p>
+                </div>  
+            <% } %>
         <div class="grid card-info-row">
             <div class="card-info-pic">
                 <img src="<%=cardinfo[0].card_img_url%>" alt="picture of pokemon" class="card-pic">
@@ -86,8 +91,13 @@
                 </div>
                 <hr>
                 <div class="card-info-add-buttons">
-                    <a href="#"><button class="primary">Add to Collection</button></a>
-                    <a href="#"><button class="outline">Add to Wishlist</button></a>
+                    <button  class="primary">Add to Collection</button>
+                    
+                    <form action="/cards/<%=cardinfo[0].card_id%>" method="POST">
+                        <input type="hidden" name="cardsAction" value="addToWishlist">
+                    <button type="submit" class="outline">Add to Wishlist</button>
+                    </form>
+
                 </div>
             </div>
         </div>

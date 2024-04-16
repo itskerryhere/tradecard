@@ -1,0 +1,64 @@
+<!-- header -->
+<%- include('header') %>
+
+<body>
+    <!-- navbar -->
+    <%- include('navbar') %>
+
+    <!-- main section -->
+    <main class="container">
+
+        <!-- page title header -->
+        <hgroup class="centre-text">
+            <h1>My Wishlist</h1>
+        </hgroup>
+
+        <!-- page content -->
+        <div class="grid centre-item">
+            <!-- search bar -->
+            <div>
+                <form role="search">
+                    <input name="search" type="search" placeholder="Search wishlist" />
+                    <input type="submit" value="Search" />
+                </form>
+            </div>
+        </div>
+
+        <!-- Display cards-->
+        <div class="cards-grid">
+            <% wishlistinfo.forEach((card)=> { %>
+                <article class="card">
+                    <div>
+                        <a href="/cards/<%=card.card_id%>"><img src="<%=card.card_img_url%>" class="card-pic-padding"></a> 
+                    </div>
+                    <div>
+                        <hgroup>
+                            <h5>
+                                <%=card.pokemon_name%>
+                            </h5>
+                            <p>
+                                <%=card.rarity_name%> <img src="<%=card.rarity_symbol_url%>" class="symbol-img">
+                            </p>
+                        </hgroup>
+                    </div>
+
+                    <form action="/wishlist" method="POST" class="wishlist-delete">
+                        <input type="hidden" name="deleteCardWishlist" value="<%=card.card_id%>">
+                        <button type="submit">Delete from Wishlist</button>
+                    </form> 
+                </article>
+                <% }); %>
+             
+        </div>
+
+
+    </main>
+
+
+
+
+
+</body>
+
+<!-- footer -->
+<%- include('footer') %>

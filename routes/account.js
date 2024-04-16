@@ -11,8 +11,8 @@ router.get('/account', (req, res) => {
         // get userid
         let userid = sessionobj.authen;
 
-        // fetch the new user data after successful insertion
-        let getUser = `SELECT * FROM user WHERE user_id = ?`;
+        // fetch user data 
+        const getUser = `SELECT * FROM user WHERE user_id = ?;`;
 
         connection.query(getUser, [userid], (err, userResult) => {
             if (err) throw err;
@@ -168,8 +168,8 @@ router.post('/account/settings', async (req, res) => {
         });
 
     } else {
-        
-        // get new details
+
+        // get user details
         const getUser = `SELECT * FROM user WHERE user_id = ?;`;
 
         connection.query(getUser, [userid], (err, result) => {
