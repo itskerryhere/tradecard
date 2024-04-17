@@ -19,7 +19,11 @@
         <!-- page title header -->
         <hgroup class="centre-text">
             <h1><%=collectioninfo.collection_name%></h1>
-            <p>View and update this collection</p>
+            <% if (collectionownerstatus === true) { %>
+                <p>View and update this collection</p>
+            <% } else { %>
+                <p>Browse this collection</p>
+            <% } %>
         </hgroup>
 
         <!-- collection info in collection -->
@@ -28,7 +32,10 @@
                  <p><%= message %></p>
             </div>  
         <% } %>
+
+        
         <div class="collectioninfo-button-tab grid">
+            <!-- collection details button -->
             <div>
             <details role="button" class="outline">
                 <summary>Collection Details</summary>
@@ -37,10 +44,14 @@
                 <small>Total likes: <%=collectioninfo.like_count%></small>
             </details>
             </div>
+
+            <!-- options only displayed if user owns collection -->
+            <% if (collectionownerstatus === true) { %>
+            <!-- edit collection details button -->
             <div>
                 <details role="button" class="outline">
                     <summary>Edit Collection</summary>
-                    <form action="/mycollections/<%=collectioninfo.collection_id%>" method="POST">
+                    <form action="/collections/<%=collectioninfo.collection_id%>" method="POST">
                         <input type="hidden" name="collectionSettings" value="editCollectionName">
                         <fieldset>
                             <div>
@@ -56,15 +67,19 @@
                 </details>
                 </div>
             <div>
+
+            <!-- delete collection button -->
             <details role="button" class="delete-tab outline">
                 <summary>Delete Collection</summary>
                 <h3>ARE YOU SURE?</h3>
-                <form action="/mycollections/<%=collectioninfo.collection_id%>" method="POST">
+                <form action="/collections/mycollections/<%=collectioninfo.collection_id%>" method="POST">
                     <input type="hidden" name="collectionSettings" value="deleteCollection">
                     <button type="submit">DELETE</button>
                 </form>
             </details>
+            <% } %>
         </div>
+       
 
         </div>
         <hr>
@@ -87,11 +102,13 @@
                         </hgroup>
                     </div>
 
+                    <% if (collectionownerstatus === true) { %>
                     <form action="#" method="POST" class="wishlist-collections-delete">
                         <input type="hidden" name="collectionSettings" value="deleteCard">
                         <input type="hidden" name="cardId" value="<%=card.card_id%>">
                         <button type="submit">Delete from Collection</button>
                     </form> 
+                    <% } %>
                 </article>
                 <% }); %>
              

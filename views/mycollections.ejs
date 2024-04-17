@@ -22,7 +22,7 @@
             <% } %>
             <details role="button" class="outline">
                 <summary>Create New Collection</summary>
-                <form action="/mycollections" method="POST">
+                <form action="/collections/mycollections" method="POST">
                     <fieldset>
                         <label>
                             Collection Name
@@ -60,15 +60,13 @@
         <div class="cards-grid">
             <% mycollections.forEach((collection)=> { %>
             <article class="card">
-                <a href="/mycollections/<%=collection.collection_id%>"> <%=collection.collection_name%> </a>
+                <a href="/collections/<%=collection.collection_id%>"> <%=collection.collection_name%> </a>
                 <%=collection.creation_date%>
 
 
             </article> 
             <% }); %>
         </div>
-        <!-- click into each collection -->
-        <!-- delete each individual collections -->
 
     </main>
 </body>

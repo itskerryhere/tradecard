@@ -2,11 +2,14 @@ const express = require('express');
 const router = express.Router();
 const connection = require("../connection.js");
 
-// go into each collection for more detailed cards her collection
-router.get('/mycollections/:collectionid?', (req, res) => {
+
+// view a collection
+router.get('/collections/:collectionid?', (req, res) => {
 
     const sessionobj = req.session;
     let collectionid = req.params.collectionid;
+    let userid = sessionobj.authen;
+    let collectionownerstatus = false; // default value
 
     const message = req.session.message;
     req.session.message = null;
@@ -19,13 +22,22 @@ router.get('/mycollections/:collectionid?', (req, res) => {
         INNER JOIN rarity ON card.rarity_id = rarity.rarity_id
         WHERE collection_id = ?;`;
 
-        connection.query(getCollectionAndCardsInfo, [collectionid, collectionid], (err, result) => {
+        connection.query(getCollectionAndCardsInfo, [collectionid, collectionid], async (err, result) => {
             if (err) throw err;
 
             let collectionResult = result[0][0];
             let cardcollectionResult = result[1];
 
-            res.render('collectioninfo', {collectioninfo: collectionResult, cardcollectioninfo: cardcollectionResult, message: message, sessionobj});
+            // check if user owns selected collection 
+            const checkCollectionOwner = `SELECT user_id FROM collection WHERE collection_id = ?;`
+            let owner = await connection.promise().query(checkCollectionOwner, [collectionid]);
+            owner = JSON.stringify(owner[0][0].user_id);
+
+            if (owner === userid) {
+                collectionownerstatus = true;
+            }
+
+            res.render('collectioninfo', {collectioninfo: collectionResult, cardcollectioninfo: cardcollectionResult, message: message, collectionownerstatus, sessionobj});
         });
 
     } else {
@@ -35,7 +47,7 @@ router.get('/mycollections/:collectionid?', (req, res) => {
 });
 
 // edit collection name and delete collection route
-router.post('/mycollections/:collectionid?', async (req, res) => {
+router.post('/collections/:collectionid?', async (req, res) => {
 
     const sessionobj = req.session;
 
@@ -58,7 +70,7 @@ router.post('/mycollections/:collectionid?', async (req, res) => {
 
                 req.session.message = 'Name already exists';
 
-                res.redirect(`/mycollections/${collectionid}`);
+                res.redirect(`/collections/${collectionid}`);
                 
             // if name doesn't exist - change name   
             } else {
@@ -68,7 +80,7 @@ router.post('/mycollections/:collectionid?', async (req, res) => {
 
                  // redirect with message
                 req.session.message = 'Name updated';
-                res.redirect(`/mycollections/${collectionid}`);
+                res.redirect(`/collections/${collectionid}`);
 
             }
         });
@@ -76,12 +88,17 @@ router.post('/mycollections/:collectionid?', async (req, res) => {
 
     } else if (formId === 'deleteCollection') {
 
+        // delete call cards associated with collection
+        const deleteCardsFromCollection = `DELETE FROM card_collection WHERE collection_id = ?`;
+        await connection.promise().query(deleteCardsFromCollection, [collectionid]) 
+
+        // delete collection 
         const deleteCollection = `DELETE FROM collection WHERE collection_id = ?;`;
         await connection.promise().query(deleteCollection, [collectionid]);
 
         // redirect with message
         req.session.message = 'Collection Deleted';
-        res.redirect(`/mycollections`);
+        res.redirect(`/collections/mycollections`);
 
     } else if (formId === 'deleteCard') {
 
@@ -90,15 +107,12 @@ router.post('/mycollections/:collectionid?', async (req, res) => {
 
         // redirect with message
         req.session.message = 'Card Deleted from Collection';
-        res.redirect(`/mycollections/${collectionid}`);
+        res.redirect(`/collections/${collectionid}`);
     }
 
     
 });
 
 
-// delete cards per collection
-// delete collection
-// add collection to all collections 
 
 module.exports = router;

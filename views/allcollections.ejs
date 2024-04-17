@@ -1,0 +1,34 @@
+<!-- header -->
+<%- include('header') %>
+
+<body>
+    <!-- navbar -->
+    <%- include('navbar') %>
+
+    <!-- main section -->
+    <main class="container">
+
+        <!-- page title header -->
+        <hgroup class="centre-text">
+            <h1>Collections</h1>
+            <p>Browse collections from other members</p>
+        </hgroup>
+        <hr>
+
+        <!-- maybe search bar -->
+
+        <!-- display all collections -->
+        <div class="cards-grid">
+            <% collectionlist.forEach((collection)=> { %>
+            <article class="card">
+                <a href="/collections/<%=collection.collection_id%>"> <%=collection.collection_name%> </a>
+                <%=collection.creation_date%>
+            </article> 
+            <% }); %>
+        </div>
+
+    </main>
+</body>
+
+<!-- footer -->
+<%- include('footer') %>

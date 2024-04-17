@@ -2,9 +2,39 @@ const express = require('express');
 const router = express.Router();
 const connection = require("../connection.js");
 
+// view all collections 
+router.get('/collections', (req, res) => {
+
+    const sessionobj = req.session;
+
+    // access if only a member / has session 
+    if (sessionobj.authen) {
+
+        // get all collections 
+        const getAllCollections = `SELECT * FROM collection;`;
+
+        connection.query(getAllCollections, (err, result) => {
+            if (err) throw err;
+
+            let collectionResult = result;
+
+            res.render('allcollections', {title: 'All Collections', collectionlist: collectionResult, sessionobj});
+
+            //
+
+        });
+
+    // if not a member - login
+    } else {
+
+        res.redirect(`/login`);
+    }
+
+});
+
 
 // user's owned collections route 
-router.get('/mycollections', (req, res) => {
+router.get('/collections/mycollections', (req, res) => {
 
     const sessionobj = req.session;
     
@@ -34,7 +64,7 @@ router.get('/mycollections', (req, res) => {
 });
 
 // user create a new collection 
-router.post('/mycollections', (req, res) => {
+router.post('/collections/mycollections', (req, res) => {
 
     const sessionobj = req.session;
     let collectionname = req.body.collectionName;
@@ -51,7 +81,7 @@ router.post('/mycollections', (req, res) => {
 
             // redirect with message
             req.session.message = 'Collection Name Already Exists';
-            res.redirect(`/mycollections`);
+            res.redirect(`/collections/mycollections`);
 
 
         // if doesn't exist - add to collection 
@@ -62,7 +92,7 @@ router.post('/mycollections', (req, res) => {
 
             // redirect with message
             req.session.message = 'Collection Added';
-            res.redirect(`/mycollections`);
+            res.redirect(`/collections/mycollections`);
 
         }
 
@@ -70,7 +100,6 @@ router.post('/mycollections', (req, res) => {
 
 });
 
-// add collection to all collections 
 
 
 module.exports = router;
