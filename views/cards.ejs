@@ -25,10 +25,12 @@
                         </form>
                     </div>
 
-                    <!-- filter button -->
+                    <!-- add new card button - only for admin -->
+                    <% if (adminStatus === true) { %>
                     <div class="filter-button-padding">
-                        <a href="/filter"><button class="rounded-button">Filter</button></a>
+                        <a href="/addcard"><button class="rounded-button admin-button">Add New Card</button></a>
                     </div>
+                    <% } %>
                 </div>
 
                 <div class="grid filter-card-grid">
@@ -40,7 +42,7 @@
                                 Type
                             </summary>
                             <ul>
-                                <% typelist.forEach((type)=> { %>
+                                <% typelist.forEach((type)=> { %> 
                                     <li><label><input type="checkbox" name="<%=type.type_name%>" /><%=type.type_name%></label></li>
                                 <% }); %>
                             </ul>

@@ -252,6 +252,28 @@ body {
     grid-row-gap: 0px;
 }
 
+/* all collections page */
+.all-collection-button-tab {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: flex-start;
+}
+
+/* admin functions */
+.admin-button {
+    background-color:  #F4CA34;
+    border-color: #EEBF02;
+}
+
+.attack-info-heading {
+   padding-bottom: 15px;
+}
+
+.inline-text {
+    display: inline;
+    margin-right: 5px;
+}
+
 
 /* tablet view */
 
@@ -353,7 +375,7 @@ body {
     }
 
     /* sign up and account settings */
-    .firstlastname {
+    .no-row-gap {
         grid-row-gap: 0px;
     }
 

@@ -72,7 +72,7 @@
             <details role="button" class="delete-tab outline">
                 <summary>Delete Collection</summary>
                 <h3>ARE YOU SURE?</h3>
-                <form action="/collections/mycollections/<%=collectioninfo.collection_id%>" method="POST">
+                <form action="/collections/<%=collectioninfo.collection_id%>" method="POST">
                     <input type="hidden" name="collectionSettings" value="deleteCollection">
                     <button type="submit">DELETE</button>
                 </form>

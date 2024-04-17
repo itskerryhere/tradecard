@@ -13,7 +13,6 @@ router.get('/cards/:cardid?', (req, res) => {
     req.session.message = null;
 
     const getcardinfo = `SELECT * FROM card 
-        INNER JOIN category ON category_id = category.category_id
         INNER JOIN type ON card.type_id = type.type_id
         INNER JOIN stage ON card.stage_id = stage.stage_id
         INNER JOIN rarity ON card.rarity_id = rarity.rarity_id
@@ -37,6 +36,7 @@ router.get('/cards/:cardid?', (req, res) => {
         let attackResult = result[1];
         let weaknessResult = result[2];
 
+        // show appropriate buttons if logged in or not
         if (sessionobj.authen) {
             let userid = sessionobj.authen;
 

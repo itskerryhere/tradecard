@@ -29,34 +29,26 @@ app.use(sessions({
 const indexRoute = require('./routes/index')
 const signupRoute = require('./routes/signup');
 const loginRoute = require('./routes/login');
-// const welcomeRoute = require('./routes/welcome');
 const cardsRoute = require('./routes/cards');
 const cardinfoRoute = require('./routes/cardinfo');
 const accountRoute = require('./routes/account');
 const wishlistRoute = require('./routes/wishlist');
 const collectionsRoute = require('./routes/collections');
 const collectioninfoRoute = require('./routes/collectioninfo');
+const adminRoute = require('./routes/adminonly');
 
 
 app.use(indexRoute);
 app.use(signupRoute);
 app.use(loginRoute);
-// app.use(welcomeRoute);
 app.use(cardsRoute);
 app.use(cardinfoRoute);
 app.use(accountRoute);
 app.use(wishlistRoute);
 app.use(collectionsRoute);
 app.use(collectioninfoRoute);
+app.use(adminRoute);
 
-
-// filter route 
-app.get('/filter',  (req, res) =>  {
-
-    const sessionobj = req.session;
-
-    res.render('filter', {title: 'Filter', sessionobj});
-});
 
 
 

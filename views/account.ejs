@@ -10,7 +10,7 @@
 
             <!-- page title header -->
             <hgroup class="centre-text">
-                <h1><%=userinfo[0].first_name%> <%=userinfo[0].last_name%>'s Account</h1>
+                <h1><%=userinfo[0].first_name%> <%=userinfo[0].last_name%>'s Account (<%=userinfo[0].role%>)</h1>
                 <p>View and update your account details</p>
             </hgroup>
 
@@ -30,6 +30,16 @@
                 <a href="/logout"><article>
                     <img src="/logout.png" alt="log out icon">
                     <p>Logout</p>
+                </article></a>
+
+                <!-- admin only buttons -->
+                <a href="#"><article>
+                    <img src="/logout.png" alt="log out icon">
+                    <p>Add Cards</p>
+                </article></a>
+                <a href="#"><article>
+                    <img src="/logout.png" alt="log out icon">
+                    <p>Admin Requests</p>
                 </article></a>
             </div>
 

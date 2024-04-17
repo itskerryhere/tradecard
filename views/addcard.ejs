@@ -1,0 +1,303 @@
+<!-- header -->
+<%- include('header') %>
+
+<body>
+    <!-- navbar -->
+    <%- include('navbar') %>
+
+
+    <!-- main section -->
+    <main class="container">
+
+        <!-- page title header -->
+        <hgroup class="centre-text">
+            <h1>Add New Card</h1>
+            <p>Let members see the newest cards in Pokemon TCG!</p>
+        </hgroup>
+
+        <!-- add card section -->
+        <div>
+            <article>
+                <form method="post" action="/signup">
+                    <fieldset>
+                        <u><h4>Pokemon Information</h4></u>
+                        <div class="no-row-gap grid">
+                            <div>
+                                <label>
+                                    Pokemon Name
+                                    <input type="text" name="firstname" placeholder="Name" aria-label="Text" required/>
+                                </label>
+                            </div>
+                            <div class="no-row-gap grid">
+                                <div>
+                                    <label>
+                                        Pokedex Number
+                                        <input type="number" name="lastname" placeholder="Pokedex" aria-label="Text" required/>
+                                    </label>
+                                </div>
+                                <div>
+                                    <label>
+                                        Health Points
+                                        <input type="number" name="lastname" placeholder="HP" aria-label="Text" required/>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <label>
+                            Card Image URL
+                            <input type="text" name="email" placeholder="URL" autocomplete="email" required/>
+                        </label>
+
+                        
+                        <div class="no-row-gap grid">
+                            <div>
+                                <label>
+                                    Stage
+                                <select name="stage" aria-label="Stage..." required>
+                                    <option selected disabled value="">
+                                    Stage
+                                    </option>
+                                    <option>Basic</option>
+                                    <option>Stage 1</option>
+                                    <option>Stage 2</option>
+                                </select>
+                                </label>
+                            </div>
+                            <div>
+                                <label>
+                                    Evolves From <small>(leave blank if not applicable)</small>
+                                    <input type="text" name="evolvesFrom" placeholder="Evolves From"/>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="no-row-gap grid">
+                            <div>
+                                <label>
+                                    Rarity
+                                <select name="stage" aria-label="Stage..." required>
+                                    <option selected disabled value="">
+                                    Rarity
+                                    </option>
+                                    <option>Common</option>
+                                    <option>Uncommon</option>
+                                    <option>Rare</option>
+                                </select>
+                                </label>
+                            </div>
+                            <div>
+                                <label>
+                                   Type
+                                <select name="stage" aria-label="Stage..." required>
+                                    <option selected disabled value="">
+                                    Type
+                                    </option>
+                                    <option>Grass</option>
+                                    <option>Fire</option>
+                                    <option>Water</option>
+                                </select>
+                                </label>
+                            </div>
+                            <div>
+                                <label>
+                                   Weakness
+                                <select name="stage" aria-label="Stage..." required>
+                                    <option selected disabled value="">
+                                    Weakness
+                                    </option>
+                                    <option>Grass</option>
+                                    <option>Fire</option>
+                                    <option>Water</option>
+                                </select>
+                                </label>
+                            </div>
+                            <div>
+                                <label>
+                                   Holo
+                                <select name="stage" aria-label="Stage..." required>
+                                    <option selected disabled value="">
+                                    Holo
+                                    </option>
+                                    <option>Yes</option>
+                                    <option>No</option>
+                                </select>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="no-row-gap grid">
+                            <div>
+                                <label>
+                                    Expansion Name
+                                <select name="stage" aria-label="Expansion" required>
+                                    <option selected disabled value="">
+                                    Expansion Name
+                                    </option>
+                                    <option>Scarlet and Violet</option>
+                                    <option>Diamond and Pearl</option>
+                                    <option>Black and White</option>
+                                </select>
+                                </label>
+                            </div>
+                            <div>
+                                <label>
+                                    Series Name
+                                <select name="stage" aria-label="Card Category" required>
+                                    <option selected disabled value="">
+                                    Series
+                                    </option>
+                                    <option>Scarlet and Violet</option>
+                                    <option>Diamond and Pearl</option>
+                                    <option>Black and White</option>
+                                </select>
+                                </label>
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <u><h4>Attack Information</h4></u>
+                        <div class="no-row-gap grid">
+                            <div>
+                                <label>
+                                    Attack Name
+                                    <input type="text" name="lastname" placeholder="Pokedex" aria-label="Text" required/>
+                                </label>
+                            </div>
+                            <div>
+                                <label>
+                                    Attack Damage
+                                    <input type="number" name="lastname" placeholder="HP" aria-label="Text" required/>
+                                </label>
+                            </div>
+                        </div>
+                        <div>
+                            <label>Attack Description <small>(leave blank if not applicable)</small>
+                            <textarea name="bio" placeholder="Description" aria-label="Professional short bio"></textarea>
+                            </label>
+                        </div>
+                        <div class="no-row-gap grid">
+                            <div>
+                                <label>
+                                    Attack Type
+                                 <select name="stage" aria-label="Attack Type" required>
+                                     <option selected disabled value="">
+                                     Attack Type
+                                     </option>
+                                     <option>Grass</option>
+                                     <option>Fire</option>
+                                     <option>Water</option>
+                                 </select>
+                                 </label>
+                            </div>
+                            <div>
+                                <label>
+                                    Attack Strength
+                                    <input type="number" name="lastname" placeholder="Strength" aria-label="Text" required/>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="no-row-gap grid">
+                            <div>
+                                <label>
+                                    Attack Type 2 <small>(leave blank if not applicable)</small>
+                                 <select name="stage" aria-label="Attack Type" required>
+                                     <option selected disabled value="">
+                                     Attack Type 2
+                                     </option>
+                                     <option>Grass</option>
+                                     <option>Fire</option>
+                                     <option>Water</option>
+                                 </select>
+                                 </label>
+                            </div>
+                            <div>
+                                <label>
+                                    Attack Type 2 Strength <small>(leave blank if not applicable)</small>
+                                    <input type="number" name="lastname" placeholder="Strength 2" aria-label="Text" required/>
+                                </label>
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <div class="attack-info-heading">
+                        <u><h4 class="inline-text">Second Attack Information</h4></u> <small>(leave blank if not applicable)</small> 
+                        </div>
+                        <div class="no-row-gap grid">
+                            <div>
+                                <label>
+                                    Attack Name
+                                    <input type="text" name="lastname" placeholder="Pokedex" aria-label="Text" required/>
+                                </label>
+                            </div>
+                            <div>
+                                <label>
+                                    Attack Damage
+                                    <input type="number" name="lastname" placeholder="HP" aria-label="Text" required/>
+                                </label>
+                            </div>
+                        </div>
+                        <div>
+                            <label>Attack Description <small>(leave blank if not applicable)</small>
+                            <textarea name="bio" placeholder="Description" aria-label="Professional short bio"></textarea>
+                            </label>
+                        </div>
+                        <div class="no-row-gap grid">
+                            <div>
+                                <label>
+                                    Attack Type
+                                 <select name="stage" aria-label="Attack Type" required>
+                                     <option selected disabled value="">
+                                     Attack Type
+                                     </option>
+                                     <option>Grass</option>
+                                     <option>Fire</option>
+                                     <option>Water</option>
+                                 </select>
+                                 </label>
+                            </div>
+                            <div>
+                                <label>
+                                    Attack Strength
+                                    <input type="number" name="lastname" placeholder="Strength" aria-label="Text" required/>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="no-row-gap grid">
+                            <div>
+                                <label>
+                                    Attack Type 2 <small>(leave blank if not applicable)</small>
+                                 <select name="stage" aria-label="Attack Type" required>
+                                     <option selected disabled value="">
+                                     Attack Type 2
+                                     </option>
+                                     <option>Grass</option>
+                                     <option>Fire</option>
+                                     <option>Water</option>
+                                 </select>
+                                 </label>
+                            </div>
+                            <div>
+                                <label>
+                                    Attack Type 2 Strength <small>(leave blank if not applicable)</small>
+                                    <input type="number" name="lastname" placeholder="Strength 2" aria-label="Text" required/>
+                                </label>
+                            </div>
+                        </div>
+
+                    </fieldset>
+
+                    <input type="submit" value="Add This Card"/>
+                </form>   
+                
+            </article>
+        </div>
+
+    </main>
+
+</body>
+
+<!-- footer -->
+<%- include('footer') %>
