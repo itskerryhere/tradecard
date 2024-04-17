@@ -91,12 +91,39 @@
                 </div>
                 <hr>
                 <div class="card-info-add-buttons">
-                    <button  class="primary">Add to Collection</button>
+                    <!-- if logged in -->
+                    <% if(sessionobj.authen) { %>
                     
+                    <!-- add to collection -->
                     <form action="/cards/<%=cardinfo[0].card_id%>" method="POST">
-                        <input type="hidden" name="cardsAction" value="addToWishlist">
+                        <input type="hidden" name="cardAction" value="addToCollection">
+                        <details class="dropdown outline">
+                            <summary role="button">Add to Collection</summary>  
+                                <ul>  
+                                    <% usercollectionsinfo.forEach((collection)=> { %>
+                                        
+                                    <li><label>
+                                        <input type="radio" name="collectionId" value="<%=collection.collection_id%>">
+                                        <%=collection.collection_name%>
+                                    </label></li>
+                                    <% }); %>
+                                    <li>
+                                        <button class="outline" type="submit">Add</button>
+                                    </li>
+                                </ul>
+                        </details>
+                    </form>
+
+                    <!-- add to wishlist -->
+                    <form action="/cards/<%=cardinfo[0].card_id%>" method="POST">
+                    <input type="hidden" name="cardAction" value="addToWishlist">
                     <button type="submit" class="outline">Add to Wishlist</button>
                     </form>
+
+                    <!-- if not logged in -->
+                    <% } else { %>
+                        <a href="/login"><button>Log in to add to collection or wishlist</button></a>
+                    <% } %>
 
                 </div>
             </div>

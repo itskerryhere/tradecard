@@ -46,7 +46,7 @@
                             <div>
                                 <label>
                                     Change Collection Name
-                                    <input type="text" name="collectionName" placeholder="<%=collectioninfo.collection_name%>" aria-label="Text"/ required>
+                                    <input type="text" name="collectionName" placeholder="<%=collectioninfo.collection_name%>" aria-label="Text" required/>
                                 </label>
                             </div>
                         </fieldset>
@@ -69,9 +69,32 @@
         </div>
         <hr>
 
-        <!-- cards in collection -->
-        <div>
+        <!-- display cards in collection -->
+        <div class="cards-grid">
+            <% cardcollectioninfo.forEach((card)=> { %>
+                <article class="card">
+                    <div>
+                        <a href="/cards/<%=card.card_id%>"><img src="<%=card.card_img_url%>" class="card-pic-padding"></a> 
+                    </div>
+                    <div>
+                        <hgroup>
+                            <h5>
+                                <%=card.pokemon_name%>
+                            </h5>
+                            <p>
+                                <%=card.rarity_name%> <img src="<%=card.rarity_symbol_url%>" class="symbol-img">
+                            </p>
+                        </hgroup>
+                    </div>
 
+                    <form action="#" method="POST" class="wishlist-collections-delete">
+                        <input type="hidden" name="collectionSettings" value="deleteCard">
+                        <input type="hidden" name="cardId" value="<%=card.card_id%>">
+                        <button type="submit">Delete from Collection</button>
+                    </form> 
+                </article>
+                <% }); %>
+             
         </div>
 
             

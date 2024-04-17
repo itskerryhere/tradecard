@@ -13,14 +13,19 @@ router.get('/mycollections/:collectionid?', (req, res) => {
 
     if (sessionobj.authen) {
 
-        const getCollectionInfo = `SELECT * FROM collection WHERE collection_id = ?;`;
+        const getCollectionAndCardsInfo = `SELECT * FROM collection WHERE collection_id = ?;
+        SELECT * FROM card 
+        INNER JOIN card_collection ON card.card_id = card_collection.card_id
+        INNER JOIN rarity ON card.rarity_id = rarity.rarity_id
+        WHERE collection_id = ?;`;
 
-        connection.query(getCollectionInfo, [collectionid], (err, result) => {
+        connection.query(getCollectionAndCardsInfo, [collectionid, collectionid], (err, result) => {
             if (err) throw err;
 
-            let collectionResult = result[0];
+            let collectionResult = result[0][0];
+            let cardcollectionResult = result[1];
 
-            res.render('collectioninfo', {collectioninfo: collectionResult, message: message, sessionobj});
+            res.render('collectioninfo', {collectioninfo: collectionResult, cardcollectioninfo: cardcollectionResult, message: message, sessionobj});
         });
 
     } else {
@@ -38,6 +43,7 @@ router.post('/mycollections/:collectionid?', async (req, res) => {
     let formId = req.body.collectionSettings;
     let userid = sessionobj.authen;
     let newcollectionname = req.body.collectionName;
+    let cardid = req.body.cardId;
 
     if (formId === 'editCollectionName') {
 
@@ -60,8 +66,8 @@ router.post('/mycollections/:collectionid?', async (req, res) => {
                 const editCollectionName = `UPDATE collection SET collection_name = ? WHERE collection_id = ?;`;
                 await connection.promise().query(editCollectionName, [newcollectionname, collectionid]);
 
+                 // redirect with message
                 req.session.message = 'Name updated';
-
                 res.redirect(`/mycollections/${collectionid}`);
 
             }
@@ -71,13 +77,20 @@ router.post('/mycollections/:collectionid?', async (req, res) => {
     } else if (formId === 'deleteCollection') {
 
         const deleteCollection = `DELETE FROM collection WHERE collection_id = ?;`;
-    
         await connection.promise().query(deleteCollection, [collectionid]);
 
         // redirect with message
         req.session.message = 'Collection Deleted';
         res.redirect(`/mycollections`);
 
+    } else if (formId === 'deleteCard') {
+
+        const deleteCard = `DELETE FROM card_collection WHERE card_id = ? AND collection_id = ?;`;
+        await connection.promise().query(deleteCard, [cardid, collectionid]);
+
+        // redirect with message
+        req.session.message = 'Card Deleted from Collection';
+        res.redirect(`/mycollections/${collectionid}`);
     }
 
     

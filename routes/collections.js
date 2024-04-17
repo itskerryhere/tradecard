@@ -70,9 +70,7 @@ router.post('/mycollections', (req, res) => {
 
 });
 
-
-// delete cards per collection
-// delete collection
 // add collection to all collections 
+
 
 module.exports = router;
