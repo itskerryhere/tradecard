@@ -11,13 +11,6 @@ nav {
     border-bottom: thin solid lightgrey;
 }
 
-@media (prefers-color-scheme: dark) {
-    nav {
-        background-color: rgba(19, 23, 31, 0.75);
-        border-bottom: thin solid #0072AD;
-    }
-}
-
 nav li {
     padding-left: 20px;
 }
@@ -265,18 +258,31 @@ body {
     border-color: #EEBF02;
 }
 
-.attack-info-heading {
-   padding-bottom: 15px;
+/* add card page */
+.add-card-details h4 {
+    color: #0072AD;
 }
 
+.attack-info-heading {
+    padding-bottom: 15px;
+}
+ 
 .inline-text {
     display: inline;
     margin-right: 5px;
 }
 
 
-/* tablet view */
+/* night mode view */
+@media (prefers-color-scheme: dark) {
+    nav {
+        background-color: rgba(19, 23, 31, 0.75);
+        border-bottom: thin solid #0072AD;
+    }
+}
 
+
+/* tablet view */
 @media (max-width: 1023px) {
 
     /* cards page  */

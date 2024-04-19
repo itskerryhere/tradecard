@@ -16,29 +16,34 @@
         </hgroup>
 
         <!-- add card section -->
-        <div>
+        <div class="add-card-details">
             <article>
-                <form method="post" action="/signup">
+                <% if (message) { %>
+                    <div>
+                         <p><%= message %></p>
+                    </div>  
+                <% } %>
+                <form method="POST" action="/addcard">
                     <fieldset>
                         <u><h4>Pokemon Information</h4></u>
                         <div class="no-row-gap grid">
                             <div>
                                 <label>
                                     Pokemon Name
-                                    <input type="text" name="firstname" placeholder="Name" aria-label="Text" required/>
+                                    <input type="text" name="pokemonName" placeholder="Name" aria-label="pokemon name" required/>
                                 </label>
                             </div>
                             <div class="no-row-gap grid">
                                 <div>
                                     <label>
                                         Pokedex Number
-                                        <input type="number" name="lastname" placeholder="Pokedex" aria-label="Text" required/>
+                                        <input type="number" name="pokedexNumber" placeholder="Pokedex" aria-label="pokedex number" required/>
                                     </label>
                                 </div>
                                 <div>
                                     <label>
                                         Health Points
-                                        <input type="number" name="lastname" placeholder="HP" aria-label="Text" required/>
+                                        <input type="number" name="hp" placeholder="HP" aria-label="health points" required/>
                                     </label>
                                 </div>
                             </div>
@@ -46,28 +51,33 @@
 
                         <label>
                             Card Image URL
-                            <input type="text" name="email" placeholder="URL" autocomplete="email" required/>
+                            <input type="text" name="cardURL" placeholder="URL" autocomplete="card image url" required/>
                         </label>
 
                         
                         <div class="no-row-gap grid">
                             <div>
                                 <label>
-                                    Stage
-                                <select name="stage" aria-label="Stage..." required>
+                                    Evolution Stage
+                                <select name="stage" aria-label="evolution stage" required>
                                     <option selected disabled value="">
                                     Stage
                                     </option>
-                                    <option>Basic</option>
-                                    <option>Stage 1</option>
-                                    <option>Stage 2</option>
+                                    <% stagelist.forEach((stage) => { %>
+                                        <option value="<%=stage.stage_id%>">
+                                            <%=stage.stage_name%>
+                                        </option>
+                                    <% }); %>
                                 </select>
                                 </label>
                             </div>
                             <div>
+
+                                <!-- if stage entered as 1 or 2 then this field is required -->
                                 <label>
-                                    Evolves From <small>(leave blank if not applicable)</small>
+                                    Evolves From 
                                     <input type="text" name="evolvesFrom" placeholder="Evolves From"/>
+                                    <small>Leave blank if not applicable</small>
                                 </label>
                             </div>
                         </div>
@@ -76,51 +86,57 @@
                             <div>
                                 <label>
                                     Rarity
-                                <select name="stage" aria-label="Stage..." required>
+                                <select name="rarity" aria-label="rarity" required>
                                     <option selected disabled value="">
                                     Rarity
                                     </option>
-                                    <option>Common</option>
-                                    <option>Uncommon</option>
-                                    <option>Rare</option>
+                                    <% raritylist.forEach((rarity) => { %>
+                                        <option value="<%=rarity.rarity_id%>">
+                                            <%=rarity.rarity_name%>
+                                        </option>
+                                    <% }); %>
                                 </select>
                                 </label>
                             </div>
                             <div>
                                 <label>
                                    Type
-                                <select name="stage" aria-label="Stage..." required>
+                                <select name="type" aria-label="type" required>
                                     <option selected disabled value="">
                                     Type
                                     </option>
-                                    <option>Grass</option>
-                                    <option>Fire</option>
-                                    <option>Water</option>
+                                    <% typelist.forEach((type) => { %>
+                                        <option value="<%=type.type_id%>">
+                                            <%=type.type_name%>
+                                        </option>
+                                    <% }); %>
                                 </select>
                                 </label>
                             </div>
                             <div>
                                 <label>
                                    Weakness
-                                <select name="stage" aria-label="Stage..." required>
+                                <select name="weakness" aria-label="weakness" required>
                                     <option selected disabled value="">
                                     Weakness
                                     </option>
-                                    <option>Grass</option>
-                                    <option>Fire</option>
-                                    <option>Water</option>
+                                    <% typelist.forEach((type) => { %>
+                                        <option value="<%=type.type_id%>">
+                                            <%=type.type_name%>
+                                        </option>
+                                    <% }); %>
                                 </select>
                                 </label>
                             </div>
                             <div>
                                 <label>
                                    Holo
-                                <select name="stage" aria-label="Stage..." required>
+                                <select name="holo" aria-label="holo" required>
                                     <option selected disabled value="">
                                     Holo
                                     </option>
-                                    <option>Yes</option>
-                                    <option>No</option>
+                                    <option value="1">Yes</option>
+                                    <option value="0">No</option>
                                 </select>
                                 </label>
                             </div>
@@ -130,31 +146,35 @@
                             <div>
                                 <label>
                                     Expansion Name
-                                <select name="stage" aria-label="Expansion" required>
+                                <select name="expansion" aria-label="expansion name" required>
                                     <option selected disabled value="">
-                                    Expansion Name
+                                    Expansion
                                     </option>
-                                    <option>Scarlet and Violet</option>
-                                    <option>Diamond and Pearl</option>
-                                    <option>Black and White</option>
+                                    <% expansionlist.forEach((expansion) => { %>
+                                        <option value="<%=expansion.expansion_id%>">
+                                            <%=expansion.expansion_name%>
+                                        </option>
+                                    <% }); %>
                                 </select>
                                 </label>
                             </div>
                             <div>
                                 <label>
                                     Series Name
-                                <select name="stage" aria-label="Card Category" required>
+                                <select name="series" aria-label="series name" required>
                                     <option selected disabled value="">
                                     Series
                                     </option>
-                                    <option>Scarlet and Violet</option>
-                                    <option>Diamond and Pearl</option>
-                                    <option>Black and White</option>
+                                    <% serieslist.forEach((series) => { %>
+                                        <option value="<%=series.series_id%>">
+                                            <%=series.series_name%>
+                                        </option>
+                                    <% }); %>
                                 </select>
                                 </label>
                             </div>
                         </div>
-
+                    
                         <hr>
 
                         <u><h4>Attack Information</h4></u>
@@ -162,131 +182,154 @@
                             <div>
                                 <label>
                                     Attack Name
-                                    <input type="text" name="lastname" placeholder="Pokedex" aria-label="Text" required/>
+                                    <input type="text" name="attackName" placeholder="Attack Name" aria-label="attack name" required/>
                                 </label>
                             </div>
                             <div>
                                 <label>
                                     Attack Damage
-                                    <input type="number" name="lastname" placeholder="HP" aria-label="Text" required/>
+                                    <input type="number" name="attackDamage" placeholder="Attack Damage" aria-label="attack damage" required/>
                                 </label>
                             </div>
                         </div>
                         <div>
-                            <label>Attack Description <small>(leave blank if not applicable)</small>
-                            <textarea name="bio" placeholder="Description" aria-label="Professional short bio"></textarea>
+                            <label>Attack Description 
+                            <textarea name="attackDesc" placeholder="Description" aria-label="attack description"></textarea>
+                            <small>Leave blank if not applicable</small>
                             </label>
                         </div>
                         <div class="no-row-gap grid">
                             <div>
                                 <label>
                                     Attack Type
-                                 <select name="stage" aria-label="Attack Type" required>
+                                 <select name="attackType" aria-label="attack type" required>
                                      <option selected disabled value="">
                                      Attack Type
                                      </option>
-                                     <option>Grass</option>
-                                     <option>Fire</option>
-                                     <option>Water</option>
+                                     <% typelist.forEach((type) => { %>
+                                        <option value="<%=type.type_id%>">
+                                            <%=type.type_name%>
+                                        </option>
+                                    <% }); %>
                                  </select>
                                  </label>
                             </div>
                             <div>
                                 <label>
                                     Attack Strength
-                                    <input type="number" name="lastname" placeholder="Strength" aria-label="Text" required/>
+                                    <input type="number" name="attackStrength" placeholder="Strength" aria-label="attack strength" required/>
                                 </label>
                             </div>
                         </div>
                         <div class="no-row-gap grid">
                             <div>
                                 <label>
-                                    Attack Type 2 <small>(leave blank if not applicable)</small>
-                                 <select name="stage" aria-label="Attack Type" required>
+                                    Attack Type 2 
+                                 <select name="attackType2" aria-label="attack type 2" required>
                                      <option selected disabled value="">
                                      Attack Type 2
                                      </option>
-                                     <option>Grass</option>
-                                     <option>Fire</option>
-                                     <option>Water</option>
+                                     <option>None</option>
+                                     <% typelist.forEach((type) => { %>
+                                     <option value="<%=type.type_id%>">
+                                        <%=type.type_name%>
+                                     </option>
+                                     <% }); %>
                                  </select>
+                                 <small>Must be different type, select 'None' if not applicable</small>
                                  </label>
                             </div>
                             <div>
                                 <label>
-                                    Attack Type 2 Strength <small>(leave blank if not applicable)</small>
-                                    <input type="number" name="lastname" placeholder="Strength 2" aria-label="Text" required/>
+                                    Attack Type 2 Strength 
+                                    <input type="number" name="attackType2Strength" placeholder="Strength 2" aria-label="Text"/>
+                                    <small>Leave blank if not applicable, default to 1 if left blank with an attack type</small>
                                 </label>
                             </div>
                         </div>
 
                         <hr>
 
+                        <!-- second attack info -->
                         <div class="attack-info-heading">
-                        <u><h4 class="inline-text">Second Attack Information</h4></u> <small>(leave blank if not applicable)</small> 
-                        </div>
+                            <u><h4 class="inline-text">Second Attack Information</h4></u> <small>(Name, Damage, Type minimum requirement)</small> 
+                            </div>
                         <div class="no-row-gap grid">
                             <div>
                                 <label>
                                     Attack Name
-                                    <input type="text" name="lastname" placeholder="Pokedex" aria-label="Text" required/>
+                                    <input type="text" name="attack2Name" placeholder="Attack Name" aria-label="attack name"/>
+                                    <small>Leave blank if not applicable</small>
                                 </label>
                             </div>
                             <div>
                                 <label>
                                     Attack Damage
-                                    <input type="number" name="lastname" placeholder="HP" aria-label="Text" required/>
+                                    <input type="number" name="attack2Damage" placeholder="Attack Damage" aria-label="attack damage"/>
+                                    <small>Leave blank if not applicable</small>
                                 </label>
                             </div>
                         </div>
                         <div>
-                            <label>Attack Description <small>(leave blank if not applicable)</small>
-                            <textarea name="bio" placeholder="Description" aria-label="Professional short bio"></textarea>
+                            <label>Attack Description
+                            <textarea name="attack2Desc" placeholder="Description" aria-label="attack description"></textarea>
+                            <small>Leave blank if not applicable</small>
                             </label>
                         </div>
                         <div class="no-row-gap grid">
                             <div>
                                 <label>
                                     Attack Type
-                                 <select name="stage" aria-label="Attack Type" required>
+                                 <select name="attack2Type" aria-label="Attack Type" required>
                                      <option selected disabled value="">
                                      Attack Type
                                      </option>
-                                     <option>Grass</option>
-                                     <option>Fire</option>
-                                     <option>Water</option>
+                                     <option>None</option>
+                                     <% typelist.forEach((type) => { %>
+                                        <option value="<%=type.type_id%>">
+                                            <%=type.type_name%>
+                                        </option>
+                                    <% }); %>
                                  </select>
+                                 <small>Select 'None' if not applicable</small>
                                  </label>
                             </div>
                             <div>
                                 <label>
                                     Attack Strength
-                                    <input type="number" name="lastname" placeholder="Strength" aria-label="Text" required/>
+                                    <input type="number" name="attack2Strength" placeholder="Strength" aria-label="attack strength"/>
+                                    <small>Leave blank if not applicable, default to 1 if left blank with an attack type</small>
                                 </label>
                             </div>
                         </div>
                         <div class="no-row-gap grid">
                             <div>
                                 <label>
-                                    Attack Type 2 <small>(leave blank if not applicable)</small>
-                                 <select name="stage" aria-label="Attack Type" required>
-                                     <option selected disabled value="">
+                                    Attack Type 2 
+                                    <select name="attack2Type2" aria-label="Attack Type" required>
+                                    <option selected disabled value="">
                                      Attack Type 2
                                      </option>
-                                     <option>Grass</option>
-                                     <option>Fire</option>
-                                     <option>Water</option>
+                                     <option>None</option>
+                                     <% typelist.forEach((type) => { %>
+                                        <option value="<%=type.type_id%>">
+                                            <%=type.type_name%>
+                                        </option>
+                                    <% }); %>
                                  </select>
+                                 <small>Must be different type, select 'None' if not applicable</small>
                                  </label>
+                                 
                             </div>
                             <div>
                                 <label>
-                                    Attack Type 2 Strength <small>(leave blank if not applicable)</small>
-                                    <input type="number" name="lastname" placeholder="Strength 2" aria-label="Text" required/>
+                                    Attack Type 2 Strength 
+                                    <input type="number" name="attack2Type2Strength" placeholder="Strength 2"/>
+                                    <small>Leave blank if not applicable, default to 1 if left blank with an attack type</small>
                                 </label>
                             </div>
                         </div>
-
+   
                     </fieldset>
 
                     <input type="submit" value="Add This Card"/>
