@@ -120,6 +120,12 @@
                     <button type="submit" class="outline">Add to Wishlist</button>
                     </form>
 
+                    <% if (adminStatus === true) { %>
+                        <div>
+                            <a href="/editcard/<%=cardinfo[0].card_id%>"><button class="admin-button">Edit Card Details</button></a>
+                        </div>
+                    <% } %>
+
                     <!-- if not logged in -->
                     <% } else { %>
                         <a href="/login"><button>Log in to add to collection or wishlist</button></a>

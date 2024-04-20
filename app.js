@@ -35,7 +35,8 @@ const accountRoute = require('./routes/account');
 const wishlistRoute = require('./routes/wishlist');
 const collectionsRoute = require('./routes/collections');
 const collectioninfoRoute = require('./routes/collectioninfo');
-const adminRoute = require('./routes/adminonly');
+const addcardRoute = require('./routes/addcard');
+const editcardRoute = require('./routes/editcard');
 
 
 app.use(indexRoute);
@@ -47,9 +48,8 @@ app.use(accountRoute);
 app.use(wishlistRoute);
 app.use(collectionsRoute);
 app.use(collectioninfoRoute);
-app.use(adminRoute);
-
-
+app.use(addcardRoute);
+app.use(editcardRoute);
 
 
 app.listen(PORT, (err) => { 

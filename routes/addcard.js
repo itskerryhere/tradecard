@@ -50,8 +50,6 @@ router.get('/addcard', async (req, res) => {
 
 // submit add card
 router.post('/addcard', async (req, res) => {
-
-    const sessionobj = req.session;
     
     // grab fields 
     let pokemonname = req.body.pokemonName.trim();

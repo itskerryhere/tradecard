@@ -8,6 +8,7 @@ router.get('/cards/:cardid?', (req, res) => {
     
     const sessionobj = req.session;
     let cardid = req.params.cardid;
+    let adminStatus = false; // default
 
     const message = req.session.message;
     req.session.message = null;
@@ -42,11 +43,20 @@ router.get('/cards/:cardid?', (req, res) => {
 
             // get collections user owns
             const getUserCollections = `SELECT * FROM collection WHERE user_id = ?;`;
-
             let userCollectionsResult = await connection.promise().query(getUserCollections, [userid]);
             userCollectionsResult = userCollectionsResult[0];
 
-            res.render('cardinfo', {cardinfo: cardResult, attackinfo: attackResult, weaknessinfo: weaknessResult, usercollectionsinfo: userCollectionsResult, message: message, sessionobj});
+            // check admin
+            const checkAdmin = `SELECT user_id FROM user WHERE role = 'admin' AND user_id = ?;`;
+            let [admin] = await connection.promise().query(checkAdmin, [userid]);
+
+            // check admin
+            if (admin.length > 0) {
+                adminStatus = true;
+            } 
+            
+
+            res.render('cardinfo', {cardinfo: cardResult, attackinfo: attackResult, weaknessinfo: weaknessResult, usercollectionsinfo: userCollectionsResult, message: message, adminStatus, sessionobj});
 
         } else {
             res.render('cardinfo', {cardinfo: cardResult, attackinfo: attackResult, weaknessinfo: weaknessResult, message: message, sessionobj});
