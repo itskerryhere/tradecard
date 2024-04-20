@@ -23,7 +23,7 @@
                          <p><%= message %></p>
                     </div>  
                 <% } %>
-                <form method="POST" action="/addcard">
+                <form method="POST" action="/editcard/<%=pokemon.card_id%>">
                     <fieldset>
                         <u><h4>Pokemon Information</h4></u>
                         <div class="no-row-gap grid">
@@ -60,7 +60,7 @@
                                 <label>
                                     Evolution Stage
                                 <select name="stage" aria-label="evolution stage" required>
-                                    <option selected disabled value="">
+                                    <option value="<%=pokemon.stage_id%>">
                                         <%=pokemon.stage_name%>
                                     </option>
                                     <% stagelist.forEach((stage) => { %>
@@ -87,7 +87,7 @@
                                 <label>
                                     Rarity
                                 <select name="rarity" aria-label="rarity" required>
-                                    <option selected disabled value="">
+                                    <option value="<%=pokemon.rarity_id%>">
                                         <%=pokemon.rarity_name%>
                                     </option>
                                     <% raritylist.forEach((rarity) => { %>
@@ -102,7 +102,7 @@
                                 <label>
                                    Type
                                 <select name="type" aria-label="type" required>
-                                    <option selected disabled value="">
+                                    <option value="<%=pokemon.type_id%>">
                                         <%=pokemon.type_name%>
                                     </option>
                                     <% typelist.forEach((type) => { %>
@@ -117,7 +117,7 @@
                                 <label>
                                    Weakness
                                 <select name="weakness" aria-label="weakness" required>
-                                    <option selected disabled value="">
+                                    <option value="<%=weakness.type_id%>">
                                         <%=weakness.type_name%>
                                     </option>
                                     <% typelist.forEach((type) => { %>
@@ -132,7 +132,7 @@
                                 <label>
                                    Holo
                                 <select name="holo" aria-label="holo" required>
-                                    <option selected disabled value="">
+                                    <option value="<%=pokemon.holo%>">
                                     <% if (pokemon.holo === 0) { %> No <% } else { %> Yes<% } %>
                                     </option>
                                     <option value="1">Yes</option>
@@ -147,7 +147,7 @@
                                 <label>
                                     Expansion Name
                                 <select name="expansion" aria-label="expansion name" required>
-                                    <option selected disabled value="">
+                                    <option value="<%=pokemon.expansion_id%>">
                                         <%=pokemon.expansion_name%>
                                     </option>
                                     <% expansionlist.forEach((expansion) => { %>
@@ -162,7 +162,7 @@
                                 <label>
                                     Series Name
                                 <select name="series" aria-label="series name" required>
-                                    <option selected disabled value="">
+                                    <option value="<%=pokemon.series_id%>">
                                      <%=pokemon.series_name%>
                                     </option>
                                     <% serieslist.forEach((series) => { %>
@@ -207,7 +207,7 @@
                                 <label>
                                     Attack Type
                                  <select name="attackType" aria-label="attack type" required>
-                                     <option selected disabled value="">
+                                     <option value="<%=attack[0].attack_id%>"> 
                                       <%=attack[0].type_name%>
                                      </option>
                                      <% typelist.forEach((type) => { %>
@@ -230,14 +230,13 @@
                                 <label>
                                     Attack Type 2 
                                  <select name="attackType2" aria-label="attack type 2" required>
-                                     <option selected disabled value="">
-                                     <% if (attack.length === 2) { %>
+                                    <% if (attack.length === 2) { %>
+                                     <option value="<%=attack[1].attack_id%>">
                                       <%=attack[1].type_name%>
+                                    </option>
                                       <% }  else { %>
-                                        -
-                                        <% } %>
-                                     </option>
-                                     <option>None</option>
+                                        <option selected value="None"> - </option>
+                                     <% } %>
                                      <% typelist.forEach((type) => { %>
                                      <option value="<%=type.type_id%>">
                                         <%=type.type_name%>
@@ -306,13 +305,13 @@
                                 <label>
                                     Attack Type
                                  <select name="attack2Type" aria-label="Attack Type" required>
-                                     <option selected disabled value="">
-                                        <% if (attack2 !== null) { %>
-                                            <%=attack2[0].type_name%>
-                                        <% } else { %>
-                                            -
-                                        <% } %>
-                                     </option>
+                                    <% if (attack2 !== null) { %>
+                                        <option value="<%=attack2[0].type_id%>" selected>
+                                        <%=attack2[0].type_name%>
+                                        </option>
+                                    <% } else { %>
+                                        <option selected value="None" disabled> - </option>
+                                    <% } %>
                                      <option>None</option>
                                      <% typelist.forEach((type) => { %>
                                         <option value="<%=type.type_id%>">
@@ -340,11 +339,10 @@
                                 <label>
                                     Attack Type 2 
                                     <select name="attack2Type2" aria-label="Attack Type" required>
-                                    <option selected disabled value="">
                                         <% if (attack2 !== null && attack2.length > 0) { %>
-                                            <%=attack2[1].type_name%>
+                                            <option selected value="<%=attack2[1].type_id%>"><%=attack2[1].type_name%></option>
                                         <% } else { %>
-                                            -
+                                            <option selected disabled value="None"> - </option>
                                         <% } %>
                                      </option>
                                      <option>None</option>

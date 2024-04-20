@@ -99,7 +99,11 @@
                         <input type="hidden" name="cardAction" value="addToCollection">
                         <details class="dropdown outline">
                             <summary role="button">Add to Collection</summary>  
-                                <ul>  
+                            <ul> 
+                                <% if (usercollectionsinfo.length === 0) { %>
+                                    <li><label><a href="/collections/mycollections">Create a Collection</a></label></li>
+                                    
+                                <% } else { %>
                                     <% usercollectionsinfo.forEach((collection)=> { %>
                                         
                                     <li><label>
@@ -110,9 +114,13 @@
                                     <li>
                                         <button class="outline" type="submit">Add</button>
                                     </li>
-                                </ul>
+                                
+                                <% } %> 
+                            </ul>
+                        </form>
+
                         </details>
-                    </form>
+                    
 
                     <!-- add to wishlist -->
                     <form action="/cards/<%=cardinfo[0].card_id%>" method="POST">
