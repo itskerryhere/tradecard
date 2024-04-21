@@ -26,10 +26,6 @@ nav li {
     align-items: center;
 }
 
-.full-picture {
-    max-width: 100%;
-}
-
 /* footer */
 footer {
     background-color: auto;
@@ -49,15 +45,21 @@ footer {
     background-color: #0072AD;
 }
 
+/* homescreen page */
+.homescreen {
+    padding-top: 75px;  
+}
+
+.homescreen-img-format {
+    padding-block: 0px;
+
+}
+
+
 /* general */
 body {
-    background-color: auto;
-    padding-top: 85px;
-
-    /* testing having image as background */
-    /* background-image: url('../images/forest_background.jpg');
-    background-size: cover;
-    background-attachment: fixed; */
+    /* background-color: auto; */
+    padding-top: 85px;  
 }
 
 .padding {
@@ -139,6 +141,10 @@ body {
     margin-bottom: 10px; /* reducing pico.css default hgroup padding-bottom */
 }
 
+.card-count-tab article {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
 
 
 /* card info page  */
@@ -199,7 +205,9 @@ body {
 /* account page */
 .account-options {
     display: flex;
-    justify-content: space-evenly;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    align-items: flex-start;
 }
 
 .account-options article {

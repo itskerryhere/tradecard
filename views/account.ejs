@@ -33,14 +33,16 @@
                 </article></a>
 
                 <!-- admin only buttons -->
-                <a href="#"><article>
-                    <img src="/logout.png" alt="log out icon">
-                    <p>Add Cards</p>
-                </article></a>
-                <a href="#"><article>
-                    <img src="/logout.png" alt="log out icon">
-                    <p>Admin Requests</p>
-                </article></a>
+                <% if (adminStatus) { %>
+                    <a href="/addcard"><article>
+                        <img src="/add_card.png" alt="add card icon">
+                        <p>Add Cards</p>
+                    </article></a>
+                    <a href="#"><article>
+                        <img src="/admin_request.png" alt="admin request icon">
+                        <p>Admin Requests</p>
+                    </article></a>
+                <% } %>
             </div>
 
 

@@ -3,23 +3,31 @@ const router = express.Router();
 const connection = require("../connection.js");
 
 // account route 
-router.get('/account', (req, res) => {
+router.get('/account', async (req, res) => {
 
     const sessionobj = req.session;
 
     if (sessionobj.authen) {
         // get userid
         let userid = sessionobj.authen;
+        let adminStatus = false;
+
+        // allow access if session user is admin
+        const checkAdmin = `SELECT user_id FROM user WHERE role = 'admin' AND user_id = ?;`
+        let [admin] = await connection.promise().query(checkAdmin, [userid]);
+
+        // if admin
+        if (admin.length > 0) { 
+            adminStatus = true;
+        }
 
         // fetch user data 
         const getUser = `SELECT * FROM user WHERE user_id = ?;`;
+        let [userResult] = await connection.promise().query(getUser, [userid])
+;
 
-        connection.query(getUser, [userid], (err, userResult) => {
-            if (err) throw err;
-
-            // pass the fetched user data to the accounts route
-            res.render('account', { title: 'Account', userinfo: userResult, sessionobj });
-        });
+        // pass the fetched user data to the accounts route
+        res.render('account', { title: 'Account', userinfo: userResult, adminStatus, sessionobj });
 
     } else {
         res.redirect(`/login`);
@@ -144,21 +152,45 @@ router.post('/account/settings', async (req, res) => {
     } else if (formId === 'deleteAccount') {
 
         const sessionobj = req.session;
-        const deleteAccount = `DELETE FROM user WHERE user_id = ?`;
         let userid = sessionobj.authen;
 
-        connection.query(deleteAccount, [userid], (err, result) => {
-            if (err) throw err;
+        // delete user wishlist
+        const deleteUserWishlist = `DELETE FROM wishlist WHERE user_id = ?;`;
+        await connection.promise().query(deleteUserWishlist, [userid]);
 
-            // delete session
-            req.session.destroy();
-
-            // 1 sec delay
-            setTimeout( () => {
-                res.redirect(`/`);
-            }, 1000);
-
+        // get all collections owned by user and store ids in array
+        const getUserCollections = `SELECT * FROM collection WHERE user_id = ?;`; 
+        let [userCollections] = await connection.promise().query(getUserCollections, [userid]);
+        let userCollectionIds = [];
+        
+        userCollections.forEach((collection) => {
+            userCollectionIds.push(collection.collection_id);
         });
+  
+        
+        // delete all cards in each user collection
+        userCollectionIds.forEach( async (eachcollectionid) => {
+            const deleteUserCardInCollections = `DELETE FROM card_collection WHERE collection_id = ?`;
+            await connection.promise().query(deleteUserCardInCollections, [eachcollectionid]);
+        });
+
+
+        // delete all user collections 
+        const deleteUserCollections = `DELETE FROM collection WHERE user_id = ?`;
+        await connection.promise().query(deleteUserCollections, [userid]);
+        
+
+        // delete account
+        const deleteAccount = `DELETE FROM user WHERE user_id = ?`;
+        await connection.promise().query(deleteAccount, [userid]);
+
+        // delete session
+        req.session.destroy();
+
+        // 1 sec delay
+        setTimeout( () => {
+            res.redirect(`/`);
+        }, 1000);
 
     } 
 

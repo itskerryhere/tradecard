@@ -34,45 +34,111 @@
                 </div>
 
                 <div class="grid filter-card-grid">
+                    <div>
                     <!-- Left - Filter tab -->
-                    <article class="filter-tab">
-                        <h3>Filter</h3>
-                        <details class="dropdown">
-                            <summary>
-                                Type
-                            </summary>
-                            <ul>
-                                <% typelist.forEach((type)=> { %> 
-                                    <li><label><input type="checkbox" name="<%=type.type_name%>" /><%=type.type_name%></label></li>
-                                <% }); %>
-                            </ul>
-                        </details>
-                        <details class="dropdown">
-                            <summary>
-                                Weakness
-                            </summary>
-                            <ul>
-                                <li><label><input type="checkbox" name="fire" />Fire</label></li>
-                                <li><label><input type="checkbox" name="water" />Water</label></li>
-                                <li><label><input type="checkbox" name="grass" />Grass</label></li>
-                                <li><label><input type="checkbox" name="fairy" />Fairy</label></li>
-                            </ul>
-                        </details>
-                        <label>
-                            HP
-                            <input type="range" value="40" />
-                        </label>
-                        <fieldset>
+                    <div class="card-count-tab">
+                        <article>
+                            <small>Card count: <b><%=cardCount%></b></small>
+                        </article>
+                    </div>
+                    <div>
+                        <article class="filter-tab">
+                            <h3>Filter</h3>
+                            <form>
+                                <label>
+                                    Sort By:
+                                    <select name="sort">
+                                        <option selected value="">-</option>
+                                        <option value="alphabeticalAscend">A - Z</option>
+                                        <option value="alphabeticalDescend">Z - A</option>
+                                        <option value="hpAscend">HP (Ascending)</option>
+                                        <option value="hpAscend">HP (Descending)</option>
+                                        <option value="pokedexAscend">Pokedex (Ascending)</option>
+                                        <option value="pokedexDescend">Pokedex (Descending)</option>
+                                        <!-- Add more sorting options as needed -->
+                                    </select>
+                                </label>
                             <label>
-                                Normal
-                                <input name="terms" type="checkbox" role="switch" />
-                                Holo
+                                Type
+                            <select name="typeFilter">
+                                <option selected value="">
+                                -
+                                    </option>
+                                    <% typelist.forEach((type)=> { %> 
+                                        <option value="<%=type.type_id%>"><%=type.type_name%></option>
+                                    <% }); %>
+                            </select>
                             </label>
-                        </fieldset>
-                    </article>
 
+                            <label>
+                                Weakness
+                            <select name="weaknessFilter">
+                                <option selected value="">
+                                -
+                                    </option>
+                                    <% weaknesslist.forEach((weakness)=> { %> 
+                                        <option  value="<%=weakness.weakness_id%>"><%=weakness.type_name%></option>
+                                    <% }); %>
+                            </select>
+                            </label>
+
+                            <label>
+                                HP
+                                <input type="number" name="hpFilter" placeholder="-" aria-label="hp filter"/>
+                            </label>
+
+                            <label>
+                                Rarity
+                            <select name="rarityFilter">
+                                <option selected value="">
+                                -
+                                </option>
+                                    <% raritylist.forEach((rarity)=> { %> 
+                                        <option  value="<%=rarity.rarity_id%>"><%=rarity.rarity_name%></option>
+                                    <% }); %>
+                            </select>
+                            </label>
+
+                            <label>
+                                Stage
+                            <select name="stageFilter">
+                                <option selected value="">
+                                -
+                                </option>
+                                    <% stagelist.forEach((stage)=> { %> 
+                                        <option  value="<%=stage.stage_id%>"><%=stage.stage_name%></option>
+                                    <% }); %>
+                            </select>
+                            </label>
+
+                            <label>
+                                Pokedex Number
+                                <input type="number" name="pokedexFilter" placeholder="-" aria-label="pokedex filter"/>
+                            </label>
+
+                            <label>
+                                Expansion
+                            <select name="expansionFilter">
+                                <option selected value="">
+                                -
+                                    </option>
+                                    <% expansionlist.forEach((expansion)=> { %> 
+                                        <option  value="<%=expansion.expansion_id%>"><%=expansion.expansion_name%></option>
+                                    <% }); %>
+                            </select>
+                            </label>
+
+                                <input type="submit" value="Filter"/>
+                            </form>
+                        </article>
+                    </div>
+                </div>
+                <div>
                     <!-- Right - Display cards-->
                     <div class="cards-grid">
+                        <% if (cardCount === 0) { %>
+                            <p>No cards matching this search</p>
+                        <% } %>
                         <% cardlist.forEach((card)=> { %>
                             <article class="card">
                                 <div>
@@ -92,6 +158,7 @@
                             <% }); %>
 
                     </div>
+                </div>
                
 
                 </div>

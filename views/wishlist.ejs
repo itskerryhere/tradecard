@@ -12,7 +12,7 @@
         <hgroup class="centre-text">
             <h1>My Wishlist</h1>
         </hgroup>
-
+        <hr>
         <!-- page content -->
         <div class="grid centre-item">
             <!-- search bar -->
@@ -25,6 +25,10 @@
         </div>
 
         <!-- Display cards-->
+        <div class="card-count-tab">
+            <small>Card count: <b><%=cardCount%></b></small>
+        </div>
+        
         <div class="cards-grid">
             <% wishlistinfo.forEach((card)=> { %>
                 <article class="card">
@@ -48,7 +52,7 @@
                     </form> 
                 </article>
                 <% }); %>
-             
+            
         </div>
     </main>
 </body>

@@ -34,6 +34,8 @@
         <% } %>
 
         
+
+        
         <div class="collectioninfo-button-tab grid">
             <!-- collection details button -->
             <div>
@@ -85,6 +87,10 @@
         <hr>
 
         <!-- display cards in collection -->
+        <div class="card-count-tab">
+                <small>Card count: <b><%=cardCount%></b></small>
+        </div>
+
         <div class="cards-grid">
             <% cardcollectioninfo.forEach((card)=> { %>
                 <article class="card">
@@ -114,10 +120,13 @@
              
         </div>
 
-            
-        
+        <% if (collectionownerstatus === true) { %>
+            <br>
+            <div class="centre-item">
+                <a href="/cards"><button>Browse Cards to Add to Collection</button></a>
+            </div>
 
-        
+        <% } %>
 
 
     </main>

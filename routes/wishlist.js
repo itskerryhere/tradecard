@@ -24,9 +24,10 @@ router.get('/wishlist', (req, res) => {
 
             let userResult = result[0];
             let wishlistResult = result[1];
+            let cardCount = wishlistResult.length;
             
             // pass the fetched user data to the accounts route
-            res.render('wishlist', { title: 'My Wishlist', userinfo: userResult, wishlistinfo: wishlistResult, sessionobj });
+            res.render('wishlist', { title: 'My Wishlist', userinfo: userResult, wishlistinfo: wishlistResult, cardCount, sessionobj });
         });
 
     } else {

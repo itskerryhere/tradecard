@@ -27,6 +27,7 @@ router.get('/collections/:collectionid?', (req, res) => {
 
             let collectionResult = result[0][0];
             let cardcollectionResult = result[1];
+            let cardCount = cardcollectionResult.length;
 
             // check if user owns selected collection 
             const checkCollectionOwner = `SELECT user_id FROM collection WHERE collection_id = ?;`
@@ -37,7 +38,7 @@ router.get('/collections/:collectionid?', (req, res) => {
                 collectionownerstatus = true;
             }
 
-            res.render('collectioninfo', {collectioninfo: collectionResult, cardcollectioninfo: cardcollectionResult, message: message, collectionownerstatus, sessionobj});
+            res.render('collectioninfo', {collectioninfo: collectionResult, cardcollectioninfo: cardcollectionResult, message: message, cardCount, collectionownerstatus, sessionobj});
         });
 
     } else {

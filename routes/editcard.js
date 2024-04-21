@@ -132,10 +132,14 @@ router.post('/editcard/:cardid?', async (req, res) => {
     let attack2type2 = req.body.attack2Type2;
     let attack2type2strength = req.body.attack2Type2Strength;
 
-    // // check if card exists / card details the same as before 
-    // const checkCardExist = `SELECT * FROM card WHERE pokemon_name = ? AND card_img_url = ? AND card_hp = ? AND pokedex_num = ? AND evolves_from = ? 
-    //     AND holo = ? AND rarity_id = ? AND type_id = ? AND stage_id = ? AND weakness_id = ? AND expansion_id = ?;`;
-    // let [checkCardResult] = await connection.promise().query(checkCardExist, [pokemonname, url, hp, pokedexnumber, evolvesfrom, holo, rarity, type, stage, weakness, expansion]);
+    // check if card exists / card details the same as before 
+    const checkCardExist = `SELECT * FROM card WHERE pokemon_name = ? AND card_img_url = ? AND card_hp = ? AND pokedex_num = ? AND evolves_from = ? 
+        AND holo = ? AND rarity_id = ? AND type_id = ? AND stage_id = ? AND weakness_id = ? AND expansion_id = ?;`;
+    let [checkCardResult] = await connection.promise().query(checkCardExist, [pokemonname, url, hp, pokedexnumber, evolvesfrom, holo, rarity, type, stage, weakness, expansion]);
+
+    // check if attack 1 exists  
+    const checkAttackExist = `SELECT * FROM attack WHERE attack_name = ?;`;
+    let [checkAttackResult] = await connection.promise().query(checkAttackExist, [attackname]);
 
 
     // check if user attempted entering any of the minimum options needed for second attack entry
@@ -151,12 +155,12 @@ router.post('/editcard/:cardid?', async (req, res) => {
 
     }
 
-    // // check card exist if 1 attack / is the same
-    // if (checkCardResult.length > 0 && checkAttackResult.length > 0) {
-    //     // redirect with message
-    //     req.session.message = `Card already exists, or details have not changed`;
-    //     return res.redirect(`/editcard/${cardid}`);
-    // }
+    // check card exist if 1 attack / is the same
+    if (checkCardResult.length > 0 && checkAttackResult.length > 0) {
+        // redirect with message
+        req.session.message = `Card already exists, or details have not changed`;
+        return res.redirect(`/editcard/${cardid}`);
+    }
 
     // // check if attack2 exists if / is the same 
     // let checkAttack2Result = null;
@@ -400,34 +404,31 @@ router.post('/editcard/:cardid?', async (req, res) => {
         }
     }
 
-    // if attack 2 deleted / left empty 
-    if (attack2name === '' && attack2strength === '' && attack2type === 'None') {
+    // // if attack 2 deleted / left empty 
+    // if (attack2name === '' && attack2strength === '' && attack2type === 'None') {
         
-        // if current attack 2 name is in use by other cards
-        if (attack2InUseResult.length > 1) { // still used by this card before being deleted 
+    //     // if current attack 2 name is in use by other cards
+    //     if (attack2InUseResult.length > 1) { // still used by this card before being deleted 
 
-            // delete the old card attack id link
-            const deleteLinkCardAttack2 = `DELETE FROM card_attack WHERE attack_id = ? AND card_id = ?;`;
-            await connection.promise().query(deleteLinkCardAttack2, [currentAttack2Id, cardid]);
+    //         // delete the old card attack id link
+    //         const deleteLinkCardAttack2 = `DELETE FROM card_attack WHERE attack_id = ? AND card_id = ?;`;
+    //         await connection.promise().query(deleteLinkCardAttack2, [currentAttack2Id, cardid]);
 
-        // if it's not in use 
-        } else {
+    //     // if it's not in use 
+    //     } else {
             
-            // delete attack_type of attack id 
-            const deleteLinkAttack2Type = `DELETE attack_type 
-            FROM attack_type
-            INNER JOIN attack ON attack_type.attack_id = attack.attack_id
-            INNER JOIN card_attack ON attack.attack_id = card_attack.attack_id
-            WHERE card_id = ? AND attack_id = ?;`;
+    //         // delete attack_type of attack id 
+    //         const deleteLinkAttack2Type = `DELETE attack_type 
+    //         FROM attack_type
+    //         INNER JOIN attack ON attack_type.attack_id = attack.attack_id
+    //         INNER JOIN card_attack ON attack.attack_id = card_attack.attack_id
+    //         WHERE card_id = ? AND attack_id = ?;`;
 
-            // delete card_attack link to cardid and attackid
+    //         // delete card_attack link to cardid and attackid
 
-            // delete attack from attack table
-
-        }
-
-
-    }
+    //         // delete attack from attack table
+    //     }
+    // }
 
     // if attack 2 type 2 left blank 
 

@@ -17,10 +17,9 @@ router.get('/collections', (req, res) => {
             if (err) throw err;
 
             let collectionResult = result;
+            let collectionCount = collectionResult.length;
 
-            res.render('allcollections', {title: 'All Collections', collectionlist: collectionResult, sessionobj});
-
-            //
+            res.render('allcollections', {title: 'All Collections', collectionlist: collectionResult, collectionCount, sessionobj});
 
         });
 
@@ -53,9 +52,10 @@ router.get('/collections/mycollections', (req, res) => {
 
             let userResult = result[0];
             let mycollectionsResult = result[1];
+            let collectionCount = mycollectionsResult.length;
             
             // pass the fetched user data to the accounts route
-            res.render('mycollections', {title: 'My Collections',userinfo: userResult, mycollections: mycollectionsResult, message: message, sessionobj});
+            res.render('mycollections', {title: 'My Collections',userinfo: userResult, mycollections: mycollectionsResult, message: message, collectionCount, sessionobj});
         });
 
     } else {
