@@ -115,33 +115,42 @@ router.post('/cards/:cardid?', async (req, res) => {
             
             let collectionid = req.body.collectionId;
 
-            // check if card already in that collection 
-            const checkDuplicateCardCollection = `SELECT * FROM card_collection WHERE collection_id = ? AND card_id = ?;`;
+            // check if user selected an id
+            if (collectionid !== undefined) {
 
-            connection.query(checkDuplicateCardCollection, [collectionid, cardid], async (err, result) => {
-                if (err) throw err;
-                
-                // if card exist in collection - error message
-                if (result.length > 0) {
+                // check if card already in that collection 
+                const checkDuplicateCardCollection = `SELECT * FROM card_collection WHERE collection_id = ? AND card_id = ?;`;
 
-                    // redirect with message
-                    req.session.message = `Card already in selected Collection`;
-                    res.redirect(`/cards/${cardid}`);
+                connection.query(checkDuplicateCardCollection, [collectionid, cardid], async (err, result) => {
+                    if (err) throw err;
+                    
+                    // if card exist in collection - error message
+                    if (result.length > 0) {
+
+                        // redirect with message
+                        req.session.message = `Card already in selected Collection`;
+                        res.redirect(`/cards/${cardid}`);
 
 
-                // else if not exist - add to collection 
-                } else {
-                    const addToCollection = `INSERT INTO card_collection (card_id, collection_id) VALUES (?, ?);`;
+                    // else if not exist - add to collection 
+                    } else {
+                        const addToCollection = `INSERT INTO card_collection (card_id, collection_id) VALUES (?, ?);`;
 
-                    await connection.promise().query(addToCollection, [cardid, collectionid]);
+                        await connection.promise().query(addToCollection, [cardid, collectionid]);
 
-                    // redirect with message
-                    req.session.message = `Card added to selected Collection`;
-                    res.redirect(`/cards/${cardid}`);
+                        // redirect with message
+                        req.session.message = `Card added to selected Collection`;
+                        res.redirect(`/cards/${cardid}`);
 
-                }
+                    }
 
-            });
+                });
+
+            } else {
+                // redirect with message
+                req.session.message = `No collection was selected`;
+                res.redirect(`/cards/${cardid}`);
+            }
 
         }
 

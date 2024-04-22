@@ -14,19 +14,38 @@
             <p>Browse collections from other members</p>
         </hgroup>
 
-        <div class="all-collection-button-tab">
-            <a href="/collections/mycollections"> <button class="primary">Go to My Collections</button></a>
+        <div class="grid centre-item">
+            <!-- search bar -->
+            <div>
+                <form role="search">
+                    <input name="search" type="search" placeholder="Search collections" />
+                    <input type="submit" value="Search" />
+                </form>
+            </div>
+
+            <!-- all collections button -->
+            <div class="beside-search-button-padding">
+                <a href="/collections"> <button class="primary rounded-button">All</button></a>
+            </div>
+
+            <!-- my collections -->
+            <div class="beside-search-button-padding">
+                <a href="/collections/mycollections"> <button class="primary rounded-button">My Collections</button></a>
+            </div>
+
         </div>
 
         <hr>
-        <!-- maybe search bar -->
-        <!-- my collections button -->
+
         <div class="card-count-tab">
             <small>Collection count: <b><%=collectionCount%></b></small>
         </div>
 
         <!-- display all collections -->
         <div class="cards-grid">
+            <% if (collectionCount === 0) { %>
+                <p>No collections matching this search</p>
+            <% } %>
             <% collectionlist.forEach((collection)=> { %>
             <article class="card">
                 <a href="/collections/<%=collection.collection_id%>"> <%=collection.collection_name%> </a>

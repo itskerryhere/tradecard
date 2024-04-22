@@ -25,9 +25,14 @@
                         </form>
                     </div>
 
+                    <!-- all cards button -->
+                    <div class="beside-search-button-padding">
+                        <a href="/cards"> <button class="primary rounded-button">All</button></a>
+                    </div>
+
                     <!-- add new card button - only for admin -->
                     <% if (adminStatus === true) { %>
-                    <div class="filter-button-padding">
+                    <div class="beside-search-button-padding">
                         <a href="/addcard"><button class="rounded-button admin-button">Add New Card</button></a>
                     </div>
                     <% } %>

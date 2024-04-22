@@ -3,25 +3,30 @@ const router = express.Router();
 const connection = require("../connection.js");
 
 // view all collections 
-router.get('/collections', (req, res) => {
+router.get('/collections', async (req, res) => {
 
     const sessionobj = req.session;
 
     // access if only a member / has session 
     if (sessionobj.authen) {
 
+        const searchKeyword = req.query.search;
+        
         // get all collections 
-        const getAllCollections = `SELECT * FROM collection;`;
+        let getAllCollections = `SELECT * FROM collection`;
 
-        connection.query(getAllCollections, (err, result) => {
-            if (err) throw err;
+        // if search collection 
+        if (searchKeyword) {
+            getAllCollections += ` WHERE collection_name LIKE '%${searchKeyword}%';`;
 
-            let collectionResult = result;
-            let collectionCount = collectionResult.length;
+        };
 
-            res.render('allcollections', {title: 'All Collections', collectionlist: collectionResult, collectionCount, sessionobj});
+        let [collectionResult] = await connection.promise().query(getAllCollections);
 
-        });
+        let collectionCount = collectionResult.length;
+
+        res.render('allcollections', {title: 'All Collections', collectionlist: collectionResult, collectionCount, sessionobj});
+
 
     // if not a member - login
     } else {

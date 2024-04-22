@@ -22,14 +22,22 @@
                     <input type="submit" value="Search" />
                 </form>
             </div>
+
+            <!-- all wishlist button -->
+            <div class="beside-search-button-padding">
+                <a href="/wishlist"> <button class="primary rounded-button">All</button></a>
+            </div>
         </div>
 
         <!-- Display cards-->
-        <div class="card-count-tab">
+        <div>
             <small>Card count: <b><%=cardCount%></b></small>
         </div>
         
         <div class="cards-grid">
+            <% if (cardCount === 0) { %>
+                <p>No cards matching this search</p>
+            <% } %>
             <% wishlistinfo.forEach((card)=> { %>
                 <article class="card">
                     <div>

@@ -13,8 +13,14 @@
         </div>
         <br>
         <div class="grid centre-item">
-            <a href="/signup"><button>SIGN UP</button></a>
             <a href="/cards"><button>BROWSE CARDS</button></a>
+            <% if (sessionobj.authen) { %>
+                <a href="/collections"><button>BROWSE COLLECTIONS</button></a>
+                <a href="/account"><button>MY ACCOUNT</button></a>
+            <% } else { %>
+                <a href="/login"><button>LOG IN</button></a>
+                <a href="/signup"><button>SIGN UP</button></a>
+            <% } %>
         </div>
         <hr>
     </main>

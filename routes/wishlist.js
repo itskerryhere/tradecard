@@ -4,31 +4,50 @@ const connection = require("../connection.js");
 
 
 // wishlist route 
-router.get('/wishlist', (req, res) => {
+router.get('/wishlist', async (req, res) => {
 
     const sessionobj = req.session;
 
     if (sessionobj.authen) {
         // get userid
         let userid = sessionobj.authen;
+        const searchKeyword = req.query.search;
 
         // get user, and get their wishlist
-        const getUserAndWishlist = `SELECT * FROM user WHERE user_id = ?;
-        SELECT * FROM wishlist 
+        const getUser = `SELECT * FROM user WHERE user_id = ?;`
+        let [userResult] = await connection.promise().query(getUser, [userid]);
+
+        let getWishlist = `SELECT * FROM wishlist 
         INNER JOIN card ON wishlist.card_id = card.card_id
         INNER JOIN rarity ON card.rarity_id = rarity.rarity_id
-        WHERE user_id = ?;`; 
+        WHERE user_id = ?;`;
 
-        connection.query(getUserAndWishlist, [userid, userid], (err, result) => {
-            if (err) throw err;
+        let getWishlistSearch = `SELECT * FROM wishlist 
+        INNER JOIN card ON wishlist.card_id = card.card_id
+        INNER JOIN type ON card.type_id = type.type_id
+        INNER JOIN rarity ON card.rarity_id = rarity.rarity_id`;
 
-            let userResult = result[0];
-            let wishlistResult = result[1];
-            let cardCount = wishlistResult.length;
+        // If a search keyword is provided, add search filtering to the query
+        let wishlistResult = null;
+        if (searchKeyword) {
+            getWishlistSearch += ` WHERE pokemon_name LIKE '%${searchKeyword}%' 
+            OR rarity_name = '${searchKeyword}'
+            OR type_name = '${searchKeyword}'
+            AND user_id = ?;`;
+
+            [wishlistResult] = await connection.promise().query(getWishlistSearch, [userid]);
             
-            // pass the fetched user data to the accounts route
-            res.render('wishlist', { title: 'My Wishlist', userinfo: userResult, wishlistinfo: wishlistResult, cardCount, sessionobj });
-        });
+        } else {
+
+            [wishlistResult] = await connection.promise().query(getWishlist, [userid]);
+        }
+
+ 
+        let cardCount = wishlistResult.length;
+            
+        // pass the fetched user data to the accounts route
+        res.render('wishlist', { title: 'My Wishlist', userinfo: userResult, wishlistinfo: wishlistResult, cardCount, sessionobj });
+
 
     } else {
         res.redirect(`/login`);

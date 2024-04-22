@@ -6,7 +6,7 @@ const router = express.Router();
 router.get('/',  (req, res) =>  {
 
     const sessionobj = req.session;
-
+    let userid = sessionobj.authen;
 
     res.render('index', {title: 'Home', sessionobj});
 });

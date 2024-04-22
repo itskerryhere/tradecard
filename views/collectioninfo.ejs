@@ -42,8 +42,6 @@
                 <details role="button" class="outline">
                     <summary>Collection Details</summary>
                     <small>Created on: <%=collectioninfo.creation_date%></small>
-                    <br>
-                    <small>Total likes: <%=collectioninfo.like_count%></small>
                 </details>
             </div>
 
@@ -105,8 +103,9 @@
         <hr>
 
         <!-- display cards in collection -->
-        <div class="card-count-tab">
+        <div class="card-like-count-tab">
                 <small>Card count: <b><%=cardCount%></b></small>
+                <small>Total likes: <b><%=collectioninfo.like_count%></b></small>
         </div>
 
         <div class="cards-grid">

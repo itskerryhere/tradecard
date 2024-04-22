@@ -55,7 +55,6 @@ footer {
 
 }
 
-
 /* general */
 body {
     /* background-color: auto; */
@@ -83,9 +82,8 @@ body {
     color: red;
 }
 
-
 /* cards page */
-.filter-button-padding {
+.beside-search-button-padding {
     padding-bottom: 20px;
 }
 
@@ -260,6 +258,12 @@ body {
 
 .like_button button {
     padding: 5px;
+}
+
+.card-like-count-tab {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
 }
 
 /* all collections page */
