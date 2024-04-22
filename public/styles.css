@@ -253,6 +253,15 @@ body {
     grid-row-gap: 0px;
 }
 
+.like_button img {
+    max-width: 40px;
+    max-height: 40px;
+}
+
+.like_button button {
+    padding: 5px;
+}
+
 /* all collections page */
 .all-collection-button-tab {
     display: flex;

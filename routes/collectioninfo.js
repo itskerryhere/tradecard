@@ -11,6 +11,7 @@ router.get('/collections/:collectionid?', (req, res) => {
     let userid = sessionobj.authen;
     let collectionownerstatus = false; // default value
 
+
     const message = req.session.message;
     req.session.message = null;
 
@@ -28,7 +29,9 @@ router.get('/collections/:collectionid?', (req, res) => {
             let collectionResult = result[0][0];
             let cardcollectionResult = result[1];
             let cardCount = cardcollectionResult.length;
-
+            let likeStatus = false;
+   
+            
             // check if user owns selected collection 
             const checkCollectionOwner = `SELECT user_id FROM collection WHERE collection_id = ?;`
             let owner = await connection.promise().query(checkCollectionOwner, [collectionid]);
@@ -38,7 +41,19 @@ router.get('/collections/:collectionid?', (req, res) => {
                 collectionownerstatus = true;
             }
 
-            res.render('collectioninfo', {collectioninfo: collectionResult, cardcollectioninfo: cardcollectionResult, message: message, cardCount, collectionownerstatus, sessionobj});
+            // check user's like status
+            if (userid !== owner) {
+
+                const checkLikeStatus = `SELECT * FROM user_like_collection WHERE user_id = ? AND collection_id = ?`;
+                const [likeStatusResult] = await connection.promise().query(checkLikeStatus, [userid, collectionid]);
+ 
+                if (likeStatusResult.length > 0) {
+                    likeStatus = true;
+                }
+                
+            }
+
+            res.render('collectioninfo', {collectioninfo: collectionResult, cardcollectioninfo: cardcollectionResult, message: message, cardCount, collectionownerstatus, likeStatus, sessionobj});
         });
 
     } else {
@@ -101,6 +116,7 @@ router.post('/collections/:collectionid?', async (req, res) => {
         req.session.message = 'Collection Deleted';
         res.redirect(`/collections/mycollections`);
 
+
     } else if (formId === 'deleteCard') {
 
         const deleteCard = `DELETE FROM card_collection WHERE card_id = ? AND collection_id = ?;`;
@@ -109,6 +125,44 @@ router.post('/collections/:collectionid?', async (req, res) => {
         // redirect with message
         req.session.message = 'Card Deleted from Collection';
         res.redirect(`/collections/${collectionid}`);
+
+
+    } else if (formId ==='likeCollection') {
+
+        // // check if user already liked the collection 
+        // const checkLike = `SELECT * FROM user_like_collection WHERE collection_id = ? AND user_id = ?`;
+        // let [likeResult] = await connection.promise().query(checkLike, [collectionid, userid]);
+
+        // // if user already liked 
+        // if (likeResult.length === 0) { // unique user and collection id combo
+            
+            const likeCollection = `INSERT INTO user_like_collection (collection_id, user_id) VALUES (? , ?);`;
+            await connection.promise().query(likeCollection, [collectionid, userid]);
+
+            // increase like count by 1
+            const incrementLikeCount = `UPDATE collection SET like_count = like_count + 1 WHERE collection_id = ?;`;
+            await connection.promise().query(incrementLikeCount, [collectionid]);
+
+            // redirect with message
+            req.session.message = `You've liked this collection`;
+            res.redirect(`/collections/${collectionid}`);
+        // }
+
+        
+    } else if (formId === 'unlikeCollection') {
+
+
+            const unlikeCollection = `DELETE FROM user_like_collection WHERE collection_id = ? AND user_id = ?;`;
+            await connection.promise().query(unlikeCollection, [collectionid, userid]);
+
+            // increase like count by 1
+            const decrementLikeCount = `UPDATE collection SET like_count = like_count - 1 WHERE collection_id = ?;`;
+            await connection.promise().query(decrementLikeCount, [collectionid]);
+
+            // redirect with message
+            req.session.message = `You've unliked this collection`;
+            res.redirect(`/collections/${collectionid}`);
+        
     }
 
     

@@ -39,14 +39,15 @@
         <div class="collectioninfo-button-tab grid">
             <!-- collection details button -->
             <div>
-            <details role="button" class="outline">
-                <summary>Collection Details</summary>
-                <small>Created on: <%=collectioninfo.creation_date%></small>
-                <br>
-                <small>Total likes: <%=collectioninfo.like_count%></small>
-            </details>
+                <details role="button" class="outline">
+                    <summary>Collection Details</summary>
+                    <small>Created on: <%=collectioninfo.creation_date%></small>
+                    <br>
+                    <small>Total likes: <%=collectioninfo.like_count%></small>
+                </details>
             </div>
 
+            
             <!-- options only displayed if user owns collection -->
             <% if (collectionownerstatus === true) { %>
             <!-- edit collection details button -->
@@ -67,19 +68,36 @@
                         <input type="submit" value="Confirm Change Details"/>
                       </form>
                 </details>
-                </div>
-            <div>
-
+            </div>
+            
             <!-- delete collection button -->
-            <details role="button" class="delete-tab outline">
-                <summary>Delete Collection</summary>
-                <h3>ARE YOU SURE?</h3>
-                <form action="/collections/<%=collectioninfo.collection_id%>" method="POST">
-                    <input type="hidden" name="collectionSettings" value="deleteCollection">
-                    <button type="submit">DELETE</button>
-                </form>
-            </details>
-            <% } %>
+            <div>
+                <details role="button" class="delete-tab outline">
+                    <summary>Delete Collection</summary>
+                    <h3>ARE YOU SURE?</h3>
+                    <form action="/collections/<%=collectioninfo.collection_id%>" method="POST">
+                        <input type="hidden" name="collectionSettings" value="deleteCollection">
+                        <button type="submit">DELETE</button>
+                    </form>
+                </details> 
+            </div>
+        <% } else { %>
+            <div class="like_button">
+                <% if (likeStatus === false) { %>
+                    <!-- like button -->
+                    <form action="/collections/<%=collectioninfo.collection_id%>" method="POST">
+                        <input type="hidden" name="collectionSettings" value="likeCollection"> 
+                        <button type="submit">Like <img src="/not_liked.png"></button>
+                    </form>
+                <% } else { %>
+                    <!-- unlike button -->
+                    <form action="/collections/<%=collectioninfo.collection_id%>" method="POST">
+                        <input type="hidden" name="collectionSettings" value="unlikeCollection"> 
+                        <button type="submit">Liked <img src="/liked.png"></button>
+                    </form>
+                <% } %>
+            </div>
+        <% } %>
         </div>
        
 

@@ -80,7 +80,7 @@ router.post('/collections/mycollections', (req, res) => {
         if (result.length > 0) {
 
             // redirect with message
-            req.session.message = 'Collection Name Already Exists';
+            req.session.message = 'Collection name already used by yourself or someone else';
             res.redirect(`/collections/mycollections`);
 
 
