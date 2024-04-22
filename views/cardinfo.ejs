@@ -40,7 +40,12 @@
                     <!-- iterate through attack info -->
                     <hgroup>
                         <% attackinfo.forEach((attack) => { %>
-                            <h5><%= attack.attack_name %> - <%= attack.attack_damage %></h4>
+                            <h5><%= attack.attack_name %> 
+                                <% if (attack.attack_damage !== 0) { %>
+                                    - <%= attack.attack_damage %></h5>
+                                <% } else { %>
+                                    </h5>
+                                <% } %>
                             <p><%= attack.attack_description %></p>
                             <br>
                         <% }); %>
@@ -77,7 +82,7 @@
                         <% } %>
 
                         <p>
-                            Holo : <b><%= (cardinfo[0].holo === 1) ? "True" : "False"; %></b>
+                            Holo : <b><%= (cardinfo[0].holo === 1) ? "Yes" : "No"; %></b>
                         </p>
                         
                         <p>

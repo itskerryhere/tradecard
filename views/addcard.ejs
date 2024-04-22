@@ -15,6 +15,11 @@
             <p>Let members see the newest cards in Pokemon TCG!</p>
         </hgroup>
 
+        <div class="centre-item">
+            <a href="/addexpansionseries"> <button class="primary rounded-button">Add New Expanion / Series</button></a>
+        </div>
+        <br>
+
         <!-- add card section -->
         <div class="add-card-details">
             <article>
@@ -158,21 +163,6 @@
                                 </select>
                                 </label>
                             </div>
-                            <div>
-                                <label>
-                                    Series Name
-                                <select name="series" aria-label="series name" required>
-                                    <option selected disabled value="">
-                                    Series
-                                    </option>
-                                    <% serieslist.forEach((series) => { %>
-                                        <option value="<%=series.series_id%>">
-                                            <%=series.series_name%>
-                                        </option>
-                                    <% }); %>
-                                </select>
-                                </label>
-                            </div>
                         </div>
                     
                         <hr>
@@ -198,7 +188,7 @@
                             <small>Leave blank if not applicable</small>
                             </label>
                         </div>
-                        <div class="no-row-gap grid">
+                        <!-- <div class="no-row-gap grid">
                             <div>
                                 <label>
                                     Attack Type
@@ -246,13 +236,13 @@
                                     <small>Leave blank if not applicable, default to 1 if left blank with an attack type</small>
                                 </label>
                             </div>
-                        </div>
+                        </div> -->
 
                         <hr>
 
                         <!-- second attack info -->
                         <div class="attack-info-heading">
-                            <u><h4 class="inline-text">Second Attack Information</h4></u> <small>(Name, Damage, Type - Minimum Requirement)</small> 
+                            <u><h4 class="inline-text">Second Attack Information</h4></u> <small>(Name, Damage - Minimum Requirement)</small> 
                             </div>
                         <div class="no-row-gap grid">
                             <div>
@@ -276,7 +266,7 @@
                             <small>Leave blank if not applicable</small>
                             </label>
                         </div>
-                        <div class="no-row-gap grid">
+                        <!-- <div class="no-row-gap grid">
                             <div>
                                 <label>
                                     Attack Type
@@ -328,7 +318,7 @@
                                     <small>Leave blank if not applicable, default to 1 if left blank with an attack type</small>
                                 </label>
                             </div>
-                        </div>
+                        </div> -->
    
                     </fieldset>
 

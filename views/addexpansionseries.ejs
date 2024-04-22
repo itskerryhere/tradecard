@@ -1,0 +1,93 @@
+<!-- header -->
+<%- include('header') %>
+
+<body>
+    <!-- navbar -->
+    <%- include('navbar') %>
+
+
+    <!-- main section -->
+    <main class="container">
+
+        <!-- page title header -->
+        <hgroup class="centre-text">
+            <h1>Add New Expansion and Series</h1>
+            <p>Release the latest sets!</p>
+        </hgroup>
+
+        <div class="centre-item">
+            <a href="/addcard"> <button class="primary rounded-button">Add Card</button></a>
+        </div>
+        <br>
+
+        <!-- add series/expansion section -->
+        <div class="edit-account-details">
+            <article>
+                <% if (message) { %>
+                    <div>
+                            <p><%= message %></p>
+                    </div>  
+                <% } %>
+                <details role="button" class="outline">
+                    <summary>Add Series</summary>
+                    <form action="/addexpansionseries" method="POST">
+                        <input type="hidden" name="expanseriesForm" value="addSeries">
+                        <fieldset>
+                            <label>
+                                New Series Name
+                                <input type="text" name="seriesName" placeholder="Series" required/>
+                            </label>
+                        </fieldset>
+                        <input type="submit" value="Confirm Add Series"/>
+                        </form>
+                </details>
+
+                <details role="button" class="outline">
+                    <summary>Add Expansion</summary>
+                    <form action="/addexpansionseries" method="POST">
+                        <input type="hidden" name="expanseriesForm" value="addExpansion">
+                        <fieldset>
+                            <div class="no-row-gap grid">
+                                <div>
+                                    <label>
+                                        New Expansion Name
+                                        <input type="text" name="expansionName" placeholder="Expansion" required/>
+                                    </label>
+                                </div>
+                                <div>
+                                    <label>
+                                        Expansion Release Date
+                                        <input type="date" name="expansionDate" aria-label="Date" required/>
+                                    </label>
+                                </div>
+                            </div>
+                            <div>
+                                <label>
+                                    Series it belongs to
+                                <select name="seriesBelong" aria-label="series list" required>
+                                    <option selected disabled value="">
+                                    Series
+                                    </option>
+                                    <% serieslist.forEach((series) => { %>
+                                        <option value="<%=series.series_id%>">
+                                            <%=series.series_name%>
+                                        </option>
+                                    <% }); %>
+                                </select>
+                                </label>
+                            </div>
+                        </fieldset>
+                        
+                        <input type="submit" value="Confirm Add Expansion"/>
+                    </form> 
+                </details>
+            </article>
+        </div>
+               
+
+    </main>
+
+</body>
+
+<!-- footer -->
+<%- include('footer') %>

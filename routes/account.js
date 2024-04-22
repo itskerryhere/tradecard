@@ -154,78 +154,97 @@ router.post('/account/settings', async (req, res) => {
         const sessionobj = req.session;
         let userid = sessionobj.authen;
 
-        // delete user wishlist
-        const deleteUserWishlist = `DELETE FROM wishlist WHERE user_id = ?;`;
-        await connection.promise().query(deleteUserWishlist, [userid]);
+        // start transaction
+        const startTransaction = `START TRANSACTION;`;
+        await connection.promise().query(startTransaction);
 
+        try {
+            // delete user wishlist
+            const deleteUserWishlist = `DELETE FROM wishlist WHERE user_id = ?;`;
+            await connection.promise().query(deleteUserWishlist, [userid]);
+
+            
+            // update collection like counts 
+            // get all collection ids the user has liked
+            const getUserLikedCollections = `SELECT collection_id FROM user_like_collection WHERE user_id = ?;`;
+            let [userLikedCollections] = await connection.promise().query(getUserLikedCollections, [userid]);
+
+
+            // if user liked any collections
+            if (userLikedCollections.length > 0) {
+                // put in array
+                let likedCollectionIds = [];
+                userLikedCollections.forEach((collection) => {
+                    likedCollectionIds.push(collection.collection_id);
+                });
+
+                // decrease all those like_counts by 1
+                for (const eachcollectionid of likedCollectionIds) {
+                    const decrementLikeCount = `UPDATE collection SET like_count = like_count - 1 WHERE collection_id = ?;`;
+                    await connection.promise().query(decrementLikeCount, [eachcollectionid]);
+                };
+
+                // delete user liked collections
+                const deleteUserLikedCollections = `DELETE FROM user_like_collection WHERE user_id = ?;`;
+                await connection.promise().query(deleteUserLikedCollections, [userid]);
+
+                
+            }
+
+            // get all collections owned by user and store ids in array
+            const getUserCollections = `SELECT * FROM collection WHERE user_id = ?;`; 
+            let [userCollections] = await connection.promise().query(getUserCollections, [userid]);
+
+            // if user owns any collections
+            if (userCollections.length > 0) {
+
+                let userCollectionIds = [];
+                
+                userCollections.forEach((collection) => {
+                    userCollectionIds.push(collection.collection_id);
+                });
         
-        // update collection like counts 
-        // get all collection ids the user has liked
-        const getUserLikedCollections = `SELECT collection_id FROM user_like_collection WHERE user_id = ?;`;
-        let [userLikedCollections] = await connection.promise().query(getUserLikedCollections, [userid]);
+                
+                // delete all cards in each user collection
+                for (const eachcollectionid of userCollectionIds) {
+                    const deleteUserCardInCollections = `DELETE FROM card_collection WHERE collection_id = ?`;
+                    await connection.promise().query(deleteUserCardInCollections, [eachcollectionid]);
+                };
 
 
-        // if user liked any collections
-        if (userLikedCollections.length > 0) {
-            // put in array
-            let likedCollectionIds = [];
-            userLikedCollections.forEach((collection) => {
-                likedCollectionIds.push(collection.collection_id);
-            });
+                // delete all user collections 
+                const deleteUserCollections = `DELETE FROM collection WHERE user_id = ?`;
+                await connection.promise().query(deleteUserCollections, [userid]);
+            }
+            
+            // delete account
+            const deleteAccount = `DELETE FROM user WHERE user_id = ?`;
+            await connection.promise().query(deleteAccount, [userid]);
 
-            // decrease all those like_counts by 1
-            for (const eachcollectionid of likedCollectionIds) {
-                const decrementLikeCount = `UPDATE collection SET like_count = like_count - 1 WHERE collection_id = ?;`;
-                await connection.promise().query(decrementLikeCount, [eachcollectionid]);
-            };
+            // end transaction
+            const commitTransaction = `COMMIT;`;
+            await connection.promise().query(commitTransaction);
 
-            // delete user liked collections
-            const deleteUserLikedCollections = `DELETE FROM user_like_collection WHERE user_id = ?;`;
-            await connection.promise().query(deleteUserLikedCollections, [userid]);
+            // delete session
+            req.session.destroy();
 
+            // 1 sec delay
+            setTimeout( () => {
+                res.redirect(`/`);
+            }, 1000);
+
+        } catch (err) {
+
+            // rollback the transaction
+            const rollbackTransaction = `ROLLBACK;`;
+            await connection.promise().query(rollbackTransaction);
+
+            // redirect with message
+            req.session.message = 'Failed to delete account, contact...';
+            res.redirect(`/account/settings`);
             
         }
-
-     
-    
-        // get all collections owned by user and store ids in array
-        const getUserCollections = `SELECT * FROM collection WHERE user_id = ?;`; 
-        let [userCollections] = await connection.promise().query(getUserCollections, [userid]);
-
-        // if user owns any collections
-        if (userCollections.length > 0) {
-
-            let userCollectionIds = [];
-            
-            userCollections.forEach((collection) => {
-                userCollectionIds.push(collection.collection_id);
-            });
-    
-            
-            // delete all cards in each user collection
-            for (const eachcollectionid of userCollectionIds) {
-                const deleteUserCardInCollections = `DELETE FROM card_collection WHERE collection_id = ?`;
-                await connection.promise().query(deleteUserCardInCollections, [eachcollectionid]);
-            };
-
-
-            // delete all user collections 
-            const deleteUserCollections = `DELETE FROM collection WHERE user_id = ?`;
-            await connection.promise().query(deleteUserCollections, [userid]);
-        }
         
-
-        // delete account
-        const deleteAccount = `DELETE FROM user WHERE user_id = ?`;
-        await connection.promise().query(deleteAccount, [userid]);
-
-        // delete session
-        req.session.destroy();
-
-        // 1 sec delay
-        setTimeout( () => {
-            res.redirect(`/`);
-        }, 1000);
 
     } 
 

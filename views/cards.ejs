@@ -57,7 +57,7 @@
                                         <option value="alphabeticalAscend">A - Z</option>
                                         <option value="alphabeticalDescend">Z - A</option>
                                         <option value="hpAscend">HP (Ascending)</option>
-                                        <option value="hpAscend">HP (Descending)</option>
+                                        <option value="hpDescend">HP (Descending)</option>
                                         <option value="pokedexAscend">Pokedex (Ascending)</option>
                                         <option value="pokedexDescend">Pokedex (Descending)</option>
                                         <!-- Add more sorting options as needed -->
@@ -129,6 +129,18 @@
                                     </option>
                                     <% expansionlist.forEach((expansion)=> { %> 
                                         <option  value="<%=expansion.expansion_id%>"><%=expansion.expansion_name%></option>
+                                    <% }); %>
+                            </select>
+                            </label>
+
+                            <label>
+                                Series
+                            <select name="seriesFilter">
+                                <option selected value="">
+                                -
+                                    </option>
+                                    <% serieslist.forEach((series)=> { %> 
+                                        <option  value="<%=series.series_id%>"><%=series.series_name%></option>
                                     <% }); %>
                             </select>
                             </label>

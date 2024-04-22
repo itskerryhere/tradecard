@@ -37,6 +37,7 @@ const collectionsRoute = require('./routes/collections');
 const collectioninfoRoute = require('./routes/collectioninfo');
 const addcardRoute = require('./routes/addcard');
 const editcardRoute = require('./routes/editcard');
+const addexpansionseriesRoute = require('./routes/addexpansionseries');
 
 
 app.use(indexRoute);
@@ -50,6 +51,7 @@ app.use(collectionsRoute);
 app.use(collectioninfoRoute);
 app.use(addcardRoute);
 app.use(editcardRoute);
+app.use(addexpansionseriesRoute);
 
 
 app.listen(PORT, (err) => { 

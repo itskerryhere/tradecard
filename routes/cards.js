@@ -8,7 +8,7 @@ router.get('/cards', async (req, res) =>  {
     const sessionobj = req.session;
     let userid = sessionobj.authen;
     const searchKeyword = req.query.search; // catch search keyword
-    const {typeFilter, weaknessFilter, hpFilter, rarityFilter, stageFilter, pokedexFilter, expansionFilter} = req.query; // for filter
+    const {typeFilter, weaknessFilter, hpFilter, rarityFilter, stageFilter, pokedexFilter, expansionFilter, seriesFilter} = req.query; // for filter
     const {sort} = req.query;
     let adminStatus = false; // default
 
@@ -63,6 +63,10 @@ router.get('/cards', async (req, res) =>  {
         getCards += ` AND expansion_id = ${expansionFilter}`;
     }
 
+    if (seriesFilter) {
+        getCards += ` AND expansion_id IN (SELECT expansion_id FROM expansion WHERE series_id = ${seriesFilter})`;
+    }
+
     // sorting depending on option 
     if (sort === 'alphabeticalAscend') {
         getCards += ` ORDER BY pokemon_name ASC`;
@@ -82,6 +86,8 @@ router.get('/cards', async (req, res) =>  {
     } else if (sort === 'pokedexDescend') {
         getCards += ` ORDER BY pokedex_num DESC`;
     }
+
+    // getCards += ` ORDER BY card_id ASC;`;
 
     let [cardsResult] = await connection.promise().query(getCards);
 
@@ -105,9 +111,12 @@ router.get('/cards', async (req, res) =>  {
     const getExpansion = `SELECT * FROM expansion;`;
     let [expansionResult] = await connection.promise().query(getExpansion);
 
+    const getSeries = `SELECT * FROM series;`;
+    let [seriesResult] = await connection.promise().query(getSeries);
+
     
     res.render('cards', { title: 'Cards', cardlist: cardsResult, typelist: typesResult, weaknesslist: weaknessResult, 
-    raritylist: rarityResult, stagelist: stageResult, expansionlist: expansionResult, cardCount, adminStatus, sessionobj });
+    raritylist: rarityResult, stagelist: stageResult, expansionlist: expansionResult, serieslist: seriesResult, cardCount, adminStatus, sessionobj });
    
 });
 
