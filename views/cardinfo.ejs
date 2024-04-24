@@ -75,7 +75,7 @@
                             Stage: <b><%=cardinfo[0].stage_name%></b>
                         </p>
 
-                        <% if (cardinfo[0].stage_id != 1) { %>
+                        <% if (cardinfo[0].stage_id != 1 && cardinfo[0].evolves_from !== '') { %>
                         <p> 
                             Evolves from: <b><%=cardinfo[0].evolves_from%></b>
                         </p>
@@ -137,6 +137,15 @@
                         <div>
                             <a href="/editcard/<%=cardinfo[0].card_id%>"><button class="admin-button">Edit Card Details</button></a>
                         </div>
+                        <details role="button" class="delete-tab outline">
+                            <summary>Delete Card</summary>
+                            <h3>ARE YOU SURE?</h3>
+                            <h4>Pokemon will be deleted forever</h4>
+                            <form action="/deletecard" method="POST">
+                                <input type="hidden" name="deleteCard" value="<%=cardinfo[0].card_id%>">
+                                <button type="submit">DELETE</button>
+                            </form> 
+                        </details>
                     <% } %>
 
                     <!-- if not logged in -->

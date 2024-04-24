@@ -17,6 +17,12 @@
 
         <div class="centre-item">
             <a href="/cards"> <button class="primary rounded-button">Edit Different Card</button></a>
+            <form action="/deletecard" method="POST">
+                <div class="delete-tab">
+                    <input type="hidden" name="deleteCard" value="<%=pokemon.card_id%>">
+                    <button type="submit" class="rounded-button">Delete This Card</button>
+                </div> 
+            </form> 
         </div>
         <br>
 

@@ -252,8 +252,14 @@ router.post('/editcard/:cardid?', async (req, res) => {
     await connection.promise().query(startTransaction);
     
     try {
-        
+        // changing pokemon info
+        const updateCardInfo = `UPDATE card SET pokemon_name = ? , card_img_url = ? , card_hp = ? , pokedex_num = ? , 
+        evolves_from = ? , holo = ?, rarity_id = ?, type_id = ?, stage_id = ?, weakness_id = ?, expansion_id = ? WHERE card_id = ?;`;
+        await connection.promise().query(updateCardInfo, [pokemonname, url, hp, pokedexnumber, evolvesfrom, holo, rarity, type, 
+            stage, weakness, expansion, cardid]);
 
+        
+        // changing attack info
         if (a1change) { // if attack 1 exist and change 
             // change a1 info 
     
@@ -472,7 +478,6 @@ router.post('/editcard/:cardid?', async (req, res) => {
                 const deleteAttack = `DELETE FROM attack WHERE attack_id = ?;`;
                 await connection.promise().query(deleteAttack, [currentAttack2Id]);
         
-        
             }
         }
 
@@ -482,8 +487,7 @@ router.post('/editcard/:cardid?', async (req, res) => {
         
         // redirect with successful message
         req.session.message = `Card edited, edit a new card`;
-        // res.redirect(`/cards`);
-        res.redirect(`/editcard/${cardid}`);
+        
 
     } catch (err) {
 
@@ -492,7 +496,11 @@ router.post('/editcard/:cardid?', async (req, res) => {
         await connection.promise().query(rollbackTransaction);
 
         // redirect with unsuccessful message
-        req.session.message = `Cannot edit card, contact...`;
+        console.error("Error:", err);
+        req.session.message = `Cannot edit card, unexpected error`;
+       
+    } finally {
+        
         res.redirect(`/editcard/${cardid}`);
     }
     
@@ -500,6 +508,8 @@ router.post('/editcard/:cardid?', async (req, res) => {
 
 
 });
+
+module.exports = router;
 
    // edit attacks logic
     // if attack 1 exist and doesn't change 
@@ -581,4 +591,3 @@ router.post('/editcard/:cardid?', async (req, res) => {
     // }
 
 
-module.exports = router;

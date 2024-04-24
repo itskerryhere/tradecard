@@ -22,7 +22,7 @@ router.get('/signup',  (req, res) =>  {
     
 });
 
-router.post('/signup', (req, res) => {
+router.post('/signup', async (req, res) => {
 
     const sessionobj = req.session;  
 
@@ -31,11 +31,13 @@ router.post('/signup', (req, res) => {
     let email = req.body.email; 
     let password = req.body.password;
 
-    // check if email already exists in the database
-    const checkEmailExist = `SELECT * FROM user WHERE email = ?`;
-
-    connection.query(checkEmailExist, [email], async (err, userResult) => {
-        if (err) throw err;
+    try {
+        
+        // check if email already exists in the database
+        const checkEmailExist = `SELECT * FROM user WHERE email = ?`;
+        
+        let [userResult] = await connection.promise().query(checkEmailExist, [email]);
+            
 
         // if duplicate email
         if (userResult.length > 0) {
@@ -55,19 +57,25 @@ router.post('/signup', (req, res) => {
 
             // insert data with hashed password
             const insertUser = `INSERT INTO user (first_name, last_name, email, password) VALUES (?, ?, ?, @storedSaltedHash);`;
-
-            connection.query(insertUser, [firstname, lastname, email], (err, result) => {
-                if (err) throw err;
-        
-                // Get the new user id
-                let newuserid = result.insertId;
-                sessionobj.authen = newuserid; // creating session with user id
-        
-                res.redirect(`/account`);
-            });   
+            let [result] = await connection.promise().query(insertUser, [firstname, lastname, email]);
+            
+            // Get the new user id
+            let newuserid = result.insertId;
+            sessionobj.authen = newuserid; // creating session with user id
+    
+            res.redirect(`/account`);
+             
         }
 
-    });                        
+        
+    
+    } catch (err) {
+                
+        console.error("Error:", err);
+        req.session.message = 'Failed to sign-up, unexpected error';
+        res.redirect(`/signup`);
+        
+    }
    
 });
 

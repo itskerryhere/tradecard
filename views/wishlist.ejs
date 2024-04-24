@@ -34,10 +34,22 @@
             <small>Card count: <b><%=cardCount%></b></small>
         </div>
         
+
+        <% if (message) { %>
+            <div class="card-count-tab">
+                <article>
+                    <small><b><%= message %></b></small>
+                </article>
+            </div>
+        <% } %>
+        <% if (cardCount === 0) { %>
+            <div class="card-count-tab">
+                <article>
+                    <small><b>No cards matching this search<b></small>
+                </article>
+            </div>
+        <% } %>
         <div class="cards-grid">
-            <% if (cardCount === 0) { %>
-                <p>No cards matching this search</p>
-            <% } %>
             <% wishlistinfo.forEach((card)=> { %>
                 <article class="card">
                     <div>

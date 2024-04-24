@@ -73,19 +73,18 @@ router.post('/collections/:collectionid?', async (req, res) => {
     let newcollectionname = req.body.collectionName;
     let cardid = req.body.cardId;
 
-    if (formId === 'editCollectionName') {
+    try {
 
-        // check if name of collection already exists by user
-        const checkCollectionName = `SELECT collection_name FROM collection WHERE user_id = ? AND collection_name = ?;`
+        if (formId === 'editCollectionName') {
 
-        connection.query(checkCollectionName, [userid, newcollectionname], async (err, result) => {
-            if (err) throw err;
+            // check if name of collection already exists by user
+            const checkCollectionName = `SELECT collection_name FROM collection WHERE user_id = ? AND collection_name = ?;`;
+            let [collectionNameResult] = await connection.promise().query(checkCollectionName, [userid, newcollectionname]);
 
             // if collection name exist - error message
-            if (result.length > 0) {
+            if (collectionNameResult.length > 0) {
 
-                req.session.message = 'Name already exists';
-
+                req.session.message = 'Name already being used by yourself';
                 res.redirect(`/collections/${collectionid}`);
                 
             // if name doesn't exist - change name   
@@ -94,78 +93,133 @@ router.post('/collections/:collectionid?', async (req, res) => {
                 const editCollectionName = `UPDATE collection SET collection_name = ? WHERE collection_id = ?;`;
                 await connection.promise().query(editCollectionName, [newcollectionname, collectionid]);
 
-                 // redirect with message
+                // redirect with message
                 req.session.message = 'Name updated';
                 res.redirect(`/collections/${collectionid}`);
 
             }
-        });
+                
+
+        } else if (formId === 'deleteCollection') {
+
+            // start transaction
+            const startTransaction = `START TRANSACTION;`;
+            await connection.promise().query(startTransaction);
+
+            try {
+                // delete call cards associated with collection
+                const deleteCardsFromCollection = `DELETE FROM card_collection WHERE collection_id = ?`;
+                await connection.promise().query(deleteCardsFromCollection, [collectionid]) 
+
+                // delete collection 
+                const deleteCollection = `DELETE FROM collection WHERE collection_id = ?;`;
+                await connection.promise().query(deleteCollection, [collectionid]);
+
+                // redirect with message
+                req.session.message = 'Collection Deleted';
+                res.redirect(`/collections/mycollections`);
+
+            } catch (err) {
+
+                // rollback the transaction
+                const rollbackTransaction = `ROLLBACK;`;
+                await connection.promise().query(rollbackTransaction);
+                
+                req.session.message = 'Failed to delete collection';
+                res.redirect(`/collections/${collectionid}`);
+            }
+
+
+        } else if (formId === 'deleteCard') {
+
+            const deleteCard = `DELETE FROM card_collection WHERE card_id = ? AND collection_id = ?;`;
+            await connection.promise().query(deleteCard, [cardid, collectionid]);
+
+            // redirect with message
+            req.session.message = 'Card Deleted from Collection';
+            res.redirect(`/collections/${collectionid}`);
+
+
+        } else if (formId ==='likeCollection') {
+
+            // start transaction
+            const startTransaction = `START TRANSACTION;`;
+            await connection.promise().query(startTransaction);
+
+            try {
+                
+                const likeCollection = `INSERT INTO user_like_collection (collection_id, user_id) VALUES (? , ?);`;
+                await connection.promise().query(likeCollection, [collectionid, userid]);
+
+                // increase like count by 1
+                const incrementLikeCount = `UPDATE collection SET like_count = like_count + 1 WHERE collection_id = ?;`;
+                await connection.promise().query(incrementLikeCount, [collectionid]);
+
+                // redirect with message
+                req.session.message = `You've liked this collection`;
+
+            } catch (err) {
+
+                // rollback the transaction
+                const rollbackTransaction = `ROLLBACK;`;
+                await connection.promise().query(rollbackTransaction);
+
+                // redirect with message
+                req.session.message = 'Failed to like collection';
+                    
+            } finally {
+                res.redirect(`/collections/${collectionid}`);
+            }
+
             
+        } else if (formId === 'unlikeCollection') {
 
-    } else if (formId === 'deleteCollection') {
+            // start transaction
+            const startTransaction = `START TRANSACTION;`;
+            await connection.promise().query(startTransaction);
 
-        // delete call cards associated with collection
-        const deleteCardsFromCollection = `DELETE FROM card_collection WHERE collection_id = ?`;
-        await connection.promise().query(deleteCardsFromCollection, [collectionid]) 
+            try {
 
-        // delete collection 
-        const deleteCollection = `DELETE FROM collection WHERE collection_id = ?;`;
-        await connection.promise().query(deleteCollection, [collectionid]);
+                const unlikeCollection = `DELETE FROM user_like_collection WHERE collection_id = ? AND user_id = ?;`;
+                await connection.promise().query(unlikeCollection, [collectionid, userid]);
 
-        // redirect with message
-        req.session.message = 'Collection Deleted';
-        res.redirect(`/collections/mycollections`);
+                // increase like count by 1
+                const decrementLikeCount = `UPDATE collection SET like_count = like_count - 1 WHERE collection_id = ?;`;
+                await connection.promise().query(decrementLikeCount, [collectionid]);
 
+                // end transaction
+                const commitTransaction = `COMMIT;`;
+                await connection.promise().query(commitTransaction);
 
-    } else if (formId === 'deleteCard') {
+                // redirect with message
+                req.session.message = `You've unliked this collection`;
 
-        const deleteCard = `DELETE FROM card_collection WHERE card_id = ? AND collection_id = ?;`;
-        await connection.promise().query(deleteCard, [cardid, collectionid]);
+            } catch (err) {
 
-        // redirect with message
-        req.session.message = 'Card Deleted from Collection';
+                // rollback the transaction
+                const rollbackTransaction = `ROLLBACK;`;
+                await connection.promise().query(rollbackTransaction);
+
+                // redirect with message
+                req.session.message = 'Failed to unlike collection';
+                
+            } 
+            finally {
+
+                res.redirect(`/collections/${collectionid}`);
+            }
+            
+        }
+
+    } catch (err) {
+            
+        console.error("Error:", err);
+        req.session.message = `Failed to edit or delete collection, unexpected error`;
         res.redirect(`/collections/${collectionid}`);
+       
 
-
-    } else if (formId ==='likeCollection') {
-
-        // // check if user already liked the collection 
-        // const checkLike = `SELECT * FROM user_like_collection WHERE collection_id = ? AND user_id = ?`;
-        // let [likeResult] = await connection.promise().query(checkLike, [collectionid, userid]);
-
-        // // if user already liked 
-        // if (likeResult.length === 0) { // unique user and collection id combo
-            
-            const likeCollection = `INSERT INTO user_like_collection (collection_id, user_id) VALUES (? , ?);`;
-            await connection.promise().query(likeCollection, [collectionid, userid]);
-
-            // increase like count by 1
-            const incrementLikeCount = `UPDATE collection SET like_count = like_count + 1 WHERE collection_id = ?;`;
-            await connection.promise().query(incrementLikeCount, [collectionid]);
-
-            // redirect with message
-            req.session.message = `You've liked this collection`;
-            res.redirect(`/collections/${collectionid}`);
-        // }
-
-        
-    } else if (formId === 'unlikeCollection') {
-
-
-            const unlikeCollection = `DELETE FROM user_like_collection WHERE collection_id = ? AND user_id = ?;`;
-            await connection.promise().query(unlikeCollection, [collectionid, userid]);
-
-            // increase like count by 1
-            const decrementLikeCount = `UPDATE collection SET like_count = like_count - 1 WHERE collection_id = ?;`;
-            await connection.promise().query(decrementLikeCount, [collectionid]);
-
-            // redirect with message
-            req.session.message = `You've unliked this collection`;
-            res.redirect(`/collections/${collectionid}`);
-        
     }
 
-    
 });
 
 

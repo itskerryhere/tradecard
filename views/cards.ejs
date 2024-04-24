@@ -48,19 +48,19 @@
                     </div>
                     <div>
                         <article class="filter-tab">
-                            <h3>Filter</h3>
+                            <h3>Filter All</h3>
                             <form>
                                 <label>
                                     Sort By:
                                     <select name="sort">
-                                        <option selected value="">-</option>
+                                        <option selected value ="">-</option>
                                         <option value="alphabeticalAscend">A - Z</option>
                                         <option value="alphabeticalDescend">Z - A</option>
                                         <option value="hpAscend">HP (Ascending)</option>
                                         <option value="hpDescend">HP (Descending)</option>
                                         <option value="pokedexAscend">Pokedex (Ascending)</option>
                                         <option value="pokedexDescend">Pokedex (Descending)</option>
-                                        <!-- Add more sorting options as needed -->
+                                        <option value="cardId">Card ID</option>
                                     </select>
                                 </label>
                             <label>
@@ -156,16 +156,19 @@
                     <% if (message) { %>
                         <div class="card-count-tab">
                             <article>
-                                <small><%= message %></small>
+                                <small><b><%= message %></b></small>
+                            </article>
+                        </div>
+                    <% } %>
+                    <% if (cardCount === 0) { %>
+                        <div class="card-count-tab">
+                            <article>
+                                <small><b>No cards matching this search</b></small>
                             </article>
                         </div>
                     <% } %>
                     <!-- Right - Display cards-->
                     <div class="cards-grid">
-                        
-                        <% if (cardCount === 0) { %>
-                            <p>No cards matching this search</p>
-                        <% } %>
                         <% cardlist.forEach((card)=> { %>
                             <article class="card">
                                 <div>
@@ -186,9 +189,15 @@
                                     <div>
                                         <a href="/editcard/<%=card.card_id%>"><button class="admin-button">Edit</button></a>
                                     </div>
-                                    <div class="delete-tab">
-                                        <a href="#"><button class="admin-button">Delete</button></a>
-                                    </div> 
+                                    
+                                    <form action="/deletecard" method="POST">
+                                        <div class="delete-tab">
+                                            <input type="hidden" name="deleteCard" value="<%=card.card_id%>">
+                                            <button type="submit">DELETE</button>
+                                        </div> 
+                                    </form> 
+
+                                    
                                 </div>
                                 <br>
                                 <% } %>

@@ -79,8 +79,8 @@ router.post('/addcard', async (req, res) => {
     // let attack2type2strength = req.body.attack2Type2Strength;
 
     
-      // check if card exists (1 attack only)
-      if (attack2name === '' && attack2damage === '') {
+    // check if card exists (1 attack only)
+    if (attack2name === '' && attack2damage === '') {
 
         const checkCardExist = `SELECT * FROM card
         INNER JOIN card_attack ON card.card_id = card_attack.card_id
@@ -272,7 +272,7 @@ router.post('/addcard', async (req, res) => {
         
         // redirect with successful message
         req.session.message = `Card added, add a new card`;
-        res.redirect(`/addcard`);
+        
 
     } catch (err) {
 
@@ -281,9 +281,13 @@ router.post('/addcard', async (req, res) => {
         await connection.promise().query(rollbackTransaction);
 
         // redirect with unsuccessful message
-        req.session.message = `Cannot add card, contact...`;
-        res.redirect(`/addcard`);
+        req.session.message = `Cannot add card, unexpected error`;
         
+        
+    } finally {
+
+        res.redirect(`/addcard`);
+
     }
 
     

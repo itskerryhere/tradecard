@@ -69,24 +69,23 @@ router.get('/collections/mycollections', (req, res) => {
 });
 
 // user create a new collection 
-router.post('/collections/mycollections', (req, res) => {
+router.post('/collections/mycollections', async (req, res) => {
 
     const sessionobj = req.session;
     let collectionname = req.body.collectionName;
     let userid = sessionobj.authen;
 
-    // check if name of collection already exists by user
-    const checkCollectionName = `SELECT collection_name FROM collection WHERE user_id = ? AND collection_name = ?;`
+    try {
 
-    connection.query(checkCollectionName, [userid, collectionname], async (err, result) => {
-        if (err) throw err;
+        // check if name of collection already exists by user
+        const checkCollectionName = `SELECT collection_name FROM collection WHERE user_id = ? AND collection_name = ?;`
+        let [result] = await connection.promise().query(checkCollectionName, [userid, collectionname]);
 
         // if collection name exist - error message
         if (result.length > 0) {
 
             // redirect with message
             req.session.message = 'Collection name already used by yourself';
-            res.redirect(`/collections/mycollections`);
 
 
         // if doesn't exist - add to collection 
@@ -97,11 +96,20 @@ router.post('/collections/mycollections', (req, res) => {
 
             // redirect with message
             req.session.message = 'Collection Added';
-            res.redirect(`/collections/mycollections`);
 
         }
 
-    });
+
+    } catch (err) {
+            
+        console.error("Error:", err);
+        req.session.message = `Failed to create collection, unexpected error`;
+
+
+    } finally {
+
+        res.redirect(`/collections/mycollections`);
+    }
 
 });
 

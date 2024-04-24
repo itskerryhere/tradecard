@@ -8,6 +8,9 @@ router.get('/wishlist', async (req, res) => {
 
     const sessionobj = req.session;
 
+    const message = req.session.message;
+    req.session.message = null;
+
     if (sessionobj.authen) {
         // get userid
         let userid = sessionobj.authen;
@@ -46,7 +49,7 @@ router.get('/wishlist', async (req, res) => {
         let cardCount = wishlistResult.length;
             
         // pass the fetched user data to the accounts route
-        res.render('wishlist', { title: 'My Wishlist', userinfo: userResult, wishlistinfo: wishlistResult, cardCount, sessionobj });
+        res.render('wishlist', { title: 'My Wishlist', userinfo: userResult, wishlistinfo: wishlistResult, cardCount, message, sessionobj });
 
 
     } else {
@@ -57,15 +60,26 @@ router.get('/wishlist', async (req, res) => {
 // delete card from wishlist
 router.post('/wishlist', async (req, res) => {
 
-    const sessionobj = req.session;
-    const deleteCardWishlist = `DELETE FROM wishlist WHERE user_id = ? AND card_id = ?;`;
-    let userid = sessionobj.authen;
-    let cardid = req.body.deleteCardWishlist;
+    try {
 
-    await connection.promise().query(deleteCardWishlist, [userid, cardid]);
-    
-    // reload page
-    res.redirect(`/wishlist`);
+        const sessionobj = req.session;
+        let userid = sessionobj.authen;
+        let cardid = req.body.deleteCardWishlist;
+
+        const deleteCardWishlist = `DELETE FROM wishlist WHERE user_id = ? AND card_id = ?;`;
+        await connection.promise().query(deleteCardWishlist, [userid, cardid]);
+        
+        // reload page
+        req.session.message = 'Deleted card from wishlist';
+        res.redirect(`/wishlist`);
+
+    } catch (err) {
+                
+        console.error("Error:", err);
+        req.session.message = 'Failed to delete card from wishlist';
+        res.redirect(`/wishlist`);
+        
+    }
 
 });
 

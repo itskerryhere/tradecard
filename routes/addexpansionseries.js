@@ -37,65 +37,73 @@ router.post('/addexpansionseries', async (req, res) => {
     const sessionobj = req.session;  
     const formId = req.body.expanseriesForm;
 
-    // edit details form
-    if (formId === 'addSeries') {
+    try {
 
-        let seriesname = req.body.seriesName;
+        // edit details form
+        if (formId === 'addSeries') {
 
-        // check is series name already exists
-        const checkSeriesExist = `SELECT * FROM series WHERE series_name = ?;`;
-        let [seriesExistResult] = await connection.promise().query(checkSeriesExist, [seriesname]);
+            let seriesname = req.body.seriesName;
 
-        // if do
-        if (seriesExistResult.length > 0) {
+            // check is series name already exists
+            const checkSeriesExist = `SELECT * FROM series WHERE series_name = ?;`;
+            let [seriesExistResult] = await connection.promise().query(checkSeriesExist, [seriesname]);
 
-            // redirect with message
-            req.session.message = 'Series Already Exists';
-            res.redirect(`/addexpansionseries`);
+            // if do
+            if (seriesExistResult.length > 0) {
 
-        // if don't 
-        } else {
+                // redirect with message
+                req.session.message = 'Series Already Exists';
 
-            // add
-            const addSeries = `INSERT INTO series(series_name) VALUES (?);`;
-            await connection.promise().query(addSeries, [seriesname]);
+            // if don't 
+            } else {
 
-            // redirect with message
-            req.session.message = 'Series Added';
-            res.redirect(`/addexpansionseries`);
+                // add
+                const addSeries = `INSERT INTO series(series_name) VALUES (?);`;
+                await connection.promise().query(addSeries, [seriesname]);
 
+                // redirect with message
+                req.session.message = 'Series Added';
+
+            }
+
+        } else if (formId === 'addExpansion') {
+
+            let expansionname = req.body.expansionName;
+            let seriesbelong = req.body.seriesBelong;
+            let expansiondate = req.body.expansionDate;
+
+            // check if expansion name exists
+            const checkExpansionExist = `SELECT * FROM expansion WHERE expansion_name = ?;`;
+            let [expansionExistResult] = await connection.promise().query(checkExpansionExist, [expansionname]);
+
+            // if does
+            if (expansionExistResult.length > 0) {
+
+                // redirect with message
+                req.session.message = 'Expansion Already Exists';
+
+            // if doesn't
+            } else {
+
+                // add expansion and link to series
+                const addExpansion = `INSERT INTO expansion (expansion_name, expansion_release_date, series_id) VALUES (? , ?, ?);`;
+                await connection.promise().query(addExpansion, [expansionname, expansiondate, seriesbelong]);
+
+                // redirect with message
+                req.session.message = 'Expansion Added';
+
+            }
+            
         }
 
-    } else if (formId === 'addExpansion') {
-
-        let expansionname = req.body.expansionName;
-        let seriesbelong = req.body.seriesBelong;
-        let expansiondate = req.body.expansionDate;
-
-        // check if expansion name exists
-        const checkExpansionExist = `SELECT * FROM expansion WHERE expansion_name = ?;`;
-        let [expansionExistResult] = await connection.promise().query(checkExpansionExist, [expansionname]);
-
-        // if does
-        if (expansionExistResult.length > 0) {
-
-            // redirect with message
-            req.session.message = 'Expansion Already Exists';
-            res.redirect(`/addexpansionseries`);
-
-        // if doesn't
-        } else {
-
-            // add expansion and link to series
-            const addExpansion = `INSERT INTO expansion (expansion_name, expansion_release_date, series_id) VALUES (? , ?, ?);`;
-            await connection.promise().query(addExpansion, [expansionname, expansiondate, seriesbelong]);
-
-            // redirect with message
-            req.session.message = 'Expansion Added';
-            res.redirect(`/addexpansionseries`);
-
-        }
+    } catch (err) {
         
+        console.error("Error:", err);
+        req.session.message = 'Failed to add expansion or series, unexpected error';
+
+    } finally {
+
+        res.redirect(`/addexpansionseries`);
     }
 
 });

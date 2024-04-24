@@ -30,23 +30,23 @@ router.post('/login', async (req, res) =>  {
     let password = req.body.password;
 
 
-    // see if any user in database matches email and password 
-    const checkUser = `SELECT * FROM user WHERE email = ? `;
+    try {
 
-    connection.query(checkUser, [email], async (err, result) => {
-       if (err) throw err;
+        // see if any user in database matches email and password 
+        const checkUser = `SELECT * FROM user WHERE email = ? `;
+        let [checkUserResult] = await connection.promise().query(checkUser, [email]);
 
-       let getNumOfUsers = result.length; // should be 1 always, as no duplicate email 
+        let getNumOfUsers = checkUserResult.length; // should be 1 always, as no duplicate email 
 
-       // if user exist
-       if (getNumOfUsers > 0) {
+        // if user exist
+        if (getNumOfUsers > 0) {
 
             // unhash password 
             const getSaltInUse = `SELECT SUBSTRING(password, 1, 6) AS salt FROM user WHERE email = ?;`;
             let saltInUse = await connection.promise().query(getSaltInUse, [email]);
             saltInUse = saltInUse[0][0].salt; // accessing the Buffer values, aut oconverts from numerical to values
 
-           
+        
             const getStoredSaltedHashInUse = `SELECT SUBSTRING(password, 7, 40) AS storedSaltedHash FROM user WHERE email = ?;`;
             let storedSaltedHashInUse = await connection.promise().query(getStoredSaltedHashInUse, [email]);
             storedSaltedHashInUse = storedSaltedHashInUse[0][0].storedSaltedHash;
@@ -54,7 +54,6 @@ router.post('/login', async (req, res) =>  {
 
             const getSaltedHash = `SELECT SHA1(CONCAT(?, ?)) AS saltedHash;`
             let saltedHash = await connection.promise().query(getSaltedHash, [saltInUse, password]);
-            // saltedHash = JSON.stringify(saltedHash[0]); // to test 
             saltedHash = saltedHash[0][0].saltedHash;
 
             
@@ -69,7 +68,6 @@ router.post('/login', async (req, res) =>  {
 
             // if correct password
             if (result[0].length > 0) {
-  
                 
                 let userid = JSON.stringify(result[0][0].user_id); 
                 sessionobj.authen = userid; // creating session with user id
@@ -85,15 +83,22 @@ router.post('/login', async (req, res) =>  {
 
             }
 
-        // if user does not exists
-       } else {
-            
+            // if user does not exists
+        } else {
+                
             // redirect with message
             req.session.message = 'Invalid email, try again';
             res.redirect(`/login`);
-       }
+        }
        
-   });
+
+    } catch (err) {
+            
+        console.error("Error:", err);
+        req.session.message = 'Failed to log in, unexpected error';
+        res.redirect(`/login`);
+        
+    }
 
 });
 
