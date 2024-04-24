@@ -151,8 +151,18 @@
                     </div>
                 </div>
                 <div>
+
+
+                    <% if (message) { %>
+                        <div class="card-count-tab">
+                            <article>
+                                <small><%= message %></small>
+                            </article>
+                        </div>
+                    <% } %>
                     <!-- Right - Display cards-->
                     <div class="cards-grid">
+                        
                         <% if (cardCount === 0) { %>
                             <p>No cards matching this search</p>
                         <% } %>
@@ -171,6 +181,17 @@
                                         </p>
                                     </hgroup>
                                 </div>
+                                <% if (adminStatus === true) { %>
+                                <div class="centre-item grid">
+                                    <div>
+                                        <a href="/editcard/<%=card.card_id%>"><button class="admin-button">Edit</button></a>
+                                    </div>
+                                    <div class="delete-tab">
+                                        <a href="#"><button class="admin-button">Delete</button></a>
+                                    </div> 
+                                </div>
+                                <br>
+                                <% } %>
                             </article>
                             <% }); %>
 

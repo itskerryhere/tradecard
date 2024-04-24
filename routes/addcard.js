@@ -78,60 +78,74 @@ router.post('/addcard', async (req, res) => {
     // let attack2type2 = req.body.attack2Type2;
     // let attack2type2strength = req.body.attack2Type2Strength;
 
+    
+      // check if card exists (1 attack only)
+      if (attack2name === '' && attack2damage === '') {
 
-    // check if card exists 
-    const checkCardExist = `SELECT * FROM card WHERE pokemon_name = ? AND card_img_url = ? AND card_hp = ? AND pokedex_num = ? AND evolves_from = ? 
-        AND holo = ? AND rarity_id = ? AND type_id = ? AND stage_id = ? AND weakness_id = ? AND expansion_id = ?;`;
-    let [checkCardResult] = await connection.promise().query(checkCardExist, [pokemonname, url, hp, pokedexnumber, evolvesfrom, holo, rarity, type, stage, weakness, expansion]);
+        const checkCardExist = `SELECT * FROM card
+        INNER JOIN card_attack ON card.card_id = card_attack.card_id
+        INNER JOIN attack ON card_attack.attack_id = attack.attack_id
+        WHERE pokemon_name = ? AND card_img_url = ? AND card_hp = ? AND pokedex_num = ? AND evolves_from = ? 
+        AND holo = ? AND rarity_id = ? AND type_id = ? AND stage_id = ? AND weakness_id = ? AND expansion_id = ?
+        AND attack_name = ? AND attack_damage = ?;`;
+        let [checkCardResult] = await connection.promise().query(checkCardExist, 
+            [pokemonname, url, hp, pokedexnumber, evolvesfrom, holo, rarity, type, stage, weakness, expansion, attackname, attackdamage]);
 
-    // check if attack 1 exists  
-    const checkAttackExist = `SELECT * FROM attack WHERE attack_name = ? AND attack_damage = ?;`;
-    let [checkAttackResult] = await connection.promise().query(checkAttackExist, [attackname, attackdamage]);
-
-
-    // check if user attempted entering any of the minimum options needed for second attack entry
-    // check if at least one option is entered
-    if (attack2name !== '' || attack2damage !== '') {
-        // if at least one option is entered but not all three - error message
-        if (attack2name === '' || attack2damage === '') {
-
-        // redirect with message
-        req.session.message = `Fill in attack name, damage and type (minimum requirement) for second attack. Leave blank if no second attack`;
-        return res.redirect(`/addcard`);
-        }
-
-    }
-
-    // check card exist
-    if (checkCardResult.length > 0 && checkAttackResult.length > 0) {
-        // redirect with message
-        req.session.message = `Card already exists, try another card`;
-        return res.redirect(`/addcard`);
-    }
-
-    // check if attack 2 exists
-    let checkAttack2Result = null;
-    if (attack2name !== '') {
-        const checkAttack2Exist = `SELECT * FROM attack WHERE attack_name = ? AND attack_damage = ?;`;
-        [checkAttack2Result] = await connection.promise().query(checkAttack2Exist, [attack2name, attack2damage]);
-
-        // check card exist
-        if (checkCardResult.length > 0 && checkAttackResult.length > 0 && checkAttack2Result.length > 0) {
+        if (checkCardResult.length > 0) {
             // redirect with message
             req.session.message = `Card already exists, try another card`;
             return res.redirect(`/addcard`);
         }
 
-    } 
-
-    // check if attack 2 is same name as attack 1
-    if (attack2name === attackname) {
-         // reload page with return message that need to fill for second attack for card to add
-         req.session.message = `Second attack cannot have the same name as first attack`;
-         return res.redirect(`/addcard`);
-
     }
     
+    
+
+    // check if user attempted entering any of the minimum options needed for second attack entry
+    // check if at least one option is entered but not all needed - error message
+    if (attack2name !== '' || attack2damage !== '') {
+
+        if (attack2name === '' || attack2damage === '') {
+
+            // redirect with message
+            req.session.message = `Fill in attack name, damage (minimum requirement) for second attack. Leave blank if no second attack`;
+            return res.redirect(`/addcard`);
+        }
+
+    }
+
+    // check if attack2 exists if / is the same 
+    if (attack2name !== '' && attack2damage !== '') {
+
+        // check if attack 2 is same name as attack 1
+        if (attack2name.toLowerCase() === attackname.toLowerCase() && attack2damage === attackdamage) {
+            // reload page with return message that need to fill for second attack for card to add
+            req.session.message = `Second attack cannot have the same details as first attack`;
+            return res.redirect(`/addcard`);
+
+        } else {
+            const checkCard2Exist = `SELECT * FROM card
+            INNER JOIN card_attack AS card1 ON card.card_id = card1.card_id
+            INNER JOIN attack AS attack1 ON card1.attack_id = attack1.attack_id
+            INNER JOIN card_attack AS card2 ON card.card_id = card2.card_id
+            INNER JOIN attack AS attack2 ON card2.attack_id = attack2.attack_id
+            WHERE pokemon_name = ? AND card_img_url = ? AND card_hp = ? AND pokedex_num = ? AND evolves_from = ? 
+            AND holo = ? AND rarity_id = ? AND type_id = ? AND stage_id = ? AND weakness_id = ? AND expansion_id = ?
+            AND attack1.attack_name = ? AND attack1.attack_damage = ?
+            AND attack2.attack_name = ? AND attack2.attack_damage = ?;`;
+            let [checkCard2Result] = await connection.promise().query(checkCard2Exist,
+                [pokemonname, url, hp, pokedexnumber, evolvesfrom, holo, rarity, type, stage, weakness, expansion, 
+                    attackname, attackdamage, attack2name, attack2damage]);
+    
+            // check card exist
+            if (checkCard2Result.length > 0) {
+                // redirect with message
+                req.session.message = `Card already exists, try another card`;
+                return res.redirect(`/addcard`);
+            }
+        }
+
+    } 
     
     // if card does not exist and all criterias checked
 
@@ -140,7 +154,11 @@ router.post('/addcard', async (req, res) => {
     await connection.promise().query(startTransaction);
 
     try {
-        // if attack 1 does not exist - add new attack details and link to type and strength
+        // check if attack 1 exists  
+        const checkAttackExist = `SELECT * FROM attack WHERE attack_name = ? AND attack_damage = ?;`;
+        let [checkAttackResult] = await connection.promise().query(checkAttackExist, [attackname, attackdamage]);
+
+        // if attack 1 does not exist - add new attack details
         let attackid = null;
         if (checkAttackResult.length === 0) {
             // add to attack table
@@ -186,7 +204,10 @@ router.post('/addcard', async (req, res) => {
         let attack2id = null;
         if (attack2name !== '' && attack2damage !== '') {
 
-            // if not exist - add new attack details and link to type and strength
+            const checkAttack2Exist = `SELECT * FROM attack WHERE attack_name = ? AND attack_damage = ?;`;
+            let [checkAttack2Result] = await connection.promise().query(checkAttack2Exist, [attack2name, attack2damage]);
+
+            // if not exist - add new attack details 
             if (checkAttack2Result.length === 0) {
 
                 // add to attack table

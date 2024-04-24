@@ -15,6 +15,11 @@
             <p>Update with the latest information!</p>
         </hgroup>
 
+        <div class="centre-item">
+            <a href="/cards"> <button class="primary rounded-button">Edit Different Card</button></a>
+        </div>
+        <br>
+
         <!-- add card section -->
         <div class="add-card-details">
             <article>
@@ -117,7 +122,7 @@
                                 <label>
                                    Weakness
                                 <select name="weakness" aria-label="weakness" required>
-                                    <option value="<%=weakness.type_id%>">
+                                    <option value="<%=weakness.weakness_id%>">
                                         <%=weakness.type_name%>
                                     </option>
                                     <% typelist.forEach((type) => { %>
@@ -158,21 +163,6 @@
                                 </select>
                                 </label>
                             </div>
-                            <div>
-                                <label>
-                                    Series Name
-                                <select name="series" aria-label="series name" required>
-                                    <option value="<%=pokemon.series_id%>">
-                                     <%=pokemon.series_name%>
-                                    </option>
-                                    <% serieslist.forEach((series) => { %>
-                                        <option value="<%=series.series_id%>">
-                                            <%=series.series_name%>
-                                        </option>
-                                    <% }); %>
-                                </select>
-                                </label>
-                            </div>
                         </div>
                     
                         <hr>
@@ -201,62 +191,6 @@
                             <% } %>
                             <small>Leave blank if not applicable</small>
                             </label>
-                        </div>
-                        <div class="no-row-gap grid">
-                            <div>
-                                <label>
-                                    Attack Type
-                                 <select name="attackType" aria-label="attack type" required>
-                                     <option value="<%=attack[0].attack_id%>"> 
-                                      <%=attack[0].type_name%>
-                                     </option>
-                                     <% typelist.forEach((type) => { %>
-                                        <option value="<%=type.type_id%>">
-                                            <%=type.type_name%>
-                                        </option>
-                                    <% }); %>
-                                 </select>
-                                 </label>
-                            </div>
-                            <div>
-                                <label>
-                                    Attack Type Strength
-                                    <input type="number" name="attackStrength" value="<%=attack[0].strength%>" aria-label="attack strength" required/>
-                                </label>
-                            </div>
-                        </div>
-                        <div class="no-row-gap grid">
-                            <div>
-                                <label>
-                                    Attack Type 2 
-                                 <select name="attackType2" aria-label="attack type 2" required>
-                                    <% if (attack.length === 2) { %>
-                                     <option value="<%=attack[1].attack_id%>">
-                                      <%=attack[1].type_name%>
-                                    </option>
-                                      <% }  else { %>
-                                        <option selected value="None"> - </option>
-                                     <% } %>
-                                     <% typelist.forEach((type) => { %>
-                                     <option value="<%=type.type_id%>">
-                                        <%=type.type_name%>
-                                     </option>
-                                     <% }); %>
-                                 </select>
-                                 <small>Must be different type, select 'None' if not applicable</small>
-                                 </label>
-                            </div>
-                            <div>
-                                <label>
-                                    Attack Type 2 Strength 
-                                    <% if (attack.length === 2) { %>
-                                        <input type="number" name="attackType2Strength" value="<%=attack[1].strength%>" aria-label="Text"/>
-                                    <% }  else { %>
-                                        <input type="number" name="attackType2Strength" placeholder="-" aria-label="Text"/>
-                                    <% } %>
-                                    <small>Leave blank if not applicable, default to 1 if left blank with an attack type</small>
-                                </label>
-                            </div>
                         </div>
 
                         <hr>
@@ -300,78 +234,9 @@
                             <small>Leave blank if not applicable</small>
                             </label>
                         </div>
-                        <div class="no-row-gap grid">
-                            <div>
-                                <label>
-                                    Attack Type
-                                 <select name="attack2Type" aria-label="Attack Type" required>
-                                    <% if (attack2 !== null) { %>
-                                        <option value="<%=attack2[0].type_id%>" selected>
-                                        <%=attack2[0].type_name%>
-                                        </option>
-                                    <% } else { %>
-                                        <option selected value="None" disabled> - </option>
-                                    <% } %>
-                                     <option>None</option>
-                                     <% typelist.forEach((type) => { %>
-                                        <option value="<%=type.type_id%>">
-                                            <%=type.type_name%>
-                                        </option>
-                                    <% }); %>
-                                 </select>
-                                 <small>Select 'None' if not applicable</small>
-                                 </label>
-                            </div>
-                            <div>
-                                <label>
-                                    Attack Type Strength
-                                    <% if (attack2 !== null) { %>
-                                        <input type="number" name="attack2Strength" value="<%=attack2[0].strength%>" aria-label="attack strength"/>
-                                    <% } else { %>
-                                        <input type="number" name="attack2Strength" placeholder="-" aria-label="attack strength"/>
-                                    <% } %>
-                                    <small>Leave blank if not applicable, default to 1 if left blank with an attack type</small>
-                                </label>
-                            </div>
-                        </div>
-                        <div class="no-row-gap grid">
-                            <div>
-                                <label>
-                                    Attack Type 2 
-                                    <select name="attack2Type2" aria-label="Attack Type" required>
-                                        <% if (attack2 !== null && attack2.length > 0) { %>
-                                            <option selected value="<%=attack2[1].type_id%>"><%=attack2[1].type_name%></option>
-                                        <% } else { %>
-                                            <option selected disabled value="None"> - </option>
-                                        <% } %>
-                                     </option>
-                                     <option>None</option>
-                                     <% typelist.forEach((type) => { %>
-                                        <option value="<%=type.type_id%>">
-                                            <%=type.type_name%>
-                                        </option>
-                                    <% }); %>
-                                 </select>
-                                 <small>Must be different type, select 'None' if not applicable</small>
-                                 </label>
-                                 
-                            </div>
-                            <div>
-                                <label>
-                                    Attack Type 2 Strength 
-                                    <% if (attack2 !== null && attack2.length > 0) { %>
-                                        <input type="number" name="attack2Type2Strength" value="<%=attack2[1].strength%>" aria-label="attack strength"/>
-                                    <% } else { %>
-                                        <input type="number" name="attack2Type2Strength" placeholder="-" aria-label="attack strength"/>
-                                    <% } %>
-                                    <small>Leave blank if not applicable, default to 1 if left blank with an attack type</small>
-                                </label>
-                            </div>
-                        </div>
-   
                     </fieldset>
 
-                    <!-- <input type="submit" value="Edit This Card"/> -->
+                    <input type="submit" value="Edit This Card"/>
                 </form>   
                 
             </article>

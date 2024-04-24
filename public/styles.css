@@ -144,6 +144,10 @@ body {
     padding-bottom: 10px;
 }
 
+.delete-button {
+    background-color: red;
+}
+
 
 /* card info page  */
 .card-info-row {
@@ -185,6 +189,11 @@ body {
 .symbol-img {
     max-width: 20px;
     padding-bottom: 4px;
+}
+
+.cards-message-tab {
+    padding-top: 0px;
+    padding-bottom: 0px;
 }
 
 

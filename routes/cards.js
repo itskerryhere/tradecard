@@ -12,6 +12,9 @@ router.get('/cards', async (req, res) =>  {
     const {sort} = req.query;
     let adminStatus = false; // default
 
+    const message = req.session.message;
+    req.session.message = null;
+
     // get admin
     const getAdmin = `SELECT user_id FROM user WHERE role = 'admin' AND user_id = ?;`;
     let [admin] = await connection.promise().query(getAdmin, [userid]);
@@ -116,7 +119,7 @@ router.get('/cards', async (req, res) =>  {
 
     
     res.render('cards', { title: 'Cards', cardlist: cardsResult, typelist: typesResult, weaknesslist: weaknessResult, 
-    raritylist: rarityResult, stagelist: stageResult, expansionlist: expansionResult, serieslist: seriesResult, cardCount, adminStatus, sessionobj });
+    raritylist: rarityResult, stagelist: stageResult, expansionlist: expansionResult, serieslist: seriesResult, cardCount, adminStatus, message, sessionobj });
    
 });
 
