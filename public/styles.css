@@ -23,7 +23,6 @@ nav li {
 .centre-item {
     display: flex;
     justify-content: center;
-    align-items: center;
 }
 
 /* footer */
@@ -173,7 +172,7 @@ body {
     /* Take up 2/3 of the available space */
 }
 
-.card-info-details-bottom {
+.pokemon-info {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     /* Two columns */
@@ -194,6 +193,20 @@ body {
 .cards-message-tab {
     padding-top: 0px;
     padding-bottom: 0px;
+}
+
+.delete-card-tab summary {
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+.attack-info {
+    display: flex;
+    justify-content: space-between;
+}
+
+.attack-info h5 {
+    margin-bottom: 5px;
 }
 
 
@@ -232,6 +245,10 @@ body {
 /* account settings page */
 .edit-account-details label {
     text-align: start;
+}
+
+.edit-card-tab {
+    margin-bottom: 17.5px;
 }
 
 .delete-tab button {
@@ -322,7 +339,6 @@ body {
 
     .card {
         max-width: calc(50% - 1%);
-        /* Calculate the max-width considering margin, could be 33% */
     }
 
     /* card info page */
@@ -341,17 +357,11 @@ body {
 
     }
 
-    .card-info-details-bottom {
+    .pokemon-info {
         grid-template-columns: repeat(1, 1fr);
-        /* One column for tablet mode */
     }
 
-    .card-info-add-buttons {
-        display: flex;
-        flex-direction: column;
-        flex-wrap: wrap;
-        align-items: center;
-    }
+    
 
 
     /* account page */
@@ -377,7 +387,7 @@ body {
 
     .card {
         max-width: calc(50% - 1%);
-        /* Calculate the max-width considering margin */
+        /* calculate the max-width considering margin */
     }
 
     /* card info page */
@@ -395,7 +405,12 @@ body {
 
     .card-info-details {
         flex: none;
-        /* Reset flex value to prevent resizing */
+    }
+
+    .card-info-add-buttons {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
     }
 
     /* welcome route */

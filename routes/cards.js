@@ -27,16 +27,19 @@ router.get('/cards', async (req, res) =>  {
         } 
 
         // show all cards 
-        let getCards = `SELECT * FROM card 
+        let getCards = `SELECT DISTINCT card.* FROM card 
         INNER JOIN rarity ON card.rarity_id = rarity.rarity_id
-        INNER JOIN type ON card.type_id = type.type_id`;
+        INNER JOIN type ON card.type_id = type.type_id
+        INNER JOIN card_attack ON card.card_id = card_attack.card_id
+        INNER JOIN attack ON card_attack.attack_id = attack.attack_id`;
 
         // If a search keyword is provided, add search filtering to the query
         if (searchKeyword) {
             getCards += ` WHERE pokemon_name LIKE '%${searchKeyword}%' 
             OR rarity_name = '${searchKeyword}'
-            OR type_name = '${searchKeyword}'`;
-            // add more search queries
+            OR type_name = '${searchKeyword}'
+            OR attack_name LIKE '%${searchKeyword}%'
+            OR attack_description LIKE '%${searchKeyword}%'`;
         }
 
         // add filters based on the query parameters

@@ -36,23 +36,25 @@
             </div>
             <hr>
             <div class="card-info-details">
-                <div class="">
-                    <!-- iterate through attack info -->
-                    <hgroup>
-                        <% attackinfo.forEach((attack) => { %>
-                            <h5><%= attack.attack_name %> 
-                                <% if (attack.attack_damage !== 0) { %>
-                                    - <%= attack.attack_damage %></h5>
-                                <% } else { %>
-                                    </h5>
-                                <% } %>
-                            <p><%= attack.attack_description %></p>
-                            <br>
-                        <% }); %>
-                    </hgroup>
-                </div>
+                <!-- iterate through attack info -->
+                <hgroup>
+                    <% attackinfo.forEach((attack) => { %>
+                        <div class="attack-info">
+                            <div>
+                                <h5><%= attack.attack_name %> </h5>
+                            </div>
+                            <% if (attack.attack_damage !== 0) { %>
+                            <div>
+                                <h5> <%= attack.attack_damage %></h5>
+                            </div>
+                            <% } %>
+                        </div>
+                        <p><%= attack.attack_description %></p>
+                        <br>
+                    <% }); %>
+                </hgroup>
                 <hr>
-                <div class="card-info-details-bottom">
+                <div class="pokemon-info">
                     <div>
                         <p>
                             HP: <b><%=cardinfo[0].card_hp%></b>
@@ -95,67 +97,69 @@
                     
                 </div>
                 <hr>
-                <div class="card-info-add-buttons">
-                    <!-- if logged in -->
-                    <% if(sessionobj.authen) { %>
-                    
-                    <!-- add to collection -->
-                    <form action="/cards/<%=cardinfo[0].card_id%>" method="POST">
-                        <input type="hidden" name="cardAction" value="addToCollection">
-                        <details class="dropdown outline">
-                            <summary role="button">Add to Collection</summary>  
-                            <ul> 
-                                <% if (usercollectionsinfo.length === 0) { %>
-                                    <li><label><a href="/collections/mycollections">Create a Collection</a></label></li>
-                                    
-                                <% } else { %>
-                                    <% usercollectionsinfo.forEach((collection)=> { %>
-                                        
-                                    <li><label>
-                                        <input type="radio" name="collectionId" value="<%=collection.collection_id%>">
-                                        <%=collection.collection_name%>
-                                    </label></li>
-                                    <% }); %>
-                                    <li>
-                                        <button class="outline" type="submit">Add</button>
-                                    </li>
-                                
-                                <% } %> 
-                            </ul>
-                        </form>
-
-                        </details>
-                    
-
-                    <!-- add to wishlist -->
-                    <form action="/cards/<%=cardinfo[0].card_id%>" method="POST">
-                    <input type="hidden" name="cardAction" value="addToWishlist">
-                    <button type="submit" class="outline">Add to Wishlist</button>
-                    </form>
-
-                    <% if (adminStatus === true) { %>
-                        <div>
-                            <a href="/editcard/<%=cardinfo[0].card_id%>"><button class="admin-button">Edit Card Details</button></a>
-                        </div>
-                        <details role="button" class="delete-tab outline">
-                            <summary>Delete Card</summary>
-                            <h3>ARE YOU SURE?</h3>
-                            <h4>Pokemon will be deleted forever</h4>
-                            <form action="/deletecard" method="POST">
-                                <input type="hidden" name="deleteCard" value="<%=cardinfo[0].card_id%>">
-                                <button type="submit">DELETE</button>
-                            </form> 
-                        </details>
-                    <% } %>
-
-                    <!-- if not logged in -->
-                    <% } else { %>
-                        <a href="/login"><button>Log in to add to collection or wishlist</button></a>
-                    <% } %>
-
-                </div>
             </div>
         </div>
+        <br>
+        <div class="card-info-add-buttons">
+            <!-- if logged in -->
+            <% if (sessionobj.authen) { %>
+            
+                <!-- add to collection -->
+                <form action="/cards/<%=cardinfo[0].card_id%>" method="POST">
+                    <input type="hidden" name="cardAction" value="addToCollection">
+                    <details class="dropdown outline">
+                        <summary role="button">Add to Collection</summary>  
+                        <ul> 
+                            <% if (usercollectionsinfo.length === 0) { %>
+                                <li><label><a href="/collections/mycollections">Create a Collection</a></label></li>
+                                
+                            <% } else { %>
+                                <% usercollectionsinfo.forEach((collection)=> { %>
+                                    
+                                <li><label>
+                                    <input type="radio" name="collectionId" value="<%=collection.collection_id%>">
+                                    <%=collection.collection_name%>
+                                </label></li>
+                                <% }); %>
+                                <li>
+                                    <button class="outline" type="submit">Add</button>
+                                </li>
+                            
+                            <% } %> 
+                        </ul>
+                    </form>
+
+                    </details>
+                
+
+                <!-- add to wishlist -->
+                <form action="/cards/<%=cardinfo[0].card_id%>" method="POST">
+                    <input type="hidden" name="cardAction" value="addToWishlist">
+                    <button type="submit" class="outline">Add to Wishlist</button>
+                </form>
+
+                <% if (adminStatus === true) { %>
+                    <div class="edit-card-tab">
+                        <a href="/editcard/<%=cardinfo[0].card_id%>"><button class="admin-button">Edit Card</button></a>
+                    </div>
+                    <details role="button" class="delete-card-tab delete-tab outline">
+                        <summary>Delete Card</summary>
+                        <h3>ARE YOU SURE?</h3>
+                        <p>Pokemon will be deleted forever</p>
+                        <form action="/deletecard" method="POST">
+                            <input type="hidden" name="deleteCard" value="<%=cardinfo[0].card_id%>">
+                            <button type="submit">DELETE</button>
+                        </form> 
+                    </details>
+                <% } %>
+
+            <!-- if not logged in -->
+            <% } else { %>
+                <a href="/login"><button>Log in to add to collection or wishlist</button></a>
+            <% } %>
+                
+        </div>
+        
         </article>
 
         <!-- back to cards page button -->

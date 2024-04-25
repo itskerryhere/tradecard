@@ -15,8 +15,9 @@
             <p>Update with the latest information!</p>
         </hgroup>
 
-        <div class="centre-item">
+        <div class="centre-item grid">
             <a href="/cards"> <button class="primary rounded-button">Edit Different Card</button></a>
+            <a href="/addexpansionseries"> <button class="primary rounded-button">Add New Expansion / Series</button></a>
             <form action="/deletecard" method="POST">
                 <div class="delete-tab">
                     <input type="hidden" name="deleteCard" value="<%=pokemon.card_id%>">
@@ -24,7 +25,6 @@
                 </div> 
             </form> 
         </div>
-        <br>
 
         <!-- add card section -->
         <div class="add-card-details">

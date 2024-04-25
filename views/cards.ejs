@@ -20,7 +20,7 @@
                     <!-- search bar -->
                     <div>
                         <form role="search">
-                            <input name="search" type="search" placeholder="Search cards" />
+                            <input name="search" type="search" placeholder="Search name / attack" />
                             <input type="submit" value="Search" />
                         </form>
                     </div>
@@ -189,17 +189,14 @@
                                     <div>
                                         <a href="/editcard/<%=card.card_id%>"><button class="admin-button">Edit</button></a>
                                     </div>
-                                    
+                                   
                                     <form action="/deletecard" method="POST">
-                                        <div class="delete-tab">
+                                        <div class="delete-tab adjust-delete-button">
                                             <input type="hidden" name="deleteCard" value="<%=card.card_id%>">
-                                            <button type="submit">DELETE</button>
+                                            <button type="submit">Delete</button>
                                         </div> 
-                                    </form> 
-
-                                    
+                                    </form>   
                                 </div>
-                                <br>
                                 <% } %>
                             </article>
                             <% }); %>

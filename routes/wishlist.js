@@ -25,10 +25,12 @@ router.get('/wishlist', async (req, res) => {
         INNER JOIN rarity ON card.rarity_id = rarity.rarity_id
         WHERE user_id = ?;`;
 
-        let getWishlistSearch = `SELECT * FROM wishlist 
+        let getWishlistSearch = `SELECT DISTINCT card.* FROM wishlist 
         INNER JOIN card ON wishlist.card_id = card.card_id
         INNER JOIN type ON card.type_id = type.type_id
-        INNER JOIN rarity ON card.rarity_id = rarity.rarity_id`;
+        INNER JOIN rarity ON card.rarity_id = rarity.rarity_id
+        INNER JOIN card_attack ON card.card_id = card_attack.card_id
+        INNER JOIN attack ON card_attack.attack_id = attack.attack_id`;
 
         // If a search keyword is provided, add search filtering to the query
         let wishlistResult = null;
@@ -36,6 +38,8 @@ router.get('/wishlist', async (req, res) => {
             getWishlistSearch += ` WHERE pokemon_name LIKE '%${searchKeyword}%' 
             OR rarity_name = '${searchKeyword}'
             OR type_name = '${searchKeyword}'
+            OR attack_name LIKE '%${searchKeyword}%'
+            OR attack_description LIKE '%${searchKeyword}%'
             AND user_id = ?;`;
 
             [wishlistResult] = await connection.promise().query(getWishlistSearch, [userid]);
