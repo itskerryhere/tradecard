@@ -27,7 +27,7 @@ router.get('/cards', async (req, res) =>  {
         } 
 
         // show all cards 
-        let getCards = `SELECT DISTINCT card.* FROM card 
+        let getCards = `SELECT DISTINCT card.*, rarity.rarity_name, rarity.rarity_symbol_url, type.type_name, type.type_symbol_url FROM card 
         INNER JOIN rarity ON card.rarity_id = rarity.rarity_id
         INNER JOIN type ON card.type_id = type.type_id
         INNER JOIN card_attack ON card.card_id = card_attack.card_id
@@ -125,6 +125,7 @@ router.get('/cards', async (req, res) =>  {
         const getSeries = `SELECT * FROM series ORDER BY series_name ASC;`;
         let [seriesResult] = await connection.promise().query(getSeries);
         
+
         res.render('cards', { title: 'Cards', cardlist: cardsResult, typelist: typesResult, weaknesslist: weaknessResult, 
         raritylist: rarityResult, stagelist: stageResult, expansionlist: expansionResult, serieslist: seriesResult, cardCount, adminStatus, message: message, sessionobj });
 

@@ -15,6 +15,7 @@ router.get('/wishlist', async (req, res) => {
         // get userid
         let userid = sessionobj.authen;
         const searchKeyword = req.query.search;
+        let searchStatus = false;
 
         // get user, and get their wishlist
         const getUser = `SELECT * FROM user WHERE user_id = ?;`
@@ -43,6 +44,8 @@ router.get('/wishlist', async (req, res) => {
             AND user_id = ?;`;
 
             [wishlistResult] = await connection.promise().query(getWishlistSearch, [userid]);
+
+            searchStatus = true;
             
         } else {
 
@@ -53,7 +56,7 @@ router.get('/wishlist', async (req, res) => {
         let cardCount = wishlistResult.length;
             
         // pass the fetched user data to the accounts route
-        res.render('wishlist', { title: 'My Wishlist', userinfo: userResult, wishlistinfo: wishlistResult, cardCount, message, sessionobj });
+        res.render('wishlist', { title: 'My Wishlist', userinfo: userResult, wishlistinfo: wishlistResult, cardCount, searchStatus, message, sessionobj });
 
 
     } else {

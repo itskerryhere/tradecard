@@ -177,15 +177,17 @@
                                 <div>
                                     <hgroup>
                                         <h5>
-                                            <%=card.pokemon_name%>
+                                            <%=card.pokemon_name%> 
+                                            <!-- <img src="<%=card.type_symbol_url%>" class="symbol-img">  -->
                                         </h5>
                                         <p>
                                             <%=card.rarity_name%> <img src="<%=card.rarity_symbol_url%>" class="symbol-img">
+                                            <!-- <img src="<%=card.type_symbol_url%>" class="symbol-img"> <%=card.type_name%>  -->
                                         </p>
                                     </hgroup>
                                 </div>
                                 <% if (adminStatus === true) { %>
-                                <div class="centre-item grid">
+                                <div class="cards-edit-delete-tab centre-item grid">
                                     <div>
                                         <a href="/editcard/<%=card.card_id%>"><button class="admin-button">Edit</button></a>
                                     </div>

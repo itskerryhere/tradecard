@@ -41,7 +41,8 @@
             <div>
                 <details role="button" class="outline">
                     <summary>Collection Details</summary>
-                    <small>Created on: <%=collectioninfo.creation_date%></small>
+                    <small>Owner: <%=collectioninfo.first_name%> <%=collectioninfo.last_name%></small><br>
+                    <small>Created on: <%=collectioninfo.creation_date.toLocaleString()%></small>
                 </details>
             </div>
 
@@ -108,33 +109,75 @@
                 <small>Total likes: <b><%=collectioninfo.like_count%></b></small>
         </div>
 
-        <div class="cards-grid">
-            <% cardcollectioninfo.forEach((card)=> { %>
-                <article class="card">
-                    <div>
-                        <a href="/cards/<%=card.card_id%>"><img src="<%=card.card_img_url%>" class="card-pic-padding"></a> 
-                    </div>
-                    <div>
-                        <hgroup>
-                            <h5>
-                                <%=card.pokemon_name%>
-                            </h5>
-                            <p>
-                                <%=card.rarity_name%> <img src="<%=card.rarity_symbol_url%>" class="symbol-img">
-                            </p>
-                        </hgroup>
-                    </div>
+        <div class="collection-comment-grid">
+            <div>
+                <div class="cards-grid">
+                    <% cardcollectioninfo.forEach((card)=> { %>
+                        <article class="card">
+                            <div>
+                                <a href="/cards/<%=card.card_id%>"><img src="<%=card.card_img_url%>" class="card-pic-padding"></a> 
+                            </div>
+                            <div>
+                                <hgroup>
+                                    <h5>
+                                        <%=card.pokemon_name%>
+                                    </h5>
+                                    <p>
+                                        <%=card.rarity_name%> <img src="<%=card.rarity_symbol_url%>" class="symbol-img">
+                                    </p>
+                                </hgroup>
+                            </div>
 
-                    <% if (collectionownerstatus === true) { %>
-                    <form action="#" method="POST" class="wishlist-collections-delete">
-                        <input type="hidden" name="collectionSettings" value="deleteCard">
-                        <input type="hidden" name="cardId" value="<%=card.card_id%>">
-                        <button type="submit">Delete from Collection</button>
+                            <% if (collectionownerstatus === true) { %>
+                            <form action="/collections/<%=collectioninfo.collection_id%>" method="POST" class="wishlist-collections-delete">
+                                <input type="hidden" name="collectionSettings" value="deleteCard">
+                                <input type="hidden" name="cardId" value="<%=card.card_id%>">
+                                <button type="submit">Delete from Collection</button>
+                            </form> 
+                            <% } %>
+                        </article>
+                        <% }); %>
+                    
+                </div>
+            </div>
+            <div class="comment-section">
+                <article>
+                    <h3>Comments</h3>
+                    <small><b><%=commentCount%></b> comments</small><hr>
+                    <!-- display comments -->
+                    <% commentsinfo.forEach((comment) => { %>
+                        <small><b><%=comment.comment_text%></b></small>
+                        <br>
+                        <div class="comment-name-timestamp">
+                            <%=comment.first_name%> <%=comment.last_name%>
+                            <% if (comment.user_id == owner) { %>
+                            (owner)
+                            <% } %>
+                        </div>
+                        <div class="comment-name-timestamp">
+                            <%=comment.comment_timestamp.toLocaleString()%>
+                        </div>
+                        <% if (collectionownerstatus === true) { %>
+                            <div class="delete-tab">
+                                <form action="/collections/<%=collectioninfo.collection_id%>/deletecomment" method="POST">
+                                    <input type="hidden" name="commentId" value="<%=comment.comment_id%>">
+                                    <button type="submit" class="thin-button rounded-button">Delete</button>
+                                </form>
+                            </div>
+                           
+                        <% } %>
+                        <hr>
+                        
+                    <% }); %>
+
+                    <!-- new comment -->
+                    <form action="/collections/<%=collectioninfo.collection_id%>/addcomment" method="POST">
+                        <!-- <input type="hidden" name="collectionSettings" value="comment"> -->
+                        <textarea name="comment" placeholder="250 characters max" aria-label="write a comment" required></textarea>
+                        <button type="submit">Enter</button>
                     </form> 
-                    <% } %>
                 </article>
-                <% }); %>
-             
+            </div>
         </div>
 
         <% if (collectionownerstatus === true) { %>
