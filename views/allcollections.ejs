@@ -51,7 +51,7 @@
                 <a href="/collections/<%=collection.collection_id%>"><img src="<%=collection.type_symbol_url%>" alt="collection logo" class="collection-logo"></a>
                 <hgroup>
                     <h5><a href="/collections/<%=collection.collection_id%>"><%=collection.collection_name%></a></h5>
-                    <p><%=collection.creation_date.toLocaleString()%></p>
+                    <p><%=collection.creation_date.toLocaleString('en-GB')%></p>
                 </hgroup>
             </article> 
             <% }); %>

@@ -30,6 +30,7 @@ router.post('/signup', async (req, res) => {
     let lastname = req.body.lastname;
     let email = req.body.email; 
     let password = req.body.password;
+    let adminrequest = req.body.adminRequest;
 
     try {
         
@@ -70,12 +71,17 @@ router.post('/signup', async (req, res) => {
             // Get the new user id
             let newuserid = result.insertId;
             sessionobj.authen = newuserid; // creating session with user id
+
+
+            // send admin request
+            if (adminrequest === 'on') {
+                const addRequest = `INSERT INTO admin_request (user_id) VALUES ( ? );`;
+                await connection.promise().query(addRequest, [newuserid]);
+            }
     
             res.redirect(`/account`);
              
         }
-
-        
     
     } catch (err) {
                 

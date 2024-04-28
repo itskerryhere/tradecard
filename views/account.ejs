@@ -52,10 +52,32 @@
                         <p>Add Expansions/Series</p>
                     </article></a>
 
-                    <a href="#"><article>
+                    <a href="/manageadmin"><article>
                         <img src="/admin_request.png" alt="admin request icon">
-                        <p>Admin Requests</p>
+                        <p>Manage Admins & Requests</p>
                     </article></a>
+                <% } else { %>
+
+                    <% if (requestStatus) { %>
+
+                        <article>
+                            <img src="/admin_request.png" alt="admin request icon">
+                            <p>Awaiting Admin Request</p>
+                        </article>
+
+                    <% } else { %>
+
+                        <a href="/account/sendadminrequest/<%=userinfo[0].user_id%>">
+                            <article>
+                                <img src="/admin_request.png" alt="admin request icon">
+                                <p>Send Admin Request</p>
+                                <input type="submit" id="submitAdminRequest" style="display: none;">
+                            </article>
+                        </a>
+                        
+
+                    <% } %>
+                    
                 <% } %>
             </div>
 

@@ -12,6 +12,11 @@ router.get('/account', async (req, res) => {
         // get userid
         let userid = sessionobj.authen;
         let adminStatus = false;
+        let requestStatus = false;
+
+        // fetch user data 
+        const getUser = `SELECT * FROM user WHERE user_id = ?;`;
+        let [userResult] = await connection.promise().query(getUser, [userid])
 
         // allow access if session user is admin
         const checkAdmin = `SELECT user_id FROM user WHERE role = 'admin' AND user_id = ?;`
@@ -20,15 +25,19 @@ router.get('/account', async (req, res) => {
         // if admin
         if (admin.length > 0) { 
             adminStatus = true;
-        }
+        } 
 
-        // fetch user data 
-        const getUser = `SELECT * FROM user WHERE user_id = ?;`;
-        let [userResult] = await connection.promise().query(getUser, [userid])
+        // check if admin request already sent 
+        const checkAdminRequest = `SELECT * FROM admin_request WHERE user_id = ? AND admin_request_status = 'Pending';`;
+        let [requestResult] = await connection.promise().query(checkAdminRequest, [userid]);
+
+        if (requestResult.length > 0 && !adminStatus) {
+            requestStatus = true;
+        }
 ;
 
         // pass the fetched user data to the accounts route
-        res.render('account', { title: 'Account', userinfo: userResult, adminStatus, sessionobj });
+        res.render('account', { title: 'Account', userinfo: userResult, adminStatus, requestStatus, sessionobj });
 
     } else {
         res.redirect(`/login`);
@@ -288,6 +297,10 @@ router.post('/account/settings/deleteaccount', async (req, res) => {
         // delete comments on collections 
         const deleteUserComments = `DELETE FROM comment WHERE user_id = ?;`;
         await connection.promise().query(deleteUserComments, [userid]);
+
+        // delete admin request
+        const deleteAdminRequest = `DELETE FROM admin_request WHERE user_id = ?;`;
+        await connection.promise().query(deleteAdminRequest, [userid]);
         
         // delete account
         const deleteAccount = `DELETE FROM user WHERE user_id = ?`;
@@ -317,6 +330,17 @@ router.post('/account/settings/deleteaccount', async (req, res) => {
         
     }
 
+});
+
+router.get('/account/sendadminrequest/:userid?', async (req, res) => {
+    
+    const userid = req.params.userid;
+
+    const addRequest = `INSERT INTO admin_request (user_id) VALUES ( ? );`;
+    await connection.promise().query(addRequest, [userid]);
+
+    res.redirect(`/account`);
+            
 });
 
 module.exports = router;

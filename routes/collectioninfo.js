@@ -11,7 +11,6 @@ router.get('/collections/:collectionid?', async (req, res) => {
     let userid = sessionobj.authen;
     let collectionownerstatus = false; // default value
 
-
     const message = req.session.message;
     req.session.message = null;
 
@@ -19,6 +18,7 @@ router.get('/collections/:collectionid?', async (req, res) => {
 
         const getCollectionInfo = `SELECT * FROM collection
         INNER JOIN user ON collection.user_id = user.user_id
+        INNER JOIN type ON collection.collection_logo_type_id = type.type_id 
         WHERE collection_id = ?;`;
         let [collectionResult] = await connection.promise().query(getCollectionInfo, [collectionid]);
         collectionResult = collectionResult[0];
@@ -53,7 +53,6 @@ router.get('/collections/:collectionid?', async (req, res) => {
         if (owner === userid) {
             collectionownerstatus = true;
         }
-
 
         // check user's like status
         if (userid !== owner) {
@@ -123,7 +122,11 @@ router.post('/collections/:collectionid?', async (req, res) => {
             try {
                 // delete call cards associated with collection
                 const deleteCardsFromCollection = `DELETE FROM card_collection WHERE collection_id = ?`;
-                await connection.promise().query(deleteCardsFromCollection, [collectionid]) 
+                await connection.promise().query(deleteCardsFromCollection, [collectionid]);
+
+                // delete all comments associated with collection
+                const deleteCollectionComments = `DELETE FROM comment WHERE collection_id =?;`;
+                await connection.promise().query(deleteCollectionComments, [collectionid]);
 
                 // delete collection 
                 const deleteCollection = `DELETE FROM collection WHERE collection_id = ?;`;

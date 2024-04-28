@@ -142,10 +142,6 @@ body {
     padding-bottom: 10px;
 }
 
-.delete-button {
-    background-color: red;
-}
-
 .cards-edit-delete-tab button {
     padding-block: 5px;
     padding-inline: 20px;
@@ -310,6 +306,12 @@ body {
 }
 
 /* collection info page */
+
+.collection-logo-small {
+    max-width: 40px;
+    max-height: 40px;
+}
+
 .collection-comment-grid {
     display: grid;
     grid-template-columns: 4fr 1fr;
@@ -353,6 +355,11 @@ body {
 .inline-text {
     display: inline;
     margin-right: 5px;
+}
+
+/* admin request page */
+.request-info {
+    max-width: 100px;
 }
 
 

@@ -18,7 +18,7 @@
 
         <!-- page title header -->
         <hgroup class="centre-text">
-            <h1><%=collectioninfo.collection_name%></h1>
+            <h1><%=collectioninfo.collection_name%> <img src="<%=collectioninfo.type_symbol_url%>" alt="collection logo" class="collection-logo-small"></h1>
             <% if (collectionownerstatus === true) { %>
                 <p>View and update this collection</p>
             <% } else { %>
@@ -42,7 +42,7 @@
                 <details role="button" class="outline">
                     <summary>Collection Details</summary>
                     <small>Owner: <%=collectioninfo.first_name%> <%=collectioninfo.last_name%></small><br>
-                    <small>Created on: <%=collectioninfo.creation_date.toLocaleString()%></small>
+                    <small>Created on: <%=collectioninfo.creation_date.toLocaleString('en-GB')%></small><br>
                 </details>
             </div>
 
@@ -152,12 +152,14 @@
                             <%=comment.first_name%> <%=comment.last_name%>
                             <% if (comment.user_id == owner) { %>
                             (owner)
+                            <% } else if (comment.user_id == sessionobj.authen) { %>
+                            (me)
                             <% } %>
                         </div>
                         <div class="comment-name-timestamp">
                             <%=comment.comment_timestamp.toLocaleString()%>
                         </div>
-                        <% if (collectionownerstatus === true) { %>
+                        <% if (collectionownerstatus === true || comment.user_id == sessionobj.authen) { %>
                             <div class="delete-tab">
                                 <form action="/collections/<%=collectioninfo.collection_id%>/deletecomment" method="POST">
                                     <input type="hidden" name="commentId" value="<%=comment.comment_id%>">

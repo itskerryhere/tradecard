@@ -39,6 +39,7 @@ const addcardRoute = require('./routes/addcard');
 const editcardRoute = require('./routes/editcard');
 const addexpansionseriesRoute = require('./routes/addexpansionseries');
 const deletecardRoute = require('./routes/deletecard');
+const adminRequestRoute = require('./routes/adminrequests');
 
 
 app.use(indexRoute);
@@ -54,6 +55,7 @@ app.use(addcardRoute);
 app.use(editcardRoute);
 app.use(addexpansionseriesRoute);
 app.use(deletecardRoute);
+app.use(adminRequestRoute);
 
 
 app.listen(PORT, (err) => { 
