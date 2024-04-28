@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const connection = require("../connection.js");
-
+const bcrypt = require('bcrypt');
 
 
 // sign up route 
@@ -48,16 +48,24 @@ router.post('/signup', async (req, res) => {
         
         // if new email
         } else {
-            // salt password 
-            const hashPassword = `SELECT @salt := SUBSTRING(SHA1(RAND()), 1, 6);
-            SELECT @saltedHash := SHA1(CONCAT(@salt, ?));
-            SELECT @storedSaltedHash := CONCAT(@salt, @saltedHash);`
 
-            await connection.promise().query(hashPassword, [password]);
+            // bcrypt
+            const saltRounds = 10;
+            let bcrypthash = await bcrypt.hash(password, saltRounds);
+
+            const insertUser = `INSERT INTO user (first_name, last_name, email, password) VALUES (?, ?, ?, ?);`;
+            let [result] = await connection.promise().query(insertUser, [firstname, lastname, email, bcrypthash]);
+
+            // SHA1 
+            // const hashPassword = `SELECT @salt := SUBSTRING(SHA1(RAND()), 1, 6);
+            // SELECT @saltedHash := SHA1(CONCAT(@salt, ?));
+            // SELECT @storedSaltedHash := CONCAT(@salt, @saltedHash);`
+
+            // await connection.promise().query(hashPassword, [password]);
 
             // insert data with hashed password
-            const insertUser = `INSERT INTO user (first_name, last_name, email, password) VALUES (?, ?, ?, @storedSaltedHash);`;
-            let [result] = await connection.promise().query(insertUser, [firstname, lastname, email]);
+            // const insertUser = `INSERT INTO user (first_name, last_name, email, password) VALUES (?, ?, ?, @storedSaltedHash);`;
+            // let [result] = await connection.promise().query(insertUser, [firstname, lastname, email]);
             
             // Get the new user id
             let newuserid = result.insertId;

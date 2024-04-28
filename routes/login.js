@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const connection = require("../connection.js");
+const bcrypt = require('bcrypt');
 
 
 // log in route 
@@ -41,40 +42,17 @@ router.post('/login', async (req, res) =>  {
         // if user exist
         if (getNumOfUsers > 0) {
 
-            // unhash password 
-            const getSaltInUse = `SELECT SUBSTRING(password, 1, 6) AS salt FROM user WHERE email = ?;`;
-            let saltInUse = await connection.promise().query(getSaltInUse, [email]);
-            saltInUse = saltInUse[0][0].salt; // accessing the Buffer values, aut oconverts from numerical to values
+            // bcrypt 
+            let storedPassword = checkUserResult[0].password.toString(); // convert to string as its an object
+            let match = await bcrypt.compare(password, storedPassword);
 
-        
-            const getStoredSaltedHashInUse = `SELECT SUBSTRING(password, 7, 40) AS storedSaltedHash FROM user WHERE email = ?;`;
-            let storedSaltedHashInUse = await connection.promise().query(getStoredSaltedHashInUse, [email]);
-            storedSaltedHashInUse = storedSaltedHashInUse[0][0].storedSaltedHash;
-            
+            if (match) {
 
-            const getSaltedHash = `SELECT SHA1(CONCAT(?, ?)) AS saltedHash;`
-            let saltedHash = await connection.promise().query(getSaltedHash, [saltInUse, password]);
-            saltedHash = saltedHash[0][0].saltedHash;
-
-            
-            const getSaltedInputPassword = `SELECT CONCAT(?, ?) AS saltedPassword;`;
-            let saltedInputPassword = await connection.promise().query(getSaltedInputPassword, [saltInUse, saltedHash]);
-            saltedInputPassword = saltedInputPassword[0][0].saltedPassword;
-
-
-            const attemptLogin = `SELECT user_id FROM user WHERE email = ? AND password = ?;`;
-            let result = await connection.promise().query(attemptLogin, [email, saltedInputPassword]);
-            
-
-            // if correct password
-            if (result[0].length > 0) {
-                
-                let userid = JSON.stringify(result[0][0].user_id); 
+                let userid = JSON.stringify(checkUserResult[0].user_id); 
                 sessionobj.authen = userid; // creating session with user id
 
                 res.redirect(`/account`);
-            
-            // if incorrect password 
+                
             } else {
 
                 // redirect with message
@@ -82,6 +60,49 @@ router.post('/login', async (req, res) =>  {
                 res.redirect(`/login`);
 
             }
+
+            // // SHA1
+            // // unhash password 
+            // const getSaltInUse = `SELECT SUBSTRING(password, 1, 6) AS salt FROM user WHERE email = ?;`;
+            // let saltInUse = await connection.promise().query(getSaltInUse, [email]);
+            // saltInUse = saltInUse[0][0].salt; // accessing the Buffer values, auto converts from numerical to values
+
+        
+            // const getStoredSaltedHashInUse = `SELECT SUBSTRING(password, 7, 40) AS storedSaltedHash FROM user WHERE email = ?;`;
+            // let storedSaltedHashInUse = await connection.promise().query(getStoredSaltedHashInUse, [email]);
+            // storedSaltedHashInUse = storedSaltedHashInUse[0][0].storedSaltedHash;
+            
+
+            // const getSaltedHash = `SELECT SHA1(CONCAT(?, ?)) AS saltedHash;`
+            // let saltedHash = await connection.promise().query(getSaltedHash, [saltInUse, password]);
+            // saltedHash = saltedHash[0][0].saltedHash;
+
+            
+            // const getSaltedInputPassword = `SELECT CONCAT(?, ?) AS saltedPassword;`;
+            // let saltedInputPassword = await connection.promise().query(getSaltedInputPassword, [saltInUse, saltedHash]);
+            // saltedInputPassword = saltedInputPassword[0][0].saltedPassword;
+
+
+            // const attemptLogin = `SELECT user_id FROM user WHERE email = ? AND password = ?;`;
+            // let result = await connection.promise().query(attemptLogin, [email, saltedInputPassword]);
+            
+
+            // // if correct password
+            // if (result[0].length > 0) {
+                
+            //     let userid = JSON.stringify(result[0][0].user_id); 
+            //     sessionobj.authen = userid; // creating session with user id
+
+            //     res.redirect(`/account`);
+            
+            // // if incorrect password 
+            // } else {
+
+            //     // redirect with message
+            //     req.session.message = 'Incorrect password, try again';
+            //     res.redirect(`/login`);
+
+            // }
 
             // if user does not exists
         } else {

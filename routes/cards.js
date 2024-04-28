@@ -9,6 +9,7 @@ router.get('/cards', async (req, res) =>  {
     const sessionobj = req.session;
     let userid = sessionobj.authen;
     const searchKeyword = req.query.search; // catch search keyword
+    let searchStatus = false;
     const {sort, typeFilter, weaknessFilter, hpFilter, rarityFilter, stageFilter, pokedexFilter, expansionFilter, seriesFilter} = req.query; // for filter
     let adminStatus = false; // default
 
@@ -136,6 +137,7 @@ router.get('/cards', async (req, res) =>  {
 
         if (searchKeyword) {
             apiResult = await axios.get(`${baseURL}/cards?search=${searchKeyword}`);
+            searchStatus = true;
         }
 
         if (sort || typeFilter || weaknessFilter || hpFilter || rarityFilter || stageFilter || pokedexFilter || expansionFilter || seriesFilter) {
@@ -152,7 +154,7 @@ router.get('/cards', async (req, res) =>  {
         let expansionResult = apiResult.data.expansionResult;
         let seriesResult = apiResult.data.seriesResult;
 
-        res.render('cards', {title : 'Cards', cardlist: cardsResult, typelist: typesResult, weaknesslist: weaknessResult, raritylist: rarityResult, stagelist: stageResult, expansionlist: expansionResult, serieslist: seriesResult, cardCount, adminStatus, message, sessionobj});
+        res.render('cards', {title : 'Cards', cardlist: cardsResult, typelist: typesResult, weaknesslist: weaknessResult, raritylist: rarityResult, stagelist: stageResult, expansionlist: expansionResult, serieslist: seriesResult, cardCount, adminStatus, searchStatus, message, sessionobj});
 
     } catch (err) {
             

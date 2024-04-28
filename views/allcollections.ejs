@@ -43,13 +43,16 @@
 
         <!-- display all collections -->
         <div class="cards-grid">
-            <% if (collectionCount === 0) { %>
+            <% if (searchStatus && collectionCount === 0) { %>
                 <p>No collections matching this search</p>
             <% } %>
             <% collectionlist.forEach((collection)=> { %>
             <article class="card">
-                <a href="/collections/<%=collection.collection_id%>"> <%=collection.collection_name%> </a>
-                <%=collection.creation_date%>
+                <a href="/collections/<%=collection.collection_id%>"><img src="<%=collection.type_symbol_url%>" alt="collection logo" class="collection-logo"></a>
+                <hgroup>
+                    <h5><a href="/collections/<%=collection.collection_id%>"><%=collection.collection_name%></a></h5>
+                    <p><%=collection.creation_date.toLocaleString()%></p>
+                </hgroup>
             </article> 
             <% }); %>
         </div>

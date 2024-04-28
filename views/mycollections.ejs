@@ -23,10 +23,21 @@
             <details role="button" class="outline">
                 <summary>Create New Collection</summary>
                 <form action="/collections/mycollections" method="POST">
-                    <fieldset>
+                    <fieldset class="grid no-row-gap">
                         <label>
                             Collection Name
                             <input type="text" name="collectionName" placeholder="Name of collection" aria-label="Text" required/>
+                        </label>
+                        <label>
+                            Collection Logo
+                        <select name="collectionLogo">
+                            <option selected value="">
+                            -
+                                </option>
+                                <% collectionlogos.forEach((logo)=> { %> 
+                                    <option value="<%=logo.type_id%>"><%=logo.type_name%></option>
+                                <% }); %>
+                        </select>
                         </label>
                     </fieldset>
                     <input type="submit" value="Create Collection"/>
@@ -42,10 +53,11 @@
         <div class="cards-grid">
             <% mycollections.forEach((collection)=> { %>
             <article class="card">
-                <a href="/collections/<%=collection.collection_id%>"> <%=collection.collection_name%> </a>
-                <%=collection.creation_date%>
-
-
+                <a href="/collections/<%=collection.collection_id%>"><img src="<%=collection.type_symbol_url%>" alt="collection logo" class="collection-logo"></a>
+                <hgroup>
+                    <h5><a href="/collections/<%=collection.collection_id%>"><%=collection.collection_name%></a></h5>
+                    <p><%=collection.creation_date.toLocaleString()%></p>
+                </hgroup>
             </article> 
             <% }); %>
         </div>

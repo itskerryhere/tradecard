@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const connection = require("../connection.js");
+const bcrypt = require('bcrypt');
 
 // account route 
 router.get('/account', async (req, res) => {
@@ -114,61 +115,96 @@ router.post('/account/settings/changepassword', async (req, res) => {
     let userid = sessionobj.authen;
 
     try {
+
+        // bcrypt
         // check old password is correct
-        // unhash password 
-        const getSaltInUse = `SELECT SUBSTRING(password, 1, 6) AS salt FROM user WHERE user_id = ?;`;
-        let saltInUse = await connection.promise().query(getSaltInUse, [userid]);
-        saltInUse = saltInUse[0][0].salt; // accessing the Buffer values, auto converts from numerical to values
+        const checkUser = `SELECT * FROM user WHERE user_id = ? `;
+        let [checkUserResult] = await connection.promise().query(checkUser, [userid]);
 
-    
-        const getStoredSaltedHashInUse = `SELECT SUBSTRING(password, 7, 40) AS storedSaltedHash FROM user WHERE user_id = ?;`;
-        let storedSaltedHashInUse = await connection.promise().query(getStoredSaltedHashInUse, [userid]);
-        storedSaltedHashInUse = storedSaltedHashInUse[0][0].storedSaltedHash;
-        
+        let storedPassword = checkUserResult[0].password.toString(); // convert to string as its an object
+        let match = await bcrypt.compare(oldpassword, storedPassword);
 
-        const getSaltedHash = `SELECT SHA1(CONCAT(?, ?)) AS saltedHash;`
-        let saltedHash = await connection.promise().query(getSaltedHash, [saltInUse, oldpassword]);
-        saltedHash = saltedHash[0][0].saltedHash;
+        if (match) {
 
-        
-        const getSaltedInputPassword = `SELECT CONCAT(?, ?) AS saltedPassword;`;
-        let saltedInputPassword = await connection.promise().query(getSaltedInputPassword, [saltInUse, saltedHash]);
-        saltedInputPassword = JSON.stringify(saltedInputPassword[0][0].saltedPassword);
-
-        // get stored password
-        const getStoredPassword = `SELECT password AS oldpassword FROM user WHERE user_id = ?;`;
-        let storedPassword = await connection.promise().query(getStoredPassword, [userid]);
-        storedPassword = JSON.stringify(storedPassword[0][0].oldpassword);
-
-
-        //if old password correct
-        if (storedPassword === saltedInputPassword) {
-
-            // salt new input password 
-            const hashPassword = `SELECT @salt := SUBSTRING(SHA1(RAND()), 1, 6);
-            SELECT @saltedHash := SHA1(CONCAT(@salt, ?));
-            SELECT @storedSaltedHash := CONCAT(@salt, @saltedHash);`
-
-            await connection.promise().query(hashPassword, [newpassword]);
+            // bcrypt new password 
+            const saltRounds = 10;
+            let newbcrypthash = await bcrypt.hash(newpassword, saltRounds);
 
             // execute the update query
-            const changePassword = `UPDATE user SET password = @storedSaltedHash WHERE user_id = ?;`;
-            await connection.promise().query(changePassword, [userid]);
+            const changePassword = `UPDATE user SET password = ? WHERE user_id = ?;`;
+            await connection.promise().query(changePassword, [newbcrypthash, userid]);
 
-            // redirect with message
+             // redirect with message
             req.session.message = 'Password Changed Successfully';
             res.redirect(`/account/settings`);
-
-
-        // if old password wrong.. error
+    
+            
         } else {
 
             // redirect with message
             req.session.message = 'Old Password Incorrect';
             res.redirect(`/account/settings`);
 
-            
         }
+
+
+
+        // // SHA1
+        // // check old password is correct
+        // // unhash password 
+        // const getSaltInUse = `SELECT SUBSTRING(password, 1, 6) AS salt FROM user WHERE user_id = ?;`;
+        // let saltInUse = await connection.promise().query(getSaltInUse, [userid]);
+        // saltInUse = saltInUse[0][0].salt; // accessing the Buffer values, auto converts from numerical to values
+
+    
+        // const getStoredSaltedHashInUse = `SELECT SUBSTRING(password, 7, 40) AS storedSaltedHash FROM user WHERE user_id = ?;`;
+        // let storedSaltedHashInUse = await connection.promise().query(getStoredSaltedHashInUse, [userid]);
+        // storedSaltedHashInUse = storedSaltedHashInUse[0][0].storedSaltedHash;
+        
+
+        // const getSaltedHash = `SELECT SHA1(CONCAT(?, ?)) AS saltedHash;`
+        // let saltedHash = await connection.promise().query(getSaltedHash, [saltInUse, oldpassword]);
+        // saltedHash = saltedHash[0][0].saltedHash;
+
+        
+        // const getSaltedInputPassword = `SELECT CONCAT(?, ?) AS saltedPassword;`;
+        // let saltedInputPassword = await connection.promise().query(getSaltedInputPassword, [saltInUse, saltedHash]);
+        // saltedInputPassword = JSON.stringify(saltedInputPassword[0][0].saltedPassword);
+
+        // // get stored password
+        // const getStoredPassword = `SELECT password AS oldpassword FROM user WHERE user_id = ?;`;
+        // let storedPassword = await connection.promise().query(getStoredPassword, [userid]);
+        // storedPassword = JSON.stringify(storedPassword[0][0].oldpassword);
+
+
+        // //if old password correct
+        // if (storedPassword === saltedInputPassword) {
+
+        //     // salt new input password 
+        //     const hashPassword = `SELECT @salt := SUBSTRING(SHA1(RAND()), 1, 6);
+        //     SELECT @saltedHash := SHA1(CONCAT(@salt, ?));
+        //     SELECT @storedSaltedHash := CONCAT(@salt, @saltedHash);`
+
+        //     await connection.promise().query(hashPassword, [newpassword]);
+
+        //     // execute the update query
+        //     const changePassword = `UPDATE user SET password = @storedSaltedHash WHERE user_id = ?;`;
+        //     await connection.promise().query(changePassword, [userid]);
+
+        //     // redirect with message
+        //     req.session.message = 'Password Changed Successfully';
+        //     res.redirect(`/account/settings`);
+
+
+        // // if old password wrong.. error
+        // } else {
+
+        //     // redirect with message
+        //     req.session.message = 'Old Password Incorrect';
+        //     res.redirect(`/account/settings`);
+
+            
+        // }
 
     } catch (err) {
 

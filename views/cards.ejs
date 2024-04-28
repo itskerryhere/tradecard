@@ -9,11 +9,10 @@
             <main class="container">
 
                 <!-- page title header -->
-                <div class="centre-text">
+                <hgroup class="centre-text">
                     <h1>Cards</h1>
-                </div>
-
-                <hr>
+                    <p>Browse all cards</p>
+                </hgroup>
 
                 <!-- page content -->
                 <div class="grid centre-item">
@@ -37,6 +36,8 @@
                     </div>
                     <% } %>
                 </div>
+
+                <hr>
 
                 <div class="grid filter-card-grid">
                     <div>
@@ -160,7 +161,7 @@
                             </article>
                         </div>
                     <% } %>
-                    <% if (cardCount === 0) { %>
+                    <% if (searchStatus && cardCount === 0) { %>
                         <div class="card-count-tab">
                             <article>
                                 <small><b>No cards matching this search</b></small>

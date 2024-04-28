@@ -11,21 +11,23 @@ router.get('/collections', async (req, res) => {
     if (sessionobj.authen) {
 
         const searchKeyword = req.query.search;
+        let searchStatus = false;
         
         // get all collections 
-        let getAllCollections = `SELECT * FROM collection`;
+        let getAllCollections = `SELECT * FROM collection 
+        INNER JOIN type ON collection.collection_logo_type_id = type.type_id;`;
 
         // if search collection 
         if (searchKeyword) {
             getAllCollections += ` WHERE collection_name LIKE '%${searchKeyword}%';`;
-
+            searchStatus = true;
         };
 
         let [collectionResult] = await connection.promise().query(getAllCollections);
 
         let collectionCount = collectionResult.length;
 
-        res.render('allcollections', {title: 'All Collections', collectionlist: collectionResult, collectionCount, sessionobj});
+        res.render('allcollections', {title: 'All Collections', collectionlist: collectionResult, collectionCount, searchStatus, sessionobj});
 
 
     // if not a member - login
@@ -38,7 +40,7 @@ router.get('/collections', async (req, res) => {
 
 
 // user's owned collections route 
-router.get('/collections/mycollections', (req, res) => {
+router.get('/collections/mycollections', async (req, res) => {
 
     const sessionobj = req.session;
     
@@ -49,19 +51,23 @@ router.get('/collections/mycollections', (req, res) => {
         // get userid
         let userid = sessionobj.authen;
 
-        const getUserAndOwnedCollections = `SELECT * FROM user WHERE user_id = ?;
-        SELECT * FROM collection WHERE user_id = ?;`; 
+        const getUser = `SELECT * FROM user WHERE user_id = ?;`;
+        let [userResult] = await connection.promise().query(getUser, [userid]);
 
-        connection.query(getUserAndOwnedCollections, [userid, userid], (err, result) => {
-            if (err) throw err;
+        const getUserOwnedCollections = `SELECT * FROM collection 
+        INNER JOIN type ON collection.collection_logo_type_id = type.type_id 
+        WHERE user_id = ?;`;
+        let [mycollectionsResult] = await connection.promise().query(getUserOwnedCollections, [userid]);
 
-            let userResult = result[0];
-            let mycollectionsResult = result[1];
-            let collectionCount = mycollectionsResult.length;
+        let collectionCount = mycollectionsResult.length;
+
+        const getCollectionLogos = `SELECT * FROM type ORDER BY type_name ASC;`;
+        let [collectionLogosResult] = await connection.promise().query(getCollectionLogos);
             
-            // pass the fetched user data to the accounts route
-            res.render('mycollections', {title: 'My Collections',userinfo: userResult, mycollections: mycollectionsResult, message: message, collectionCount, sessionobj});
-        });
+        // pass the fetched user data to the accounts route
+        res.render('mycollections', {title: 'My Collections',userinfo: userResult, mycollections: mycollectionsResult, 
+        collectionlogos: collectionLogosResult, message, collectionCount, sessionobj});
+
 
     } else {
         res.redirect(`/login`);
@@ -74,6 +80,7 @@ router.post('/collections/mycollections', async (req, res) => {
     const sessionobj = req.session;
     let collectionname = req.body.collectionName;
     let userid = sessionobj.authen;
+    let collectionlogoid = req.body.collectionLogo;
 
     try {
 
@@ -91,8 +98,8 @@ router.post('/collections/mycollections', async (req, res) => {
         // if doesn't exist - add to collection 
         } else {
             
-            const createCollection = `INSERT INTO collection (collection_name, user_id) VALUES (? ,?);`;
-            await connection.promise().query(createCollection, [collectionname, userid]);
+            const createCollection = `INSERT INTO collection (collection_name, user_id, collection_logo_type_id) VALUES (? ,?, ?);`;
+            await connection.promise().query(createCollection, [collectionname, userid, collectionlogoid]);
 
             // redirect with message
             req.session.message = 'Collection Added';
