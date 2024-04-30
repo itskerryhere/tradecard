@@ -27,7 +27,7 @@ router.get('/wishlist', async (req, res) => {
         WHERE user_id = ?
         ORDER BY wishlist_id;`;
 
-        let getWishlistSearch = `SELECT DISTINCT card.* FROM wishlist 
+        let getWishlistSearch = `SELECT DISTINCT card.*, rarity.* FROM wishlist 
         INNER JOIN card ON wishlist.card_id = card.card_id
         INNER JOIN type ON card.type_id = type.type_id
         INNER JOIN rarity ON card.rarity_id = rarity.rarity_id

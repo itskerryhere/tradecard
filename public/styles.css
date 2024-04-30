@@ -457,16 +457,6 @@ body {
         align-items: center;
     }
 
-    /* welcome route */
-    .welcome {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .welcome button {
-        min-width: 300px;
-    }
 
     /* sign up and account settings */
     .no-row-gap {

@@ -70,6 +70,7 @@ router.get('/collections/mycollections', async (req, res) => {
 
 
     } else {
+
         res.redirect(`/login`);
     }
 });

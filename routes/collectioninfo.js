@@ -50,9 +50,12 @@ router.get('/collections/:collectionid?', async (req, res) => {
         let owner = JSON.stringify(collectionResult.user_id);
         //owner = JSON.stringify(owner[0][0].user_id);
 
+        
+        
         if (owner === userid) {
             collectionownerstatus = true;
         }
+
 
         // check user's like status
         if (userid !== owner) {

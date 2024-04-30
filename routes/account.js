@@ -84,27 +84,51 @@ router.post('/account/settings/editdetails', async (req, res) => {
 
 
     try {
-
-        // check if email exist in system
-        const checkEmail = `SELECT * FROM user WHERE email = ?;`;
-        let [result] = await connection.promise().query(checkEmail, [email]);
-
-        if (result.length > 0) {
-
-            req.session.message = 'Email already taken';
-            res.redirect(`/account/settings`);
-
-        } else {
-
-            // execute the update query
-            const editDetails = `UPDATE user SET first_name = ?, last_name = ?, email = ? WHERE user_id = ?;`;
-            await connection.promise().query(editDetails, [firstname, lastname, email, userid]);
-
-            // redirect with new message
-            req.session.message = 'Details changed successfully';
-            res.redirect(`/account/settings`);
-
+        if ( firstname !== '' ) {
+            const editFirstName = `UPDATE user SET first_name = ? WHERE user_id =?;`;
+            await connection.promise().query(editFirstName, [firstname, userid]);
         }
+
+        if ( lastname !== '' ) {
+            const editLastName = `UPDATE user SET last_name = ? WHERE user_id =?;`;
+            await connection.promise().query(editLastName, [lastname, userid]);
+        } 
+
+        if ( email !== '' ) {
+
+            // check if email exist in system
+            const checkEmail = `SELECT * FROM user WHERE email = ?;`;
+            let [result] = await connection.promise().query(checkEmail, [email]);
+
+            if (result.length === 1) { // should be owned by 1 user only 
+
+                if (result[0].email !== email) {
+
+                    req.session.message = 'Email already taken';
+                    return res.redirect(`/account/settings`);
+
+                } else {
+
+                    req.session.message = 'Email currently used by yourself';
+                    return res.redirect(`/account/settings`);
+                }
+
+            } else {
+
+                // execute the update query
+                const editEmail = `UPDATE user SET email = ? WHERE user_id = ?;`;
+                await connection.promise().query(editEmail, [email, userid]);
+
+                
+            }
+        }
+
+        // redirect with new message
+        req.session.message = 'Details changed successfully';
+        res.redirect(`/account/settings`);
+
+
+        
 
     } catch (err) {
 
