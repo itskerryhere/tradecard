@@ -15,66 +15,71 @@
         </hgroup>
 
         <!-- page content -->
-        <div class="grid">
+        <div class="grid signup-login-flex">
             <!-- left section -->
             <div>
-                Perks of having an account:
+                <h5>Perks of having an account:</h5>
                 <ul>
-                    <li>Can have your own collection of cards</li>
-                    <li>Can comment on other people's collections</li>
-                    <li>Can add cards to your wishlist</li>
+                    <li>Share your cards with others in your own collections</li>
+                    <li>Add cards you wish to have in your wishlist</li>
+                    <li>Connect with the Pokemon TCG community</li>
                 </ul>
+                <div class="signup-login-img">
+                    <img src="signup_bulbasaur.png" alt="image of bulbasaur">
+                </div>
             </div>
 
             <!-- right section -->
-            <article>
-                <!-- error message -->
-                <% if (errorMessage) { %>
-                <div class="errorMessage">
-                        <p><%= errorMessage %></p>
-                </div>  
-                <% } %>
-                <!-- form -->
-                <form method="post" action="/signup">
-                    <fieldset>
-                        <div class="no-row-gap grid">
-                            <div>
-                                <label>
-                                    First Name
-                                    <input type="text" name="firstname" placeholder="First Name" aria-label="Text" required/>
-                                </label>
+            <div>
+                <article>
+                    <!-- error message -->
+                    <% if (errorMessage) { %>
+                    <div class="errorMessage">
+                            <p><%= errorMessage %></p>
+                    </div>  
+                    <% } %>
+                    <!-- form -->
+                    <form method="post" action="/signup">
+                        <fieldset>
+                            <div class="no-row-gap grid">
+                                <div>
+                                    <label>
+                                        First Name
+                                        <input type="text" name="firstname" placeholder="First Name" aria-label="Text" required/>
+                                    </label>
+                                </div>
+                                <div>
+                                    <label>
+                                        Last Name
+                                        <input type="text" name="lastname" placeholder="Last Name" aria-label="Text" required/>
+                                    </label>
+                                </div>
                             </div>
-                            <div>
-                                <label>
-                                    Last Name
-                                    <input type="text" name="lastname" placeholder="Last Name" aria-label="Text" required/>
-                                </label>
-                            </div>
-                        </div>
-                        <!-- <label>
-                            Date of Birth
-                            <input type="date" name="dateofbirth" placeholder="Date of Birth" />
-                        </label> -->
-                        <label>
-                            Email Address
-                            <input type="text" name="email" placeholder="Email Address" autocomplete="email" required/>
-                        </label>
-                        <label>
-                            Password
-                            <input type="password" name="password" placeholder="Password" autocomplete="new-password" required/>
-                        </label>
-                        <label>
-                            <input type="checkbox" name="adminRequest"/>
-                            Request to be Admin
-                        </label>
-                    </fieldset>
+                            <!-- <label>
+                                Date of Birth
+                                <input type="date" name="dateofbirth" placeholder="Date of Birth" />
+                            </label> -->
+                            <label>
+                                Email Address
+                                <input type="text" name="email" placeholder="Email Address" autocomplete="email" required/>
+                            </label>
+                            <label>
+                                Password
+                                <input type="password" name="password" placeholder="Password" autocomplete="new-password" required/>
+                            </label>
+                            <label>
+                                <input type="checkbox" name="adminRequest"/>
+                                Request to be Admin
+                            </label>
+                        </fieldset>
 
-                    <input type="submit" value="Sign Up"/>
-                </form>
+                        <input type="submit" value="Sign Up"/>
+                    </form>
 
-                <a href="/login"><button class="outline full-length-button">Already have an account? Log in</button></a>
+                    <a href="/login"><button class="outline full-length-button">Already have an account? Log in</button></a>
 
-            </article>
+                </article>
+            </div>
         </div>
     </main>
 

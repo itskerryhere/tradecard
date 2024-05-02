@@ -47,18 +47,17 @@ router.get('/collections/:collectionid?', async (req, res) => {
         // check if user owns selected collection 
         // const checkCollectionOwner = `SELECT user_id FROM collection WHERE collection_id = ?;`
         // let owner = await connection.promise().query(checkCollectionOwner, [collectionid]);
-        let owner = JSON.stringify(collectionResult.user_id);
-        //owner = JSON.stringify(owner[0][0].user_id);
+        // owner = JSON.stringify(owner[0][0].user_id);
 
+        let owner = JSON.stringify(collectionResult.user_id);
         
         
-        if (owner === userid) {
+        if (owner == userid) {
             collectionownerstatus = true;
         }
 
-
         // check user's like status
-        if (userid !== owner) {
+        if (userid != owner) {
 
             const checkLikeStatus = `SELECT * FROM user_like_collection WHERE user_id = ? AND collection_id = ?;`;
             const [likeStatusResult] = await connection.promise().query(checkLikeStatus, [userid, collectionid]);

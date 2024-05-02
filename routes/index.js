@@ -7,7 +7,7 @@ router.get('/',  (req, res) =>  {
 
     const sessionobj = req.session;
 
-    res.render('index', {title: 'Home', sessionobj});
+    res.render('index', {title: 'Pokemon TCG', sessionobj});
 });
 
 module.exports = router;

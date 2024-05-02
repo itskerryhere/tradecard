@@ -2,9 +2,9 @@
     <ul>
         <li><a href="/"><img src="/pokemon_logo.png" class="scaled-down-logo"
                     alt="Pokemon logo navbar"></a></li>
-        <li><a href="/cards">Cards</a></li>
-        <li><a href="/account">Account</a></li>
-        <li><a href="/collections">Collections</a></li>
+        <li><a href="/cards">Browse Cards</a></li>
+        <!-- <li><a href="/account">Account</a></li> -->
+        <li><a href="/collections">Browse Collections</a></li>
         <li><a href="/wishlist">Wishlist</a></li>
     </ul>
     <ul>
@@ -12,7 +12,7 @@
             <li><a href="/login"><button class="primary">Log In</button></a></li>
             <li><a href="/signup"><button class="outline">Sign Up</button></a></li>
         <% } else { %>
-            <li><a href="/account"><button class="primary"><%=sessionobj.authen%>'s Account</button></a></li> 
+            <li><a href="/account"><button class="primary">My Account</button></a></li> 
             <!-- add the user's name to account button -->
             <li><a href="/logout"><button class="outline">Logout</button></a></li>
         <% } %>

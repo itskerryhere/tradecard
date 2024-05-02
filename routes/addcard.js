@@ -81,6 +81,21 @@ router.post('/addcard', async (req, res) => {
     // let attack2type2strength = req.body.attack2Type2Strength;
 
 
+    // if valid numbers entered
+    if (pokedexnumber < 0) {
+        req.session.message = `Pokedex number cannot be a negative value`;
+        return res.redirect(`/addcard`);
+    }
+    
+    if (hp < 0) {
+        req.session.message = `HP cannot be a negative value`;
+        return res.redirect(`/addcard`);
+    }
+
+    if (attackdamage || attack2damage < 0) {
+        req.session.message = `Attack damage cannot be a negative value`;
+        return res.redirect(`/addcard`);
+    }
     
     // check if card exists (1 attack only)
     if (attack2name === '' && attack2damage === '') {

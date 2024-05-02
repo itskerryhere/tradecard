@@ -84,6 +84,7 @@ router.post('/account/settings/editdetails', async (req, res) => {
 
 
     try {
+
         if ( firstname !== '' ) {
             const editFirstName = `UPDATE user SET first_name = ? WHERE user_id =?;`;
             await connection.promise().query(editFirstName, [firstname, userid]);
@@ -95,6 +96,13 @@ router.post('/account/settings/editdetails', async (req, res) => {
         } 
 
         if ( email !== '' ) {
+
+            // check if valid entry
+            if (!email.includes('@') || !email.includes('.')) {
+                // redirect with message
+                req.session.message = 'Invalid email, must include @ and .';
+                return res.redirect(`/account/settings`);
+            }
 
             // check if email exist in system
             const checkEmail = `SELECT * FROM user WHERE email = ?;`;
@@ -255,6 +263,18 @@ router.post('/account/settings/deleteaccount', async (req, res) => {
     const sessionobj = req.session;
     let userid = sessionobj.authen;
 
+    // if user is the only admin 
+    const adminCount = `SELECT * FROM user WHERE role = 'admin';`;
+    let [adminCountResult] = await connection.promise().query(adminCount);
+
+    const userRole = `SELECT role FROM user WHERE user_id = ?;`;
+    let [userRoleResult] = await connection.promise().query(userRole, [userid]);
+
+    if (userRoleResult[0].role === 'admin' && adminCountResult.length === 1) {
+        req.session.message = `Account cannot be deleted as you are the only admin`;
+        return res.redirect(`/account/settings`);
+    }
+
     // start transaction
     const startTransaction = `START TRANSACTION;`;
     await connection.promise().query(startTransaction);
@@ -310,6 +330,12 @@ router.post('/account/settings/deleteaccount', async (req, res) => {
             for (const eachcollectionid of userCollectionIds) {
                 const deleteUserCardInCollections = `DELETE FROM card_collection WHERE collection_id = ?`;
                 await connection.promise().query(deleteUserCardInCollections, [eachcollectionid]);
+            };
+
+            // delete all comments in each user collection
+            for (const eachcollectionid of userCollectionIds) {
+                const deleteCommentsInCollections = `DELETE FROM comment WHERE collection_id = ?`;
+                await connection.promise().query(deleteCommentsInCollections, [eachcollectionid]);
             };
 
 

@@ -15,44 +15,51 @@
         </hgroup>
 
         <!-- page content -->
-        <div class="grid">
+        <div class="grid signup-login-flex">
             <!-- left section -->
             <div>
-                Perks of having an account:
-                <ul>
-                    <li>Can have your own collection of cards</li>
-                    <li>Can comment on other people's collections</li>
-                    <li>Can add cards to your wishlist</li>
-                </ul>
+                <div>
+                    <h5>Log in to:</h5>
+                    <ul>
+                        <li>Browse other's collections and view your own collections</li>
+                        <li>View your own wishlist</li>
+                        <li>See your account details</li>
+                    </ul>
+                </div>
+                <div class="signup-login-img">
+                    <img src="login-img2.png" alt="image of pokemon">
+                </div>
             </div>
 
             <!-- right section -->
-            <article>
-                <!-- if error message -->
-                <% if (errorMessage) { %>
-                <div class="errorMessage">
-                    <p><%= errorMessage %></p>
-                </div>  
-                <% } %>
-                <!-- form -->
-                <form method="post" action="/login">
-                    <fieldset>
-                        <label>
-                            Email Address
-                            <input name="email" placeholder="Email Address" autocomplete="email" required/>
-                        </label>
-                        <label>
-                            Password
-                            <input type="password" name="password" placeholder="Password" autocomplete="new-password" required/>
-                        </label>
-                    </fieldset>
+            <div>
+                <article>
+                    <!-- if error message -->
+                    <% if (errorMessage) { %>
+                    <div class="errorMessage">
+                        <p><%= errorMessage %></p>
+                    </div>  
+                    <% } %>
+                    <!-- form -->
+                    <form method="post" action="/login">
+                        <fieldset>
+                            <label>
+                                Email Address
+                                <input name="email" placeholder="Email Address" autocomplete="email" required/>
+                            </label>
+                            <label>
+                                Password
+                                <input type="password" name="password" placeholder="Password" autocomplete="new-password" required/>
+                            </label>
+                        </fieldset>
 
-                    <input type="submit" value="Log in" />
-                </form>
+                        <input type="submit" value="Log in" />
+                    </form>
 
-                <a href="/signup"><button class="outline full-length-button">Don't have an account? Sign up</button></a>
+                    <a href="/signup"><button class="outline full-length-button">Don't have an account? Sign up</button></a>
 
-            </article>
+                </article>
+            </div>
         </div>
     </main>
 

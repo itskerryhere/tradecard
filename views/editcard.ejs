@@ -175,6 +175,7 @@
 
                         <u><h4>Attack Information</h4></u>
                         <div class="no-row-gap grid">
+                            <input type="hidden" name="currentAttack1Id" value="<%=attack[0].attack_id%>" aria-label="attack name">
                             <div>
                                 <label>
                                     Attack Name
@@ -206,6 +207,9 @@
                             <u><h4 class="inline-text">Second Attack Information</h4></u> <small>(Name, Damage, Type - Minimum Requirement)</small> 
                             </div>
                         <div class="no-row-gap grid">
+                            <% if (attack2 !== null) { %>
+                                <input type="hidden" name="currentAttack2Id" value="<%=attack2[0].attack_id%>" aria-label="attack name">
+                            <% } %>
                             <div>
                                 <label>
                                     Attack Name

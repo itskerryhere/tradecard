@@ -33,6 +33,13 @@ router.post('/signup', async (req, res) => {
     let adminrequest = req.body.adminRequest;
 
     try {
+        // check if valid entry
+        if (!email.includes('@') || !email.includes('.')) {
+            // redirect with message
+            req.session.message = 'Invalid email, must include @ and .';
+            return res.redirect(`/signup`);
+        }
+
         
         // check if email already exists in the database
         const checkEmailExist = `SELECT * FROM user WHERE email = ?`;
@@ -45,7 +52,7 @@ router.post('/signup', async (req, res) => {
 
             // redirect with message
             req.session.message = 'Email already exists';
-            res.redirect(`/signup`);
+            return res.redirect(`/signup`);
         
         // if new email
         } else {
@@ -71,7 +78,6 @@ router.post('/signup', async (req, res) => {
             // Get the new user id
             let newuserid = result.insertId;
             sessionobj.authen = newuserid; // creating session with user id
-
 
             // send admin request
             if (adminrequest === 'on') {

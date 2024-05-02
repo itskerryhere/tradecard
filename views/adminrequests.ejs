@@ -15,35 +15,67 @@
         </hgroup>
 
         <article>
-        <div>
-            <% if (message) { %>
-                <div>
-                     <p><%= message %></p>
-                </div>  
-            <% } %>
-            <details role="button" class="outline">
-                <summary>Pending Admin Requests (<%=pendingCount%>)</summary>
-                <hr>
+            <div>
+                <% if (message) { %>
+                    <div>
+                        <p><%= message %></p>
+                    </div>  
+                <% } %>
+                <details role="button" class="outline">
+                    <summary>Pending Admin Requests (<%=pendingCount%>)</summary>
+                    <hr>
+                        <table>
+                            <thead>
+                            <tr>
+                                <th scope="col" class="request-info">Name</th>
+                                <th scope="col" class="request-info">Request Date</th>
+                                <th scope="col" class="request-info">Request Status</th>
+                                <th scope="col">Response</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                <% requestlist.forEach((request) => { %>
+                                    <tr>
+                                        <th scope="row" class="request-info"><b><%=request.first_name%> <%=request.last_name%></b></th>
+                                        <td class="request-info"><%=request.request_response_timestamp.toLocaleString('en-GB')%></td>
+                                        <td class="request-info"><%=request.admin_request_status%></td>
+                                        <td>
+                                            <form action="/manageadmin/<%=request.user_id%>" method="POST">
+                                                <div class="grid">
+                                                        <button type="submit" name="action" value="accept">Accept</button>
+                                                        <button type="submit" name="action" value="decline">Decline</button>
+                                                </div>
+                                            </form>
+                                        </td>
+                                    </tr> 
+                                <% }); %>
+                            </tbody>
+                        </table>
+                </details>
+            </div>
+            <div>
+                <details role="button" class="outline">
+                    <summary>Previous Admin Requests</summary>
+                    <hr>
                     <table>
                         <thead>
                         <tr>
                             <th scope="col" class="request-info">Name</th>
-                            <th scope="col" class="request-info">Request Date</th>
-                            <th scope="col" class="request-info">Request Status</th>
-                            <th scope="col">Response</th>
+                            <th scope="col" class="request-info">Response Date</th>
+                            <th scope="col" class="request-info">Response Status</th>
+                            <th scope="col">Delete</th>
                         </tr>
                         </thead>
                         <tbody>
-                            <% requestlist.forEach((request) => { %>
+                            <% previouslist.forEach((user) => { %>
                                 <tr>
-                                    <th scope="row" class="request-info"><b><%=request.first_name%> <%=request.last_name%></b></th>
-                                    <td class="request-info"><%=request.request_response_timestamp.toLocaleString('en-GB')%></td>
-                                    <td class="request-info"><%=request.admin_request_status%></td>
+                                    <th scope="row" class="request-info"><b><%=user.first_name%> <%=user.last_name%></b></th>
+                                    <td class="request-info"><%=user.request_response_timestamp.toLocaleString('en-GB')%></td>
+                                    <td class="request-info"><%=user.admin_request_status%></td>
                                     <td>
-                                        <form action="/manageadmin/<%=request.user_id%>" method="POST">
-                                            <div class="grid">
-                                                    <button type="submit" name="action" value="accept">Accept</button>
-                                                    <button type="submit" name="action" value="decline">Decline</button>
+                                        <form action="/manageadmin/<%=user.admin_request_id%>/delete" method="POST">
+                                            <div class="delete-tab">
+                                                <button type="submit">Delete</button>
                                             </div>
                                         </form>
                                     </td>
@@ -51,104 +83,77 @@
                             <% }); %>
                         </tbody>
                     </table>
-            </details>
-        </div>
-        <div>
-            <details role="button" class="outline">
-                <summary>Previous Admin Requests</summary>
-                <hr>
-                <table>
-                    <thead>
-                      <tr>
-                        <th scope="col" class="request-info">Name</th>
-                        <th scope="col" class="request-info">Response Date</th>
-                        <th scope="col" class="request-info">Response Status</th>
-                        <th scope="col">Delete</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                        <% previouslist.forEach((user) => { %>
+                </details>
+            </div>
+
+            <div class="grid no-row-gap">
+                <div>
+                    <details role="button" class="outline">
+                        <summary>Current Admins (<%=adminCount%>)</summary>
+                        <hr>
+                        <table>
+                            <thead>
                             <tr>
-                                <th scope="row" class="request-info"><b><%=user.first_name%> <%=user.last_name%></b></th>
-                                <td class="request-info"><%=user.request_response_timestamp.toLocaleString('en-GB')%></td>
-                                <td class="request-info"><%=user.admin_request_status%></td>
-                                <td>
-                                    <form action="/manageadmin/<%=user.admin_request_id%>/delete" method="POST">
-                                        <div class="delete-tab">
-                                            <button type="submit">Delete</button>
-                                        </div>
-                                    </form>
-                                </td>
-                            </tr> 
-                        <% }); %>
-                    </tbody>
-                  </table>
-            </details>
-        </div>
-        <div class="grid no-row-gap">
-            <div>
-                <details role="button" class="outline">
-                    <summary>Current Admins (<%=adminCount%>)</summary>
-                    <hr>
-                    <table>
-                        <thead>
-                        <tr>
-                            <th scope="col" class="request-info">Admin Name</th>
-                            <th scope="col">Change Role</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                            <% adminlist.forEach((admin) => { %>
-                                <tr>
-                                    <th scope="row"><b><%=admin.first_name%> <%=admin.last_name%></b></th>
-                                    <td>
-                                        <% if (admin.user_id != sessionobj.authen) { %>
-                                            <form action="/manageadmin/<%=admin.user_id%>/change" method="POST">
+                                <th scope="col" class="request-info">Admin Name</th>
+                                <th scope="col">Change Role</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                <% adminlist.forEach((admin) => { %>
+                                    <tr>
+                                        <th scope="row"><b><%=admin.first_name%> <%=admin.last_name%></b></th>
+                                        <td>
+                                            <% if (admin.user_id != sessionobj.authen) { %>
+                                                <form action="/manageadmin/<%=admin.user_id%>/change" method="POST">
+                                                    <div>
+                                                        <button type="submit" name="changeRole" value="makeMember">Make Member</button>
+                                                    </div>
+                                                </form>
+                                            <% } else { %>
+                                                <p>(Cannot change your own role)</p>
+                                            <% } %>
+                                        </td>
+                                    </tr> 
+                                <% }); %>
+                            </tbody>
+                        </table>
+                    </details>
+                </div>
+                <div>
+                    <details role="button" class="outline">
+                        <summary>TCG Members (<%=memberCount%>)</summary>
+                        <hr>
+                        <table>
+                            <thead>
+                            <tr>
+                                <th scope="col" class="request-info">Admin Name</th>
+                                <th scope="col">Change Role</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                <% memberlist.forEach((member) => { %>
+                                    <tr>
+                                        <th scope="row"><b><%=member.first_name%> <%=member.last_name%></b></th>
+                                        <td>
+                                            <form action="/manageadmin/<%=member.user_id%>/change" method="POST">
                                                 <div>
-                                                    <button type="submit" name="changeRole" value="makeMember">Make Member</button>
+                                                    <button type="submit" name="changeRole" value="makeAdmin">Make Admin</button>
                                                 </div>
                                             </form>
-                                        <% } else { %>
-                                            <p>(Cannot change your own role)</p>
-                                        <% } %>
-                                    </td>
-                                </tr> 
-                            <% }); %>
-                        </tbody>
-                    </table>
-                </details>
+                                        </td>
+                                    </tr> 
+                                <% }); %>
+                            </tbody>
+                        </table>
+                    </details>
+                </div>
             </div>
-            <div>
-                <details role="button" class="outline">
-                    <summary>TCG Members (<%=memberCount%>)</summary>
-                    <hr>
-                    <table>
-                        <thead>
-                        <tr>
-                            <th scope="col" class="request-info">Admin Name</th>
-                            <th scope="col">Change Role</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                            <% memberlist.forEach((member) => { %>
-                                <tr>
-                                    <th scope="row"><b><%=member.first_name%> <%=member.last_name%></b></th>
-                                    <td>
-                                        <form action="/manageadmin/<%=member.user_id%>/change" method="POST">
-                                            <div>
-                                                <button type="submit" name="changeRole" value="makeAdmin">Make Admin</button>
-                                            </div>
-                                        </form>
-                                    </td>
-                                </tr> 
-                            <% }); %>
-                        </tbody>
-                    </table>
-                </details>
-            </div>
-        
+        </article>
+
+        <!-- back to accounts page button -->
+        <div class="centre-item">
+            <a href="/account"> <button class="primary rounded-button">Back to My Account</button></a>
         </div>
-    </article>
 
     </main>
 

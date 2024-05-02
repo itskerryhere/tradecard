@@ -83,6 +83,13 @@ router.post('/collections/mycollections', async (req, res) => {
     let userid = sessionobj.authen;
     let collectionlogoid = req.body.collectionLogo;
 
+    if (collectionlogoid === '' ) {
+            
+        req.session.message = 'Choose a logo for your collection';
+        return res.redirect(`/collections/mycollections`);
+
+    }
+
     try {
 
         // check if name of collection already exists by user

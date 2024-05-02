@@ -118,39 +118,59 @@ router.post('/editcard/:cardid?', async (req, res) => {
     let attack2desc = req.body.attack2Desc.trim();
 
 
-    // get current stored attack 1 info before changes
-    const currentAttackInfo = `SELECT * FROM attack 
-    INNER JOIN card_attack ON attack.attack_id = card_attack.attack_id 
-    WHERE card_id = ?;`; 
-    let [currentAttackInfoResult] = await connection.promise().query(currentAttackInfo, [cardid]);
-    let currentAttack1Id = currentAttackInfoResult[0].attack_id;
+    // // get current stored attack 1 info before changes
+    // const currentAttackInfo = `SELECT * FROM attack 
+    // INNER JOIN card_attack ON attack.attack_id = card_attack.attack_id 
+    // WHERE card_id = ?;`; 
+    // let [currentAttackInfoResult] = await connection.promise().query(currentAttackInfo, [cardid]);
+    // let currentAttack1Id = currentAttackInfoResult[0].attack_id;
+    // let currentAttack1Name = currentAttackInfoResult[0].attack_name;
+    // let currentAttack1Damage = currentAttackInfoResult[0].attack_damage;
+
+    let currentAttack1Id = req.body.currentAttack1Id;
+
+    
+    const currentAttackInfo = `SELECT * FROM attack WHERE attack_id = ?;`; 
+    let [currentAttackInfoResult] = await connection.promise().query(currentAttackInfo, [currentAttack1Id]);
     let currentAttack1Name = currentAttackInfoResult[0].attack_name;
     let currentAttack1Damage = currentAttackInfoResult[0].attack_damage;
 
-    // if second attack exists , get current stored attack 2 info before changes
-    let currentAttack2Id = null;
+    // // if second attack exists , get current stored attack 2 info before changes
+    // let currentAttack2Id = null;
     let currentAttack2Name = null;
     let currentAttack2Damage = null;
-    if (currentAttackInfoResult.length > 1) {
-        currentAttack2Id = currentAttackInfoResult[1].attack_id;
-        currentAttack2Name = currentAttackInfoResult[1].attack_name;
-        currentAttack2Damage = currentAttackInfoResult[1].attack_damage;
+    // if (currentAttackInfoResult.length > 1) {
+    //     currentAttack2Id = currentAttackInfoResult[1].attack_id;
+    //     currentAttack2Name = currentAttackInfoResult[1].attack_name;
+    //     currentAttack2Damage = currentAttackInfoResult[1].attack_damage;
+    // }
+
+    let currentAttack2Id = req.body.currentAttack2Id;
+    if (currentAttack2Id != undefined) {
+        const currentAttack2Info = `SELECT * FROM attack WHERE attack_id = ?;`; 
+        let [currentAttack2InfoResult] = await connection.promise().query(currentAttack2Info, [currentAttack2Id]);
+        currentAttack2Name = currentAttack2InfoResult[0].attack_name; 
+        currentAttack2Damage = currentAttack2InfoResult[0].attack_damage; 
+
     }
 
-
+    
     // set conditions
     let a1change = null;  
-    if (attackname.toLowerCase() !== currentAttack1Name.toLowerCase() && attackdamage !== currentAttack1Damage) {
+    if (attackname.toLowerCase() != currentAttack1Name.toLowerCase() || attackdamage != currentAttack1Damage) {
         a1change = true; // if attack 1 info change
+        
     } else {
         a1change = false; // if attack 1 info doesn't change
     }
 
     let a2currentstatus = false; // attack 2 doesn't exist
-    if (currentAttackInfoResult.length > 1) {
+    // if (currentAttackInfoResult.length > 1) {
+    if (currentAttack2Id != undefined) {
+        
         a2currentstatus = true; // attack 2 exist 
     }
-    
+
     // if details given 
     a2given = null;
     if (attack2name === '' && attack2damage === '') {
@@ -162,16 +182,31 @@ router.post('/editcard/:cardid?', async (req, res) => {
     let a2change = null; // not assigned if does not exist 
     if (a2currentstatus === true) {
         
-        if (attack2name.toLowerCase() !== currentAttack2Name.toLowerCase() && attack2damage !== currentAttack2Damage) {
+        if (attack2name.toLowerCase() != currentAttack2Name.toLowerCase() || attack2damage != currentAttack2Damage) {
             a2change = true; // if a2 exist and changed
         } else {
             a2change = false; // if a2 exist and not changed
         }
     
     } 
-    
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    // if valid numbers entered
+    if (pokedexnumber < 0) {
+        req.session.message = `Pokedex number cannot be a negative value`;
+        return res.redirect(`/editcard/${cardid}`);
+    }
+    
+    if (hp < 0) {
+        req.session.message = `HP cannot be a negative value`;
+        return res.redirect(`/editcard/${cardid}`);
+    }
+
+    if (attackdamage || attack2damage < 0) {
+        req.session.message = `Attack damage cannot be a negative value`;
+        return res.redirect(`/editcard/${cardid}`);
+    }
 
     // if attack 2 does not exist and doesn't want to be added
     if (!a2currentstatus && !a2given) {
@@ -217,7 +252,7 @@ router.post('/editcard/:cardid?', async (req, res) => {
         // check if attack 2 is same details as attack 1
         if (attack2name.toLowerCase() === attackname.toLowerCase() && attack2damage === attackdamage) {
             // reload page with return message that need to fill for second attack for card to add
-            req.session.message = `Second attack cannot have the same details as first attack`;
+            req.session.message = `First and second attacks cannot have the same details`;
             return res.redirect(`/editcard/${cardid}`);
 
         // check if card info exist
@@ -263,25 +298,27 @@ router.post('/editcard/:cardid?', async (req, res) => {
         if (a1change) { // if attack 1 exist and change 
             // change a1 info 
     
-            // check if new attack 1 information entered already exist (used for another card) / same as before 
+            // check if new attack 1 information entered already exist (used for another card)
             const checkNewAttackExist = `SELECT * FROM attack WHERE attack_name = ? AND attack_damage = ?;`;
             let [checkNewAttackResult] = await connection.promise().query(checkNewAttackExist, [attackname, attackdamage]);
             
-        
             // if it does exist
             if (checkNewAttackResult.length > 0) {
         
                 // get existing attackid 
                 let attackid = JSON.stringify(checkNewAttackResult[0].attack_id);
         
+
+                                // delete the old card attack id link 
+                                const deleteLinkCardAttack1 = `DELETE FROM card_attack WHERE attack_id = ? AND card_id = ?;`;
+                                await connection.promise().query(deleteLinkCardAttack1, [currentAttack1Id, cardid]);
+
                 // link attack with the card id
                 const linkCardAttack = `INSERT INTO card_attack (card_id, attack_id) VALUES (? ,?);`;
                 await connection.promise().query(linkCardAttack, [cardid, attackid]);
         
         
-                // delete the old card attack id link 
-                const deleteLinkCardAttack1 = `DELETE FROM card_attack WHERE attack_id = ? AND card_id = ?;`;
-                await connection.promise().query(deleteLinkCardAttack1, [currentAttack1Id, cardid]);
+
     
                 // check if current attack 1 is used for any other card
                 const checkCurrentAttack1InUse = `SELECT card_id FROM card_attack 
@@ -350,14 +387,16 @@ router.post('/editcard/:cardid?', async (req, res) => {
             
                     // get existing attackid 
                     attack2id = JSON.stringify(checkNewAttack2Result[0].attack_id);
+
+
+                                // delete the old card attack id link 
+                                const deleteLinkCardAttack2 = `DELETE FROM card_attack WHERE attack_id = ? AND card_id = ?;`;
+                                await connection.promise().query(deleteLinkCardAttack2, [currentAttack2Id, cardid]);
             
                     // link attack with the card id
                     const linkCardAttack2 = `INSERT INTO card_attack (card_id, attack_id) VALUES (? ,?);`;
                     await connection.promise().query(linkCardAttack2, [cardid, attack2id]);
             
-                    // delete the old card attack id link 
-                    const deleteLinkCardAttack2 = `DELETE FROM card_attack WHERE attack_id = ? AND card_id = ?;`;
-                    await connection.promise().query(deleteLinkCardAttack2, [currentAttack2Id, cardid]);
     
                     // check if current attack 2 is used for any other card
                     const checkCurrentAttack2InUse = `SELECT card_id FROM card_attack 
@@ -432,9 +471,9 @@ router.post('/editcard/:cardid?', async (req, res) => {
                 const linkCardAttack2 = `INSERT INTO card_attack (card_id, attack_id) VALUES (? ,?);`;
                 await connection.promise().query(linkCardAttack2, [cardid, attack2id]);
         
-                // delete the old card attack id link 
-                const deleteLinkCardAttack2 = `DELETE FROM card_attack WHERE attack_id = ? AND card_id = ?;`;
-                await connection.promise().query(deleteLinkCardAttack2, [currentAttack2Id, cardid]);
+                // // delete the old card attack id link 
+                // const deleteLinkCardAttack2 = `DELETE FROM card_attack WHERE attack_id = ? AND card_id = ?;`;
+                // await connection.promise().query(deleteLinkCardAttack2, [currentAttack2Id, cardid]);
         
         
             // if it doesn't exist 
@@ -447,14 +486,13 @@ router.post('/editcard/:cardid?', async (req, res) => {
                 // get new attackid 
                 const newattack2id = addAttack2Result.insertId;
     
-    
                 // link new attack 2 id with the card id
                 const linkCardAttack2 = `INSERT INTO card_attack (card_id, attack_id) VALUES (? ,?);`;
                 await connection.promise().query(linkCardAttack2, [cardid, newattack2id]);
     
-                // delete the old card attack id link
-                const deleteLinkCardAttack2 = `DELETE FROM card_attack WHERE attack_id = ? AND card_id = ?;`;
-                await connection.promise().query(deleteLinkCardAttack2, [currentAttack2Id, cardid]);
+                // // delete the old card attack id link
+                // const deleteLinkCardAttack2 = `DELETE FROM card_attack WHERE attack_id = ? AND card_id = ?;`;
+                // await connection.promise().query(deleteLinkCardAttack2, [currentAttack2Id, cardid]);
             }
     
         }

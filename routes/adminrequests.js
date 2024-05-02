@@ -67,36 +67,53 @@ router.post('/manageadmin/:userid?', async (req, res) => {
     const action = req.body.action;
     let updatedstatus = null;
 
-    if (action === 'accept') {
+    try {
+        if (action === 'accept') {
 
-        const updateUserRole = `UPDATE user SET role = 'admin' WHERE user_id = ?;`;
-        await connection.promise().query(updateUserRole, [userid]);
-        updatedstatus = 'Accepted';
+            const updateUserRole = `UPDATE user SET role = 'admin' WHERE user_id = ?;`;
+            await connection.promise().query(updateUserRole, [userid]);
+            updatedstatus = 'Accepted';
 
-    } else if (action === 'decline') {
+        } else if (action === 'decline') {
 
-        updatedstatus = 'Declined';
-        
+            updatedstatus = 'Declined';
+            
+        }
+
+        let timestamp = new Date().toISOString().slice(0, -1); // remove the Z 
+        const changeRequestStatus = `UPDATE admin_request SET admin_request_status = ?, request_response_timestamp = ? WHERE user_id = ?;`;
+        await connection.promise().query(changeRequestStatus, [updatedstatus, timestamp, userid]);
+
+        req.session.message = 'Responded to request';
+
+
+    } catch (err) {
+        console.error("Error:", err);
+        req.session.message = `Failed to respond to request, unexpected error`;
+
+    } finally {
+        res.redirect(`/manageadmin`);
     }
-
-    let timestamp = new Date().toISOString().slice(0, -1); // remove the Z 
-    const changeRequestStatus = `UPDATE admin_request SET admin_request_status = ?, request_response_timestamp = ? WHERE user_id = ?;`;
-    await connection.promise().query(changeRequestStatus, [updatedstatus, timestamp, userid]);
-
-    req.session.message = 'Responded to request';
-    res.redirect(`/adminrequests`);
 
 });
 
 router.post('/manageadmin/:adminrequestid?/delete', async (req, res) => {
 
-    const adminrequestid = req.params.userid;
+    const adminrequestid = req.params.adminrequestid;
 
-    const deleteRequest = `DELETE FROM admin_request WHERE user_id = ?;`;
-    await connection.promise().query(deleteRequest, [adminrequestid]);
+    try {
+        const deleteRequest = `DELETE FROM admin_request WHERE admin_request_id = ?;`;
+        await connection.promise().query(deleteRequest, [adminrequestid]);
 
-    req.session.message = 'Request deleted from database';
-    res.redirect(`/adminrequests`);
+        req.session.message = 'Request deleted from database';
+        
+    } catch (err) {
+        console.error("Error:", err);
+        req.session.message = `Failed to delete request, unexpected error`;
+
+    } finally {
+        res.redirect(`/manageadmin`);
+    }
 
 });
 
@@ -105,20 +122,30 @@ router.post('/manageadmin/:userid?/change', async (req, res) => {
     const userid = req.params.userid;
     const newrole = req.body.changeRole;
 
-    let role = null;
-    const changeRole = `UPDATE user SET role = ? WHERE user_id = ?;`;
+    try {
+        let role = null;
+        const changeRole = `UPDATE user SET role = ? WHERE user_id = ?;`;
 
-    if (newrole === 'makeAdmin') {
-        role = 'admin';
+        if (newrole === 'makeAdmin') {
+            role = 'admin';
 
-    } else if (newrole === 'makeMember') {
-        role = 'member';
+            req.session.message = 'User changed to admin';
+
+        } else if (newrole === 'makeMember') {
+            role = 'member';
+
+            req.session.message = 'User changed to member';
+        }
+
+        await connection.promise().query(changeRole, [role, userid]);
+
+    } catch (err) {
+        console.error("Error:", err);
+        req.session.message = `Failed to change user role, unexpected error`;
+
+    } finally {
+        res.redirect(`/manageadmin`);
     }
-
-    await connection.promise().query(changeRole, [role, userid]);
-
-    req.session.message = 'User role changed';
-    res.redirect(`/adminrequests`);
 });
 
 
