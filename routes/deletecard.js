@@ -83,6 +83,13 @@ router.post('/deletecard', async (req, res) => {
             } // else keep 
         }
 
+        // delete wishlist links 
+        const deleteWishlistLinks = `DELETE FROM wishlist WHERE card_id = ?;`;
+        await connection.promise().query(deleteWishlistLinks, [cardid]);
+
+        // delete card collection links
+        const deleteCardCollectionLinks = `DELETE FROM card_collection WHERE card_id =?;`;
+        await connection.promise().query(deleteCardCollectionLinks, [cardid]);
 
         // delete card 
         const deleteCard = `DELETE FROM card WHERE card_id = ?;`;
