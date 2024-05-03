@@ -203,10 +203,10 @@ router.post('/editcard/:cardid?', async (req, res) => {
         return res.redirect(`/editcard/${cardid}`);
     }
 
-    if (attackdamage || attack2damage < 0) {
-        req.session.message = `Attack damage cannot be a negative value`;
-        return res.redirect(`/editcard/${cardid}`);
-    }
+    // if (attackdamage || attack2damage < 0) {
+    //     req.session.message = `Attack damage cannot be a negative value`;
+    //     return res.redirect(`/editcard/${cardid}`);
+    // }
 
     // if attack 2 does not exist and doesn't want to be added
     if (!a2currentstatus && !a2given) {

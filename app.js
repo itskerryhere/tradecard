@@ -10,8 +10,8 @@ const sessions = require('express-session');
 app.set('view engine', 'ejs'); 
 
 // middleware to render static images 
-app.use(express.static(path.join(__dirname,'./images' ))); // may have to take away the folder links within the html files 
-// middleware to render static css (?)
+app.use(express.static(path.join(__dirname,'./images' )));
+// middleware to render static css 
 app.use(express.static(path.join(__dirname,'./public' ))); 
 // middleware to allow POST requests
 app.use(express.urlencoded({ extended: true }));

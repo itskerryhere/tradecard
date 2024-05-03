@@ -91,11 +91,11 @@ router.post('/addcard', async (req, res) => {
         req.session.message = `HP cannot be a negative value`;
         return res.redirect(`/addcard`);
     }
-
-    if (attackdamage || attack2damage < 0) {
-        req.session.message = `Attack damage cannot be a negative value`;
-        return res.redirect(`/addcard`);
-    }
+    console.log(attackdamage,attack2damage);
+    // if (attackdamage || attack2damage < 0) {
+    //     req.session.message = `Attack damage cannot be a negative value`;
+    //     return res.redirect(`/addcard`);
+    // }
     
     // check if card exists (1 attack only)
     if (attack2name === '' && attack2damage === '') {
